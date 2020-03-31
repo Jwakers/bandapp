@@ -1,0 +1,20 @@
+// Brand colours
+$purple: #3B0057;
+$darkPurple: #1C0029;
+$purpleGrad: linear-gradient($purple, $darkPurple);
+// Other Colours
+$red: #A72121;
+$green: #32994F;
+$darkGreen: #2F8949;
+$greenGradient: linear-gradient($darkGreen, $green);
+$black: #464646;
+$darkGrey: #202020;
+$lightGrey: #CCC;
+// Dimentions
+$radius: 4px;
+$radius-small: 2px;
+// Spacing
+$spacing-x: rem(10);
+// Other
+$line-height: rem(22);
+$shadow: 2px 2px 4px rgba(0, 0, 0, .15);

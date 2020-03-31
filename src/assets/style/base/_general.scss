@@ -1,0 +1,24 @@
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+    // background-image: $purpleGrad;
+    background-color: rgb(236, 236, 236);
+    background-repeat: no-repeat;
+    color: white;
+}
+
+p {
+    line-height: $line-height;
+}
+
+p:first-of-type {
+    margin-top: 0;
+}
+
+* {
+    box-sizing: border-box;
+}

@@ -1,0 +1,20 @@
+.nav {
+    position: relative;
+    width: 100%;
+    &__menu {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+}
+
+.thumb-nav {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    display: -ms-flexbox;
+    display: flex;
+    &__item {
+        flex-grow: 1;
+    }
+}

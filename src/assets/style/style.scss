@@ -1,0 +1,8 @@
+// Base
+@import "./base/mixins.scss";
+@import "./base/_variables.scss";
+@import "./base/general";
+@import "./base/layout.scss";
+// Components
+@import "./components/_navigation.scss";
+@import "./components/_project.scss";

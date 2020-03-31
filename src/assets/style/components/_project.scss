@@ -1,0 +1,80 @@
+.project {
+    background-color: #fff;
+    color: $black;
+    border-radius: $radius;
+    position: relative;
+    overflow: hidden;
+    margin-top: rem(10);
+    margin-bottom: rem(10);
+    box-shadow: $shadow;
+    &__container {
+        padding: rem(10);
+    }
+    &__head {
+        display: flex;
+        width: 100%;
+        &__title {
+            font-size: rem(24);
+            flex-grow: 1;
+        }
+        &__assignees {
+            flex-grow: 0;
+        }
+    }
+    &__desc {
+        margin-bottom: 0;
+    }
+    &__info {
+        display: flex;
+        align-items: flex-end;
+    }
+    &__labels {
+        display: flex;
+        padding-top: rem(6);
+        flex-grow: 1;
+        .label {
+            margin-right: rem(6);
+            background-color: pink;
+            padding: rem(2) rem(4);
+            border-radius: $radius-small;
+        }
+    }
+    &__date {
+        color: $green;
+        &__highlight {
+            color: $red;
+        }
+        &__urgent {
+            color: $red;
+            font-weight: 600;
+        }
+    }
+    &__progress {
+        $this: &;
+        padding-top: rem(6);
+        padding-bottom: rem(6);
+        background: $lightGrey;
+        position: relative;
+        &__bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background-image: $greenGradient;
+        }
+        &__container {
+            display: flex;
+            padding: rem(8) $spacing-x;
+            font-size: rem(14);
+            #{$this}__info {
+                flex-grow: 1;
+                position: relative;
+                color: white;
+                text-shadow: 1px 1px rgba(0, 0, 0, .1);
+            }
+            #{$this}__update {
+                position: relative;
+            }
+        }
+    }
+}
