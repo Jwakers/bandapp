@@ -1,0 +1,55 @@
+$button-styles: 'secondary' blue,
+'warning' $red,
+'continue' $green,
+'disabled' $opaque;
+$button-types: 'default',
+'wire',
+'subtle';
+.button {
+    border-radius: $radius;
+    border: none;
+    padding: rem(6) rem(10);
+    color: #fff;
+    font-size: rem(14);
+    -webkit-appearance: none;
+    background-color: $purple;
+    position: relative;
+    @each $style in $button-styles {
+        &--#{nth($style, 1)} {
+            background-color: #{nth($style, 2)};
+        }
+    }
+}
+
+.button-wire {
+    @extend .button;
+    background: none;
+    color: $purple;
+    @each $style in $button-styles {
+        &--#{nth($style, 1)} {
+            border: 2px solid #{nth($style, 2)};
+        }
+    }
+}
+
+.button-subtle {
+    @extend .button;
+    color: $purple;
+    background: none;
+    // &::after {
+    //     content: '';
+    //     width: calc(100% - 20px);
+    //     position: absolute;
+    //     bottom: 0;
+    //     left: 50%;
+    //     transform: translateX(-50%);
+    //     height: 1px;
+    //     border-radius: $radius;
+    //     background-color: $purple;
+    // }
+    @each $style in $button-styles {
+        &--#{nth($style, 1)} {
+            color: #{nth($style, 2)};
+        }
+    }
+}

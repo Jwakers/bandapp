@@ -1,7 +1,7 @@
 import React from 'react';
 import './assets/style/style.scss';
 
-import Layout from './Containers/Layout/Layout'
+import Layout from './Containers/Layout'
 
 function App() {
   return (

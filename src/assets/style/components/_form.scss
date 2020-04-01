@@ -1,0 +1,37 @@
+.form {
+    &__label {
+        display: block;
+        margin-bottom: rem(6);
+    }
+    &__input {
+        display: block;
+        -webkit-appearance: none;
+        border-radius: $radius-small;
+        border: 1px solid $lightGrey;
+        padding: rem(8) rem(10);
+        margin-bottom: rem(10);
+        &--textarea {
+            width: 100%;
+        }
+    }
+    &__control {
+        display: flex;
+        justify-content: flex-end;
+        &__submit {
+            // position: absolute;
+            // right: 0;
+            // bottom: 0;
+            // width: 40px;
+            // height: 40px;
+            // color: white;
+            // font-weight: 600;
+            // font-size: rem(20);
+            // background: $green;
+            // border-radius: 50%;
+            // box-shadow: $shadow;
+        }
+        &__cancel {
+            margin-right: rem(8);
+        }
+    }
+}

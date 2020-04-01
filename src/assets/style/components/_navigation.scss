@@ -1,20 +1,14 @@
 .nav {
     position: relative;
     width: 100%;
-    &__menu {
-        position: absolute;
-        right: 0;
-        top: 0;
+    padding-top: rem(10);
+    padding-bottom: rem(10);
+    color: $black;
+    .container {
+        display: flex;
     }
-}
-
-.thumb-nav {
-    width: 100%;
-    position: fixed;
-    bottom: 0;
-    display: -ms-flexbox;
-    display: flex;
-    &__item {
+    &__head {
+        font-size: rem(34);
         flex-grow: 1;
     }
 }

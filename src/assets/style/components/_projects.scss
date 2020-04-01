@@ -1,0 +1,13 @@
+.projects {
+    .heading {
+        display: inline-block;
+    }
+    &__index {
+        background-color: $purple;
+        color: #fff;
+        padding: rem(2) rem(4);
+        border-radius: $radius-small;
+        font-weight: 600;
+        margin-left: 6px;
+    }
+}

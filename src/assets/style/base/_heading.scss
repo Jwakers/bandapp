@@ -1,0 +1,8 @@
+.heading {
+    margin: 0;
+    font-family: 'Sen', sans-serif;
+    &--h1 {
+        margin-bottom: rem(10);
+        font-size: rem(24);
+    }
+}

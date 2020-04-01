@@ -1,0 +1,18 @@
+.thumbnav {
+    width: 100%;
+    background-color: #fff;
+    position: fixed;
+    bottom: 0;
+    display: -ms-flexbox;
+    display: flex;
+    &__item {
+        flex-grow: 1;
+        padding: rem(20) 0;
+        &__icon {
+            max-width: 35px;
+            display: block;
+            margin: auto;
+            color: $purple;
+        }
+    }
+}
