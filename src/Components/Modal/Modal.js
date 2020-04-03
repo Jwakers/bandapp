@@ -6,7 +6,7 @@ const modal = props => {
     props.open && modalClasses.push("modal--active");
     return (
         <>
-            <Backdrop close={props.close} active={props} />
+            <Backdrop close={props.close} active={props.active} style={props.style} />
             <div className={modalClasses.join(" ")}>
                 <div className="container container--box">
                     <div onClick={props.close} className="modal__close">

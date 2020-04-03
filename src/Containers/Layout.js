@@ -1,40 +1,41 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
+import { Switch, Route } from 'react-router-dom'
+import { connect } from 'react-redux'
 
-import Topnav from '../Components/Navigation/Topnav'
-import Thumbnav from '../Components/Navigation/Thumbnav'
-import Projects from './Projects'
-import NewProject from '../Components/NewProject'
+import Topnav from "../Components/Navigation/Topnav";
+import ProjectList from "./ProjectList";
+import SideMenu from '../Components/Navigation/SideMenu'
+import Thumbnav from "../Components/Navigation/Thumbnav";
+import Project from '../Components/Project'
 
 class Layout extends Component {
     state = {
-        projects: null,
-        newProjectOpen: true
+        sideMenuOpen: false
     }
-
-    handleNewProjectOpen = () => {
-        this.setState({newProjectOpen: true})
+    handleMenuToggle = () => {
+        this.setState(prevState => ({sideMenuOpen: !prevState.sideMenuOpen}))
     }
-    handleNewProjectClose = () => {
-        this.setState({newProjectOpen: false})
-    }
-    handleFormSubmit = (event) => {
-        event.preventDefault()
-        console.log(this)
-    }
-
     render() {
         return (
             <>
-                <Topnav heading="Bandapp" />
-
-                <Projects />
-
-                <NewProject submit={event => this.handleFormSubmit(event)} active={this.state.newProjectOpen} close={this.handleNewProjectClose} />
-
-                <Thumbnav newProjectOpen={this.handleNewProjectOpen}  />
+                <Topnav heading="Bandapp" toggle={this.handleMenuToggle} />
+                <SideMenu toggle={this.handleMenuToggle} active={this.state.sideMenuOpen} projects={this.props.projectIndex} />
+                <main className="container">
+                    <Switch>
+                        <Route path="/:projectid" component={Project} />
+                        <Route path="/" exact component={ProjectList} />
+                    </Switch>
+                </main>
+                <Thumbnav newProjectOpen={this.handleNewProjectOpen} />
             </>
-        )
+        );
     }
 }
 
-export default Layout
+const mapStateToProps = state => {
+    return {
+        projectIndex: state.projects.length
+    }
+}
+
+export default connect(mapStateToProps)(Layout);

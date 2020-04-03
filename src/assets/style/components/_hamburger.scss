@@ -31,4 +31,15 @@ $hamburger-spacing: 20%;
         right: 0;
         bottom: $hamburger-spacing;
     }
+    &--light {
+        .hamburger__inner {
+            background-color: $lightPurple;
+        }
+        &::before {
+            background-color: $lightPurple;
+        }
+        &::after {
+            background-color: $lightPurple;
+        }
+    }
 }

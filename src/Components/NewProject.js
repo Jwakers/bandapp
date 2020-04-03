@@ -5,7 +5,7 @@ import Modal from "../Components/Modal/Modal";
 
 const newProject = props => {
     return (
-        <Modal open={props.active} close={props.close}>
+        <Modal open={props.active} close={props.close} active={props.active} style="dark">
             <div className="heading heading--h1">Create new project</div>
             <form onSubmit={props.submit} className="form" action="">
                 <label className="form__label" htmlFor="title">
@@ -16,6 +16,7 @@ const newProject = props => {
                     type="text"
                     placeholder="Project title"
                     name="title"
+                    required
                 />
                 <label className="form__label" htmlFor="description">
                     Description
@@ -30,7 +31,7 @@ const newProject = props => {
                 </label>
                 <input
                     className="form__input"
-                    type="text"
+                    type="date"
                     placeholder="Due date"
                     name="due-date"
                 />

@@ -8,7 +8,7 @@ const topnav = (props) => {
         <nav className="nav">
             <div className="container">
                 <div className="nav__head heading">{props.heading}</div>
-                <Hamburger open="false" />
+                <Hamburger open="false" click={props.toggle} />
             </div>
         </nav>
     )
