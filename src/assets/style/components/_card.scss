@@ -1,0 +1,11 @@
+.card {
+    background-color: #fff;
+    color: $black;
+    border-radius: $radius;
+    position: relative;
+    overflow: hidden;
+    box-shadow: $shadow;
+    &__wrap {
+        padding: rem(8);
+    }
+}

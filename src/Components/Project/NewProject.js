@@ -1,11 +1,11 @@
 import React from "react";
-import Modal from "../Components/Modal/Modal";
+import Modal from "../Modal/Modal";
 
 // TODO: create modal as higher order component with backdrop component
 
 const newProject = props => {
     return (
-        <Modal open={props.active} close={props.close} active={props.active} style="dark">
+        <Modal open={props.active} close={props.close} active={props.active} theme="dark">
             <div className="heading heading--h1">Create new project</div>
             <form onSubmit={props.submit} className="form" action="">
                 <label className="form__label" htmlFor="title">

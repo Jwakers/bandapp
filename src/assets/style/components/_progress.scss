@@ -1,0 +1,32 @@
+.progress {
+    $this: &;
+    padding-top: rem(6);
+    padding-bottom: rem(6);
+    background: $lightGrey;
+    position: relative;
+    overflow: hidden;
+    &--seperate {
+        border-radius: $radius;
+    }
+    &__bar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background-image: $greenGradient;
+    }
+    &__container {
+        display: flex;
+        padding: rem(8) $spacing-x;
+        font-size: rem(14);
+        #{$this}__info {
+            flex-grow: 1;
+            position: relative;
+            color: white;
+            text-shadow: 1px 1px rgba(0, 0, 0, .1);
+        }
+        #{$this}__update {
+            position: relative;
+        }
+    }
+}

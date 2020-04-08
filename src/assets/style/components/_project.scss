@@ -1,15 +1,5 @@
 .project {
-    background-color: #fff;
-    color: $black;
-    border-radius: $radius;
-    position: relative;
-    overflow: hidden;
-    margin-top: rem(10);
     margin-bottom: rem(10);
-    box-shadow: $shadow;
-    // &__container {
-    //     padding: rem(10);
-    // }
     &__head {
         display: flex;
         width: 100%;
@@ -27,6 +17,16 @@
     &__info {
         display: flex;
         align-items: flex-end;
+    }
+    &__info-bar {
+        display: flex;
+        font-size: rem(12);
+        color: $grey;
+        padding-top: rem(10);
+        div {
+            flex-grow: 1;
+            text-align: center;
+        }
     }
     &__labels {
         display: flex;
@@ -49,31 +49,14 @@
             font-weight: 600;
         }
     }
-    &__progress {
-        $this: &;
-        padding-top: rem(6);
-        padding-bottom: rem(6);
-        background: $lightGrey;
-        position: relative;
-        &__bar {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            background-image: $greenGradient;
-        }
-        &__container {
+    // Tasks
+    &__tasks {
+        transition: translateX;
+        &__topbar {
+            padding: rem(10) 0;
             display: flex;
-            padding: rem(8) $spacing-x;
-            font-size: rem(14);
-            #{$this}__info {
+            &__head {
                 flex-grow: 1;
-                position: relative;
-                color: white;
-                text-shadow: 1px 1px rgba(0, 0, 0, .1);
-            }
-            #{$this}__update {
-                position: relative;
             }
         }
     }

@@ -8,7 +8,7 @@ const sideMenu = props => {
     props.active && classes.push('side-menu--active')
     return (
         <>
-            <Backdrop active={props.active} style="purple" close={props.toggle} />
+            <Backdrop active={props.active} theme="purple" close={props.toggle} />
             <div className={classes.join(' ')}>
                 <div className="side-menu__top">
                     <div className="side-menu__head">Bandapp</div>
@@ -25,7 +25,7 @@ const sideMenu = props => {
                         Home
                     </NavLink>
                     <NavLink
-                        to="/projects"
+                        to="/"
                         className="side-menu__item"
                         activeClassName="side-menu__item--active"
                         onClick={props.toggle}
