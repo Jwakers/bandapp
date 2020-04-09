@@ -56,6 +56,24 @@ const newProject = props => {
                                 </>
                             );
                             break;
+                        case "select":
+                            inputTag = (
+                                <>
+                                <label
+                                className="form__label"
+                                htmlFor={
+                                    input.name
+                                        ? input.name
+                                        : input.title.toLowerCase()
+                                }
+                            >
+                                {input.title}
+                            </label>
+                            <select name={input.title.toLowerCase()}>
+                                {input.options.map((option, i) => <option key={i} value={option} >{option}</option>)}
+                            </select>
+                            </>)
+                            break;
                         default:
                             inputTag = (
                                 <>
@@ -113,7 +131,7 @@ const newProject = props => {
                         type="submit"
                         className="form__control__submit button button--continue"
                     >
-                        create
+                        {props.buttonText ? props.buttonText : 'create' }
                     </button>
                 </div>
             </form>

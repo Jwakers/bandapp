@@ -12,7 +12,8 @@ const projectsState = [
             bpm: 125,
             key: null,
             length: null,
-            comments: null
+            comments: null,
+            demo: ''
         }
     },
     {
@@ -24,7 +25,8 @@ const projectsState = [
             bpm: 170,
             key: "G Major",
             length: 4.2,
-            comments: null
+            comments: null,
+            demo: ''
         }
     }
 ];
@@ -85,10 +87,22 @@ function projects(state = projectsState, action) {
                         bpm: null,
                         key: null,
                         length: null,
-                        comments: null
+                        comments: null,
+                        demo: null
                     }
                 }
             ];
+        case actionTypes.UPDATE_PROJECT:
+            const projectIndex = state.findIndex(
+                project => project.id === action.projectId
+            );
+            const projectsCopy = [...state];
+            console.log(projectsCopy)
+            projectsCopy[projectIndex] = {
+                ...projectsCopy[projectIndex],
+                ...action.payload
+            };
+            return [...projectsCopy];
         default:
             return state;
     }

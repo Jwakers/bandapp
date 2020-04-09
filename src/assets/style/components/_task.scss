@@ -1,4 +1,5 @@
 .task {
+    $this: &;
     margin-top: rem(10);
     margin-bottom: rem(10);
     // for slide in animation
@@ -35,4 +36,8 @@
         color: $grey;
     }
     &__assignee {}
+    &--complete {
+        opacity: .6;
+        border: solid 2px $green;
+    }
 }

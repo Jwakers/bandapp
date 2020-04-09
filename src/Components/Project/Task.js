@@ -75,15 +75,15 @@ const Task = props => {
                 element.addEventListener("transitionend", () => {
                     props.updateTaskStatus(props.id, "deleted");
                 });
-                // Change status in state on componendWillUnmount or useEffect
             });
         });
     }
-    const removeElement = element => element.parentNode.removeChild(element);
     const resetTransition = element => (element.style.transform = null);
+    const classes = ['task', 'card']
+    props.complete && classes.push('task--complete')
     return (
         <div
-            className="task card"
+            className={classes.join(' ')}
             onTouchStart={down}
             onTouchEnd={leave}
             data-id={props.id}

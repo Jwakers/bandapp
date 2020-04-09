@@ -7,7 +7,7 @@ import ProjectList from "../Components/Project/ProjectList";
 import SideMenu from "../Components/Navigation/SideMenu";
 import Thumbnav from "../Components/Navigation/Thumbnav";
 import Project from "./Project";
-import NewProject from "../Components/Project/NewProject";
+import Form from "../Components/Modal/Form"
 
 import { addProject } from "../store/actions";
 
@@ -27,11 +27,8 @@ class Layout extends Component {
     handleMenuToggle = () => {
         this.setState(prevState => ({ sideMenuOpen: !prevState.sideMenuOpen }));
     };
-    handleNewProjectOpen = () => {
-        this.setState({ newProjectOpen: true });
-    };
-    handleNewProjectClose = () => {
-        this.setState({ newProjectOpen: false });
+    handleNewProjectToggle = () => {
+        this.setState(prevState => ({ newProjectOpen: !prevState.newProjectOpen }));
     };
     handleFormSubmit = event => {
         event.preventDefault();
@@ -64,12 +61,25 @@ class Layout extends Component {
                         <Route path="/" exact component={ProjectList} />
                     </Switch>
                 </main>
-                <NewProject
+                <Form
                     submit={this.handleFormSubmit}
+                    open={this.handleNewProjectToggle}
+                    close={this.handleNewProjectToggle}
                     active={this.state.newProjectOpen}
-                    close={this.handleNewProjectClose}
+                    heading="Create project"
+                    inputs={[{
+                        title: 'Title',
+                        placeholder: 'Project title'
+                    },{
+                        title: 'Description',
+                        type: 'textarea',
+                        placeholder: 'Project description'
+                    },{
+                        title: 'Due date',
+                        type: 'date',
+                    }]}
                 />
-                <Thumbnav newProjectOpen={this.handleNewProjectOpen} />
+                <Thumbnav newProjectOpen={this.handleNewProjectToggle} />
             </>
         );
     }

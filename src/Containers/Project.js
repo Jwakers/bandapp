@@ -11,7 +11,8 @@ import sortIcon from "../assets/icons/sort.svg";
 
 class Project extends Component {
     state = {
-        addTaskOpen: false
+        addTaskOpen: false,
+        updateProject: false
     };
 
     createID() {
@@ -29,7 +30,13 @@ class Project extends Component {
         }));
     };
 
-    handleFormSubmit = (event, projectId) => {
+    handleProjectUpdateFormToggle = () => {
+        this.setState(prevState => ({
+            updateProject: !prevState.updateProject
+        }));
+    }
+
+    handleTaskFormSubmit = (event, projectId) => {
         event.preventDefault();
         const form = {
             title: event.target.elements["title"].value,
@@ -41,11 +48,33 @@ class Project extends Component {
             projectId: this.props.project.id,
             heading: form.title,
             description: form.desc,
-            dueDate: form.dueDate
+            dueDate: form.dueDate,
         };
         this.props.addTask(task);
         this.setState({ addTaskOpen: false });
-        console.log(this.props);
+    };
+    handleProjectUpdateSubmit = (event) => {
+        event.preventDefault();
+        const form = {
+            title: event.target.elements["title"].value,
+            desc: event.target.elements["description"].value,
+            dueDate: event.target.elements["due-date"].value,
+            bpm: event.target.elements["bpm"].value,
+            key: event.target.elements["key"].value,
+            demo: event.target.elements["demo"].value
+        };
+        const project = {
+            heading: form.title,
+            description: form.desc,
+            dueDate: form.dueDate,
+            info: {
+                bpm: form.bpm,
+                key: form.key,
+                demo: form.demo
+            }
+        };
+        this.props.updateProject(this.props.project.id, project);
+        this.setState({ updateProject: false });
     };
 
     render() {
@@ -57,7 +86,7 @@ class Project extends Component {
         );
         return (
             <>
-                <div className="project card">
+                <div className="project card" onClick={this.handleProjectUpdateFormToggle}>
                     <div className="card__wrap">
                         <div className="project__head">
                             <div className="project__head__title heading">
@@ -80,7 +109,7 @@ class Project extends Component {
                                 {this.props.project.dueDate}
                             </div>
                         </div>
-                        <div>[Audio]</div>
+                        <div>Upload demo - [Demo link]</div>
                         <div className="project__info-bar">
                             {this.props.project.info.bpm && (
                                 <div>
@@ -142,14 +171,15 @@ class Project extends Component {
                     {incompleteTasks.map(task => (
                         <Task key={task.id} {...task} />
                     ))}
-                    <div className="project__tasks__topbar">
+                    {completeTasks.length ? <div className="project__tasks__topbar">
                         <div className="project__tasks__topbar__head heading heading--h2">
                             Complete
                         </div>
-                    </div>
+                    </div> : null}
+                    
 
                     {completeTasks.map(task => (
-                        <Task key={task.id} {...task} />
+                        <Task complete key={task.id} {...task} />
                     ))}
                     <div
                         onClick={this.handleTaskFormToggle}
@@ -158,17 +188,19 @@ class Project extends Component {
                         <span className="floating-button__content">+</span>
                     </div>
                     <NewTask
-                        submit={this.handleFormSubmit}
+                        submit={this.handleTaskFormSubmit}
                         active={this.state.addTaskOpen}
                         close={this.handleTaskFormToggle}
                     />
                 </div>
 
                 <Form
-                    open={() => console.log("open")}
-                    close={() => console.log("close")}
-                    active="true"
+                    submit={this.handleProjectUpdateSubmit}
+                    open={this.handleProjectUpdateFormToggle}
+                    close={this.handleProjectUpdateFormToggle}
+                    active={this.state.updateProject}
                     heading="Edit Project"
+                    buttonText="update"
                     inputs={[{
                         title: 'Title',
                         value: this.props.project.heading
@@ -180,6 +212,30 @@ class Project extends Component {
                         title: 'Due date',
                         type: 'date',
                         value: this.props.project.dueDate,
+                    },{
+                        title: 'BPM',
+                        type: "number",
+                        value: this.props.project.info.bpm,
+                    },{
+                        title: 'Key',
+                        type: 'select',
+                        options: ['Key of C',
+                        'Key of Db / C#',
+                        'Key of D',
+                        'Key of Eb',
+                        'Key of E',
+                        'Key of F',
+                        'Key of Gb / F#',
+                        'Key of G',
+                        'Key of Ab',
+                        'Key of A',
+                        'Key of Bb',
+                        'Key of B / Cb'],
+                        value: this.props.project.info.key,
+                    },{
+                        title: 'Demo Link',
+                        name: 'demo',
+                        value: this.props.project.info.demo,
                     }]}
                 />
             </>
