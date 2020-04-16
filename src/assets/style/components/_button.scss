@@ -1,4 +1,4 @@
-$button-styles: 'secondary' blue,
+$button-styles: 'secondary' $orange,
 'warning' $red,
 'continue' $green,
 'disabled' $opaque;
@@ -29,6 +29,7 @@ $button-types: 'default',
     @each $style in $button-styles {
         &--#{nth($style, 1)} {
             border: 2px solid #{nth($style, 2)};
+            color: #{nth($style, 2)}
         }
     }
 }
@@ -55,6 +56,7 @@ $button-types: 'default',
     border-radius: 50%;
     background-color: $green;
     box-shadow: $shadow;
+    z-index: 10;
     &__content {
         position: absolute;
         left: 50%;

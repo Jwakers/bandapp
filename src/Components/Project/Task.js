@@ -6,10 +6,10 @@ import { updateTaskStatus } from "../../store/actions";
 const Task = props => {
     useEffect(() => {
         const timeout = setTimeout(() => {
-            taskRef.current.classList.add('task--set')
-        }, 0)
+            taskRef.current.classList.add("task--set");
+        }, 0);
     }, []);
-    const taskRef = createRef()
+    const taskRef = createRef();
     const position = {
         down: null,
         move: null,
@@ -18,7 +18,7 @@ const Task = props => {
     const down = event => {
         position.down = event.touches[0].clientX;
         event.currentTarget.addEventListener("touchmove", move, false);
-        event.currentTarget.classList.add('task--sliding');
+        event.currentTarget.classList.add("task--sliding");
     };
     const move = event => {
         position.move = position.down - event.touches[0].clientX;
@@ -26,16 +26,13 @@ const Task = props => {
     };
     const leave = event => {
         event.currentTarget.classList.remove("task--sliding");
-        // event.currentTarget.addEventListener(
-        //     "transitionend",
-        //     remove.bind(this, event.currentTarget)
-        // );
+
         if (position.move < -150) {
             // Complete todo
             complete(event.currentTarget);
         } else if (position.move > 150) {
             // Delete todo
-            deleteEl(event.currentTarget)
+            deleteEl(event.currentTarget);
         } else {
             // return to position
             event.currentTarget.style.transform = null;
@@ -43,10 +40,7 @@ const Task = props => {
 
         event.currentTarget.removeEventListener("touchmove", move);
     };
-    // const remove = element => {
-    //     element.classList.remove("task--transition");
-    //     element.removeEventListener("transitionend", remove);
-    // };
+
     const complete = element => {
         element.classList.add("task--transition");
         element.style.height = `${element.offsetHeight}px`;
@@ -77,26 +71,75 @@ const Task = props => {
                 });
             });
         });
-    }
+    };
     const resetTransition = element => (element.style.transform = null);
-    const classes = ['task', 'card']
-    props.complete && classes.push('task--complete')
-    return (
-        <div
-            className={classes.join(' ')}
-            onTouchStart={down}
-            onTouchEnd={leave}
-            data-id={props.id}
-            ref={taskRef} >
-            <div className="task__wrap card__wrap">
-                <div className="task__content">
-                    <div className="task__title">{props.heading}</div>
-                    <div className="task__description">{props.description}</div>
+
+    const changeStatus = () => {
+        console.log("Change status modal");
+    };
+
+    switch (props.status) {
+        case "complete":
+            return (
+                <div
+                    className="task task--complete card"
+                    onClick={changeStatus}
+                    data-id={props.id}
+                    ref={taskRef}
+                >
+                    <div className="task__wrap card__wrap">
+                        <div className="task__content">
+                            <div className="task__title">{props.heading}</div>
+                            <div className="task__description">
+                                {props.description}
+                            </div>
+                        </div>
+                        <div className="task__assignee">{props.assignee}</div>
+                    </div>
                 </div>
-                <div className="task__assignee">{props.assignee}</div>
-            </div>
-        </div>
-    );
+            );
+            break;
+        case "deleted":
+            return (
+                <div
+                    className="task task--deleted card"
+                    onClick={changeStatus}
+                    data-id={props.id}
+                    ref={taskRef}
+                >
+                    <div className="task__wrap card__wrap">
+                        <div className="task__content">
+                            <div className="task__title">{props.heading}</div>
+                            <div className="task__description">
+                                {props.description}
+                            </div>
+                        </div>
+                        <div className="task__assignee">{props.assignee}</div>
+                    </div>
+                </div>
+            );
+            break;
+        default:
+            return (
+                <div
+                    className="task card"
+                    onTouchStart={down}
+                    onTouchEnd={leave}
+                    data-id={props.id}
+                    ref={taskRef}
+                >
+                    <div className="task__wrap card__wrap">
+                        <div className="task__content">
+                            <div className="task__title">{props.heading}</div>
+                            <div className="task__description">
+                                {props.description}
+                            </div>
+                        </div>
+                        <div className="task__assignee">{props.assignee}</div>
+                    </div>
+                </div>
+            );
+    }
 };
 
 const mapDispatchToProps = dispatch => {

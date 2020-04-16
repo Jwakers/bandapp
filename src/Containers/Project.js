@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import Progress from "../Components/Project/Progress";
 import Task from "../Components/Project/Task";
 import { addTask, updateProject } from "../store/actions";
-import NewTask from "../Components/Project/NewTask";
 import Form from "../Components/Modal/Form";
 
 import filterIcon from "../assets/icons/filter.svg";
@@ -12,7 +11,8 @@ import sortIcon from "../assets/icons/sort.svg";
 class Project extends Component {
     state = {
         addTaskOpen: false,
-        updateProject: false
+        updateProject: false,
+        showDeleted: false
     };
 
     createID() {
@@ -34,9 +34,9 @@ class Project extends Component {
         this.setState(prevState => ({
             updateProject: !prevState.updateProject
         }));
-    }
+    };
 
-    handleTaskFormSubmit = (event, projectId) => {
+    handleTaskFormSubmit = event => {
         event.preventDefault();
         const form = {
             title: event.target.elements["title"].value,
@@ -48,12 +48,14 @@ class Project extends Component {
             projectId: this.props.project.id,
             heading: form.title,
             description: form.desc,
-            dueDate: form.dueDate,
+            dueDate: form.dueDate
         };
         this.props.addTask(task);
+        console.log('task form submitted')
         this.setState({ addTaskOpen: false });
+        console.log(this.props.tasks)
     };
-    handleProjectUpdateSubmit = (event) => {
+    handleProjectUpdateSubmit = event => {
         event.preventDefault();
         const form = {
             title: event.target.elements["title"].value,
@@ -77,16 +79,27 @@ class Project extends Component {
         this.setState({ updateProject: false });
     };
 
+    handleDeletedTasksToggle = () => {
+        this.setState(prevState => ({ deletedTasks: !prevState.deletedTasks }));
+    };
+
     render() {
+        const incompleteTasks = this.props.tasks.filter(
+            task => task.status === "pending"
+        );
         const completeTasks = this.props.tasks.filter(
             task => task.status === "complete"
         );
-        const incompleteTasks = this.props.tasks.filter(
-            task => task.status !== "complete"
+        const deletedTasks = this.props.tasks.filter(
+            task => task.status === "deleted"
         );
+
         return (
             <>
-                <div className="project card" onClick={this.handleProjectUpdateFormToggle}>
+                <div
+                    className="project card"
+                    onClick={this.handleProjectUpdateFormToggle}
+                >
                     <div className="card__wrap">
                         <div className="project__head">
                             <div className="project__head__title heading">
@@ -162,7 +175,7 @@ class Project extends Component {
                     {this.props.tasks ? (
                         <Progress
                             complete={completeTasks.length}
-                            total={this.props.tasks.length}
+                            total={completeTasks.length + incompleteTasks.length}
                             seperate
                         />
                     ) : (
@@ -171,26 +184,62 @@ class Project extends Component {
                     {incompleteTasks.map(task => (
                         <Task key={task.id} {...task} />
                     ))}
-                    {completeTasks.length ? <div className="project__tasks__topbar">
-                        <div className="project__tasks__topbar__head heading heading--h2">
-                            Complete
+                    {completeTasks.length ? (
+                        <div className="project__tasks__topbar">
+                            <div className="project__tasks__topbar__head heading heading--h2">
+                                Complete
+                            </div>
                         </div>
-                    </div> : null}
-                    
+                    ) : null}
 
                     {completeTasks.map(task => (
                         <Task complete key={task.id} {...task} />
                     ))}
+                    {deletedTasks.length ? (
+                        <>
+                            <hr className="project__rule" />
+                            <button
+                                className="button-wire button-wire--secondary"
+                                onClick={this.handleDeletedTasksToggle}
+                            >
+                                {this.state.deletedTasks
+                                    ? "Hide deleted tasks"
+                                    : "Show deleted tasks"}
+                            </button>
+                        </>
+                    ) : null}
+                    {this.state.deletedTasks &&
+                        deletedTasks.map(task => (
+                            <Task key={task.id} {...task} />
+                        ))}
+
                     <div
                         onClick={this.handleTaskFormToggle}
                         className="floating-button"
                     >
                         <span className="floating-button__content">+</span>
                     </div>
-                    <NewTask
+                    <Form
                         submit={this.handleTaskFormSubmit}
-                        active={this.state.addTaskOpen}
+                        open={this.handleTaskFormToggle}
                         close={this.handleTaskFormToggle}
+                        active={this.state.addTaskOpen}
+                        heading={"Add task to " + this.props.project.heading}
+                        inputs={[
+                            {
+                                title: "Title",
+                                placeholder: "Task title"
+                            },
+                            {
+                                title: "Description",
+                                type: "textarea",
+                                placeholder: "Task description"
+                            },
+                            {
+                                title: "Due date",
+                                type: "date"
+                            }
+                        ]}
                     />
                 </div>
 
@@ -199,44 +248,53 @@ class Project extends Component {
                     open={this.handleProjectUpdateFormToggle}
                     close={this.handleProjectUpdateFormToggle}
                     active={this.state.updateProject}
-                    heading="Edit Project"
+                    heading={"Edit " + this.props.project.heading}
                     buttonText="update"
-                    inputs={[{
-                        title: 'Title',
-                        value: this.props.project.heading
-                    },{
-                        title: 'Description',
-                        type: 'textarea',
-                        value: this.props.project.description
-                    },{
-                        title: 'Due date',
-                        type: 'date',
-                        value: this.props.project.dueDate,
-                    },{
-                        title: 'BPM',
-                        type: "number",
-                        value: this.props.project.info.bpm,
-                    },{
-                        title: 'Key',
-                        type: 'select',
-                        options: ['Key of C',
-                        'Key of Db / C#',
-                        'Key of D',
-                        'Key of Eb',
-                        'Key of E',
-                        'Key of F',
-                        'Key of Gb / F#',
-                        'Key of G',
-                        'Key of Ab',
-                        'Key of A',
-                        'Key of Bb',
-                        'Key of B / Cb'],
-                        value: this.props.project.info.key,
-                    },{
-                        title: 'Demo Link',
-                        name: 'demo',
-                        value: this.props.project.info.demo,
-                    }]}
+                    inputs={[
+                        {
+                            title: "Title",
+                            value: this.props.project.heading
+                        },
+                        {
+                            title: "Description",
+                            type: "textarea",
+                            value: this.props.project.description
+                        },
+                        {
+                            title: "Due date",
+                            type: "date",
+                            value: this.props.project.dueDate
+                        },
+                        {
+                            title: "BPM",
+                            type: "number",
+                            value: this.props.project.info.bpm
+                        },
+                        {
+                            title: "Key",
+                            type: "select",
+                            options: [
+                                "Key of C",
+                                "Key of Db / C#",
+                                "Key of D",
+                                "Key of Eb",
+                                "Key of E",
+                                "Key of F",
+                                "Key of Gb / F#",
+                                "Key of G",
+                                "Key of Ab",
+                                "Key of A",
+                                "Key of Bb",
+                                "Key of B / Cb"
+                            ],
+                            value: this.props.project.info.key
+                        },
+                        {
+                            title: "Demo Link",
+                            name: "demo",
+                            value: this.props.project.info.demo
+                        }
+                    ]}
                 />
             </>
         );
@@ -260,7 +318,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = dispatch => {
     return {
         addTask: payload => dispatch(addTask(payload)),
-        updateProject: (projectId, payload) => dispatch(updateProject(projectId, payload))
+        updateProject: (projectId, payload) =>
+            dispatch(updateProject(projectId, payload))
     };
 };
 

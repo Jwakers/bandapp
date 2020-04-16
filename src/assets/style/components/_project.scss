@@ -60,4 +60,11 @@
             }
         }
     }
+    &__rule {
+        margin-top: rem(20);
+        margin-bottom: rem(20);
+        border: none;
+        background-color: $lightGrey;
+        height: 1px;
+    }
 }

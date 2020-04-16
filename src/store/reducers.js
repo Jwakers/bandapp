@@ -38,7 +38,7 @@ const tasksState = [
         heading: "Test 1",
         description: "Test task",
         assignee: "Jack",
-        status: ""
+        status: "pending"
     },
     {
         id: "task-asdiue",
@@ -46,7 +46,7 @@ const tasksState = [
         heading: "Test 2",
         description: "Test task 2",
         assignee: "Josh",
-        status: ""
+        status: "pending"
     },
     {
         id: "task-29hasdk",
@@ -54,7 +54,7 @@ const tasksState = [
         heading: "Lead guitar",
         description: "Shred shred shred motha fucka!",
         assignee: "Andy",
-        status: ""
+        status: "pending"
     },
     {
         id: "task-23udywe",
@@ -62,7 +62,7 @@ const tasksState = [
         heading: "Solo",
         description: "Do a wicked solo yeah.",
         assignee: "Jack",
-        status: ""
+        status: "pending"
     },
     {
         id: "task-jasd83",
@@ -70,7 +70,7 @@ const tasksState = [
         heading: "Drums",
         description: "Whos guoing to do this?",
         assignee: "",
-        status: ""
+        status: "pending"
     }
 ];
 function projects(state = projectsState, action) {
@@ -109,6 +109,8 @@ function projects(state = projectsState, action) {
 }
 
 function tasks(state = tasksState, action) {
+    console.log('task action')
+    console.log(action)
     switch (action.type) {
         case actionTypes.ADD_TASK:
             return [
@@ -120,7 +122,7 @@ function tasks(state = tasksState, action) {
                     description: action.payload.description,
                     dueDate: action.payload.dueDate,
                     assignee: "",
-                    status: ""
+                    status: "pending"
                 }
             ];
         case actionTypes.UPDATE_TASK_STATUS:

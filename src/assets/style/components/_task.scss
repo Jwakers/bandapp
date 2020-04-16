@@ -40,4 +40,8 @@
         opacity: .6;
         border: solid 2px $green;
     }
+    &--deleted {
+        opacity: .6;
+        border: solid 2px $red;
+    }
 }
