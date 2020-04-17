@@ -5,27 +5,23 @@ import { updateTask } from "../../store/actions";
 import Modal from "../Modal/Modal";
 import Form from "../Modal/Form";
 
-import completeIcon from '../../assets/icons/complete.svg'
-import deleteIcon from '../../assets/icons/delete.svg'
+import completeIcon from "../../assets/icons/complete.svg";
+import deleteIcon from "../../assets/icons/delete.svg";
 
 class Task extends Component {
-    constructor(props) {
-        super(props);
-        this.taskRef = createRef();
-        this.position = {
-            down: null,
-            move: null,
-            up: null,
-        };
-        this.icons = {
-            delete: null,
-            complete: null
-        }
-    }
-
+    taskRef = createRef();
+    position = {
+        down: null,
+        move: null,
+        up: null,
+    };
+    icons = {
+        delete: null,
+        complete: null,
+    };
     state = {
         changeStatusModal: false,
-        updateTask: false
+        updateTask: false,
     };
 
     componentDidMount() {
@@ -42,20 +38,20 @@ class Task extends Component {
         this.setState((prevState) => ({
             updateTask: !prevState.updateTask,
         }));
-    }
-    handleTaskUpdateSubmit = event => {
+    };
+    handleTaskUpdateSubmit = (event) => {
         event.preventDefault();
         const form = {
             title: event.target.elements["title"].value,
             desc: event.target.elements["description"].value,
-            dueDate: event.target.elements["due-date"].value
+            dueDate: event.target.elements["due-date"].value,
         };
         const task = {
             heading: form.title,
             description: form.desc,
-            dueDate: form.dueDate
+            dueDate: form.dueDate,
         };
-        console.log(this.props)
+        console.log(this.props);
         this.props.updateTask(this.props.id, task);
         this.setState({ updateTask: false });
     };
@@ -64,22 +60,26 @@ class Task extends Component {
         event.currentTarget.addEventListener("touchmove", this.move, false);
         event.currentTarget.classList.add("task--sliding");
 
-        this.icons.complete = event.currentTarget.parentElement.querySelector('.task__icon--complete')
-        this.icons.delete = event.currentTarget.parentElement.querySelector('.task__icon--delete')
+        this.icons.complete = event.currentTarget.parentElement.querySelector(
+            ".task__icon--complete"
+        );
+        this.icons.delete = event.currentTarget.parentElement.querySelector(
+            ".task__icon--delete"
+        );
     };
     move = (event) => {
         this.position.move = this.position.down - event.touches[0].clientX;
         event.currentTarget.style.transform = `translateX(${-this.position
             .move}px)`;
         if (this.position.move < -150) {
-            this.icons.complete.classList.add('task__icon--active')
+            this.icons.complete.classList.add("task__icon--active");
         } else {
-            this.icons.complete.classList.remove('task__icon--active')
+            this.icons.complete.classList.remove("task__icon--active");
         }
         if (this.position.move > 150) {
-            this.icons.delete.classList.add('task__icon--active')
+            this.icons.delete.classList.add("task__icon--active");
         } else {
-            this.icons.delete.classList.remove('task__icon--active')
+            this.icons.delete.classList.remove("task__icon--active");
         }
     };
     leave = (event) => {
@@ -102,7 +102,7 @@ class Task extends Component {
     complete = (element) => {
         element.classList.add("task--transition");
         element.style.height = `${element.offsetHeight}px`;
-        this.icons.complete.classList.remove('task__icon--active')
+        this.icons.complete.classList.remove("task__icon--active");
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 this.resetTransition(element);
@@ -110,7 +110,9 @@ class Task extends Component {
                 element.classList.add("task--out-right");
 
                 element.addEventListener("transitionend", () => {
-                    this.props.updateTask(this.props.id, {status: "complete"});
+                    this.props.updateTask(this.props.id, {
+                        status: "complete",
+                    });
                 });
             });
         });
@@ -118,7 +120,7 @@ class Task extends Component {
     deleteEl = (element) => {
         element.classList.add("task--transition");
         element.style.height = `${element.offsetHeight}px`;
-        this.icons.delete.classList.remove('task__icon--active')
+        this.icons.delete.classList.remove("task__icon--active");
 
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
@@ -127,7 +129,7 @@ class Task extends Component {
                 element.classList.add("task--out-left");
 
                 element.addEventListener("transitionend", () => {
-                    this.props.updateTask(this.props.id, {status: "deleted"});
+                    this.props.updateTask(this.props.id, { status: "deleted" });
                 });
             });
         });
@@ -135,7 +137,7 @@ class Task extends Component {
     resetTransition = (element) => (element.style.transform = null);
 
     handleTaskStatus = () => {
-        this.props.updateTask(this.props.id, {status: "pending"});
+        this.props.updateTask(this.props.id, { status: "pending" });
     };
 
     render() {
@@ -151,33 +153,45 @@ class Task extends Component {
         }
         return (
             <>
-            <div className="task__container">
-                <div
-                    className={classes.join(" ")}
-                    onTouchStart={status === "pending" ? this.down : undefined}
-                    onTouchEnd={status === "pending" ? this.leave : undefined}
-                    onClick={
-                        status !== "pending" ? this.handleStatusModalToggle : this.handleUpdateModalToggle
-                    }
-                    data-id={this.props.id}
-                    ref={this.taskRef}
-                >
-                    <div className="task__wrap card__wrap">
-                        <div className="task__content">
-                            <div className="task__title">
-                                {this.props.heading}
+                <div className="task__container">
+                    <div
+                        className={classes.join(" ")}
+                        onTouchStart={
+                            status === "pending" ? this.down : undefined
+                        }
+                        onTouchEnd={
+                            status === "pending" ? this.leave : undefined
+                        }
+                        onClick={
+                            status !== "pending"
+                                ? this.handleStatusModalToggle
+                                : this.handleUpdateModalToggle
+                        }
+                        data-id={this.props.id}
+                        ref={this.taskRef}
+                    >
+                        <div className="task__wrap card__wrap">
+                            <div className="task__content">
+                                <div className="task__title">
+                                    {this.props.heading}
+                                </div>
+                                <div className="task__description">
+                                    {this.props.description}
+                                </div>
                             </div>
-                            <div className="task__description">
-                                {this.props.description}
+                            <div className="task__assignee">
+                                {this.props.assignee}
                             </div>
-                        </div>
-                        <div className="task__assignee">
-                            {this.props.assignee}
                         </div>
                     </div>
-                </div>
-                    <img className="task__icon task__icon--complete" src={completeIcon} />
-                    <img className="task__icon task__icon--delete" src={deleteIcon} />
+                    <img
+                        className="task__icon task__icon--complete"
+                        src={completeIcon}
+                    />
+                    <img
+                        className="task__icon task__icon--delete"
+                        src={deleteIcon}
+                    />
                 </div>
                 {status !== "pending" && (
                     <Modal
@@ -219,12 +233,12 @@ class Task extends Component {
                         {
                             title: "Description",
                             type: "textarea",
-                            value: this.props.description
+                            value: this.props.description,
                         },
                         {
                             title: "Due date",
                             type: "date",
-                            value: this.props.dueDate
+                            value: this.props.dueDate,
                         },
                     ]}
                 />
@@ -235,8 +249,7 @@ class Task extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateTask: (taskId, status) =>
-            dispatch(updateTask(taskId, status))
+        updateTask: (taskId, status) => dispatch(updateTask(taskId, status)),
     };
 };
 
