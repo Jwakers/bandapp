@@ -12,7 +12,7 @@ class Project extends Component {
     state = {
         addTaskOpen: false,
         updateProject: false,
-        showDeleted: false
+        showDeleted: false,
     };
 
     createID() {
@@ -35,6 +35,11 @@ class Project extends Component {
             updateProject: !prevState.updateProject
         }));
     };
+    handleTaskStatusModalToggle = () => {
+        this.setState(prevState => ({
+            changeStatusModal: !prevState.changeStatusModal
+        }));
+    }
 
     handleTaskFormSubmit = event => {
         event.preventDefault();
@@ -51,9 +56,7 @@ class Project extends Component {
             dueDate: form.dueDate
         };
         this.props.addTask(task);
-        console.log('task form submitted')
         this.setState({ addTaskOpen: false });
-        console.log(this.props.tasks)
     };
     handleProjectUpdateSubmit = event => {
         event.preventDefault();
@@ -193,7 +196,7 @@ class Project extends Component {
                     ) : null}
 
                     {completeTasks.map(task => (
-                        <Task complete key={task.id} {...task} />
+                        <Task complete key={task.id} {...task} changeStatus={this.handleTaskStatusModalToggle} statusModal={this.state.changeStatusModal} />
                     ))}
                     {deletedTasks.length ? (
                         <>
@@ -210,7 +213,7 @@ class Project extends Component {
                     ) : null}
                     {this.state.deletedTasks &&
                         deletedTasks.map(task => (
-                            <Task key={task.id} {...task} />
+                            <Task key={task.id} {...task} changeStatus={this.handleTaskStatusModalToggle} statusModal={this.state.changeStatusModal} />
                         ))}
 
                     <div
@@ -221,14 +224,14 @@ class Project extends Component {
                     </div>
                     <Form
                         submit={this.handleTaskFormSubmit}
-                        open={this.handleTaskFormToggle}
-                        close={this.handleTaskFormToggle}
+                        toggle={this.handleTaskFormToggle}
                         active={this.state.addTaskOpen}
                         heading={"Add task to " + this.props.project.heading}
                         inputs={[
                             {
                                 title: "Title",
-                                placeholder: "Task title"
+                                placeholder: "Task title",
+                                required: true
                             },
                             {
                                 title: "Description",
@@ -245,15 +248,14 @@ class Project extends Component {
 
                 <Form
                     submit={this.handleProjectUpdateSubmit}
-                    open={this.handleProjectUpdateFormToggle}
-                    close={this.handleProjectUpdateFormToggle}
+                    toggle={this.handleProjectUpdateFormToggle}
                     active={this.state.updateProject}
                     heading={"Edit " + this.props.project.heading}
                     buttonText="update"
                     inputs={[
                         {
                             title: "Title",
-                            value: this.props.project.heading
+                            value: this.props.project.heading,
                         },
                         {
                             title: "Description",

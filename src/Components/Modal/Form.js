@@ -4,8 +4,7 @@ import Modal from "./Modal";
 const newProject = props => {
     return (
         <Modal
-            open={props.active}
-            close={props.close}
+            toggle={props.toggle}
             active={props.active}
             theme="dark"
         >

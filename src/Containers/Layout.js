@@ -63,13 +63,13 @@ class Layout extends Component {
                 </main>
                 <Form
                     submit={this.handleFormSubmit}
-                    open={this.handleNewProjectToggle}
-                    close={this.handleNewProjectToggle}
+                    toggle={this.handleNewProjectToggle}
                     active={this.state.newProjectOpen}
                     heading="Create project"
                     inputs={[{
                         title: 'Title',
-                        placeholder: 'Project title'
+                        placeholder: 'Project title',
+                        required: true,
                     },{
                         title: 'Description',
                         type: 'textarea',

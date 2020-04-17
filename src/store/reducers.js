@@ -109,8 +109,6 @@ function projects(state = projectsState, action) {
 }
 
 function tasks(state = tasksState, action) {
-    console.log('task action')
-    console.log(action)
     switch (action.type) {
         case actionTypes.ADD_TASK:
             return [
