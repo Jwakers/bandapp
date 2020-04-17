@@ -202,7 +202,7 @@ class Project extends Component {
                         <>
                             <hr className="project__rule" />
                             <button
-                                className="button-wire button-wire--secondary"
+                                className="button-subtle"
                                 onClick={this.handleDeletedTasksToggle}
                             >
                                 {this.state.deletedTasks

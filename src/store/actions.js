@@ -1,7 +1,7 @@
 export const ADD_PROJECT = "ADD_PROJECT";
 export const ADD_TASK = "ADD_TASK";
-export const UPDATE_TASK_STATUS = "UPDATE_TASK_STATUS";
 export const UPDATE_PROJECT = "UPDATE_PROJECT";
+export const UPDATE_TASK = "UPDATE_TASK";
 
 // Action creators
 export function addProject(payload) {
@@ -18,11 +18,11 @@ export function addTask(payload) {
     };
 }
 
-export function updateTaskStatus(taskId, status) {
+export function updateTask(taskId, payload) {
     return {
-        type: UPDATE_TASK_STATUS,
+        type: UPDATE_TASK,
         taskId: taskId,
-        status: status
+        payload: payload
     };
 }
 

@@ -97,7 +97,6 @@ function projects(state = projectsState, action) {
                 project => project.id === action.projectId
             );
             const projectsCopy = [...state];
-            console.log(projectsCopy)
             projectsCopy[projectIndex] = {
                 ...projectsCopy[projectIndex],
                 ...action.payload
@@ -123,14 +122,14 @@ function tasks(state = tasksState, action) {
                     status: "pending"
                 }
             ];
-        case actionTypes.UPDATE_TASK_STATUS:
+        case actionTypes.UPDATE_TASK:
             const taskIndex = state.findIndex(
                 task => task.id === action.taskId
             );
             const tasksCopy = [...state];
             tasksCopy[taskIndex] = {
                 ...tasksCopy[taskIndex],
-                status: action.status
+                ...action.payload
             };
             return [...tasksCopy];
         default:

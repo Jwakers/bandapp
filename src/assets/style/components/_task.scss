@@ -1,10 +1,15 @@
 .task {
     $this: &;
-    margin-top: rem(10);
-    margin-bottom: rem(10);
+    width: 100%;
+    z-index: 1;
     // for slide in animation
     transform: translateX(100%);
     transition: .2s;
+    &__container {
+        position: relative;
+        margin-top: rem(10);
+        margin-bottom: rem(10);
+    }
     // Animation classes
     &--sliding {
         transition: none;
@@ -43,5 +48,23 @@
     &--deleted {
         opacity: .6;
         border: solid 2px $red;
+    }
+    &__icon {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: 0.2s;
+        &--complete {
+            left: -100px;
+        }
+        &--complete.task__icon--active {
+            left: 20px;
+        }
+        &--delete {
+            right: -100px;
+        }
+        &--delete.task__icon--active {
+            right: 20px;
+        }
     }
 }

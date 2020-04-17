@@ -1,9 +1,12 @@
-import React, { createRef } from "react";
+import React, { createRef, Component } from "react";
 import { connect } from "react-redux";
 
-import { updateTaskStatus } from "../../store/actions";
+import { updateTask } from "../../store/actions";
 import Modal from "../Modal/Modal";
-import { Component } from "react";
+import Form from "../Modal/Form";
+
+import completeIcon from '../../assets/icons/complete.svg'
+import deleteIcon from '../../assets/icons/delete.svg'
 
 class Task extends Component {
     constructor(props) {
@@ -14,16 +17,15 @@ class Task extends Component {
             move: null,
             up: null,
         };
+        this.icons = {
+            delete: null,
+            complete: null
+        }
     }
 
     state = {
         changeStatusModal: false,
-    };
-
-    handleStatusModalToggle = () => {
-        this.setState((prevState) => ({
-            changeStatusModal: !prevState.changeStatusModal,
-        }));
+        updateTask: false
     };
 
     componentDidMount() {
@@ -31,16 +33,54 @@ class Task extends Component {
             this.taskRef.current.classList.add("task--set");
         }, 0);
     }
-
+    handleStatusModalToggle = () => {
+        this.setState((prevState) => ({
+            changeStatusModal: !prevState.changeStatusModal,
+        }));
+    };
+    handleUpdateModalToggle = () => {
+        this.setState((prevState) => ({
+            updateTask: !prevState.updateTask,
+        }));
+    }
+    handleTaskUpdateSubmit = event => {
+        event.preventDefault();
+        const form = {
+            title: event.target.elements["title"].value,
+            desc: event.target.elements["description"].value,
+            dueDate: event.target.elements["due-date"].value
+        };
+        const task = {
+            heading: form.title,
+            description: form.desc,
+            dueDate: form.dueDate
+        };
+        console.log(this.props)
+        this.props.updateTask(this.props.id, task);
+        this.setState({ updateTask: false });
+    };
     down = (event) => {
         this.position.down = event.touches[0].clientX;
         event.currentTarget.addEventListener("touchmove", this.move, false);
         event.currentTarget.classList.add("task--sliding");
+
+        this.icons.complete = event.currentTarget.parentElement.querySelector('.task__icon--complete')
+        this.icons.delete = event.currentTarget.parentElement.querySelector('.task__icon--delete')
     };
     move = (event) => {
         this.position.move = this.position.down - event.touches[0].clientX;
         event.currentTarget.style.transform = `translateX(${-this.position
             .move}px)`;
+        if (this.position.move < -150) {
+            this.icons.complete.classList.add('task__icon--active')
+        } else {
+            this.icons.complete.classList.remove('task__icon--active')
+        }
+        if (this.position.move > 150) {
+            this.icons.delete.classList.add('task__icon--active')
+        } else {
+            this.icons.delete.classList.remove('task__icon--active')
+        }
     };
     leave = (event) => {
         event.currentTarget.classList.remove("task--sliding");
@@ -62,6 +102,7 @@ class Task extends Component {
     complete = (element) => {
         element.classList.add("task--transition");
         element.style.height = `${element.offsetHeight}px`;
+        this.icons.complete.classList.remove('task__icon--active')
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 this.resetTransition(element);
@@ -69,7 +110,7 @@ class Task extends Component {
                 element.classList.add("task--out-right");
 
                 element.addEventListener("transitionend", () => {
-                    this.props.updateTaskStatus(this.props.id, "complete");
+                    this.props.updateTask(this.props.id, {status: "complete"});
                 });
             });
         });
@@ -77,6 +118,8 @@ class Task extends Component {
     deleteEl = (element) => {
         element.classList.add("task--transition");
         element.style.height = `${element.offsetHeight}px`;
+        this.icons.delete.classList.remove('task__icon--active')
+
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 this.resetTransition(element);
@@ -84,7 +127,7 @@ class Task extends Component {
                 element.classList.add("task--out-left");
 
                 element.addEventListener("transitionend", () => {
-                    this.props.updateTaskStatus(this.props.id, "deleted");
+                    this.props.updateTask(this.props.id, {status: "deleted"});
                 });
             });
         });
@@ -92,7 +135,7 @@ class Task extends Component {
     resetTransition = (element) => (element.style.transform = null);
 
     handleTaskStatus = () => {
-        this.props.updateTaskStatus(this.props.id, "pending");
+        this.props.updateTask(this.props.id, {status: "pending"});
     };
 
     render() {
@@ -102,18 +145,19 @@ class Task extends Component {
             case "complete":
                 classes.push("task--complete");
                 break;
-            case "delete":
+            case "deleted":
                 classes.push("task--deleted");
                 break;
         }
         return (
             <>
+            <div className="task__container">
                 <div
                     className={classes.join(" ")}
-                    onTouchStart={status === "pending" && this.down}
-                    onTouchEnd={status === "pending" && this.leave}
+                    onTouchStart={status === "pending" ? this.down : undefined}
+                    onTouchEnd={status === "pending" ? this.leave : undefined}
                     onClick={
-                        status !== "pending" && this.handleStatusModalToggle
+                        status !== "pending" ? this.handleStatusModalToggle : this.handleUpdateModalToggle
                     }
                     data-id={this.props.id}
                     ref={this.taskRef}
@@ -132,6 +176,9 @@ class Task extends Component {
                         </div>
                     </div>
                 </div>
+                    <img className="task__icon task__icon--complete" src={completeIcon} />
+                    <img className="task__icon task__icon--delete" src={deleteIcon} />
+                </div>
                 {status !== "pending" && (
                     <Modal
                         theme="dark"
@@ -142,7 +189,7 @@ class Task extends Component {
                             Add <strong>{this.props.heading}</strong> back to
                             incomplete tasks?
                         </p>
-                        <div class="form__control">
+                        <div className="form__control">
                             <button
                                 className="button-subtle button-subtle--warning"
                                 onClick={this.handleStatusModalToggle}
@@ -158,6 +205,29 @@ class Task extends Component {
                         </div>
                     </Modal>
                 )}
+                <Form
+                    submit={this.handleTaskUpdateSubmit}
+                    toggle={this.handleUpdateModalToggle}
+                    active={this.state.updateTask}
+                    heading={"Edit " + this.props.heading}
+                    buttonText="update"
+                    inputs={[
+                        {
+                            title: "Title",
+                            value: this.props.heading,
+                        },
+                        {
+                            title: "Description",
+                            type: "textarea",
+                            value: this.props.description
+                        },
+                        {
+                            title: "Due date",
+                            type: "date",
+                            value: this.props.dueDate
+                        },
+                    ]}
+                />
             </>
         );
     }
@@ -165,8 +235,8 @@ class Task extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateTaskStatus: (taskId, status) =>
-            dispatch(updateTaskStatus(taskId, status)),
+        updateTask: (taskId, status) =>
+            dispatch(updateTask(taskId, status))
     };
 };
 
