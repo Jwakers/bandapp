@@ -5,6 +5,7 @@
     bottom: 0;
     display: -ms-flexbox;
     display: flex;
+    z-index: 20;
     &__item {
         flex-grow: 1;
         padding: rem(20) 0;

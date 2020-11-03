@@ -68,7 +68,7 @@ const tasksState = [
         id: "task-jasd83",
         projectId: "_ahasd80",
         heading: "Drums",
-        description: "Whos guoing to do this?",
+        description: "Who's going to do this?",
         assignee: "",
         status: "pending"
     }
