@@ -51,7 +51,6 @@ class Task extends Component {
             description: form.desc,
             dueDate: form.dueDate,
         };
-        console.log(this.props);
         this.props.updateTask(this.props.id, task);
         this.setState({ updateTask: false });
     };
@@ -187,10 +186,12 @@ class Task extends Component {
                     <img
                         className="task__icon task__icon--complete"
                         src={completeIcon}
+                        alt=""
                     />
                     <img
                         className="task__icon task__icon--delete"
                         src={deleteIcon}
+                        alt=""
                     />
                 </div>
                 {status !== "pending" && (

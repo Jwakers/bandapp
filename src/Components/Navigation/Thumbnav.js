@@ -6,10 +6,10 @@ const thumbnav = props => {
     return (
         <div className="thumbnav">
             <div className="thumbnav__item" onClick={props.newProjectOpen}>
-                <img className="thumbnav__item__icon" src={addIcon} />
+                <img className="thumbnav__item__icon" src={addIcon} alt="Addition icon" />
             </div>
             <div className="thumbnav__item">
-                <img className="thumbnav__item__icon" src={musicIcon} type="xml" />
+                <img className="thumbnav__item__icon" src={musicIcon} alt="Music note icon" />
             </div>
         </div>
     )
