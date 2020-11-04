@@ -1,7 +1,7 @@
 import React, { createRef, Component } from "react";
 import { connect } from "react-redux";
 
-import { updateTask } from "../../store/actions";
+import { updateTask } from "../../store/actions/tasks";
 import Modal from "../Modal/Modal";
 import Form from "../Modal/Form";
 

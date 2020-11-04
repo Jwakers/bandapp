@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Progress from "../Components/Project/Progress";
 import Task from "../Components/Project/Task";
-import { addTask, updateProject } from "../store/actions";
+import * as actions from "../store/actions/index";
 import Form from "../Components/Modal/Form";
 
 import filterIcon from "../assets/icons/filter.svg";
@@ -276,6 +276,7 @@ class Project extends Component {
                             title: "Key",
                             type: "select",
                             options: [
+                                "",
                                 "Key of C",
                                 "Key of Db / C#",
                                 "Key of D",
@@ -319,9 +320,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addTask: payload => dispatch(addTask(payload)),
+        addTask: payload => dispatch(actions.addTask(payload)),
         updateProject: (projectId, payload) =>
-            dispatch(updateProject(projectId, payload))
+            dispatch(actions.updateProject(projectId, payload))
     };
 };
 

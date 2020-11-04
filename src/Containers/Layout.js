@@ -9,13 +9,18 @@ import Thumbnav from "../Components/Navigation/Thumbnav";
 import Project from "./Project";
 import Form from "../Components/Modal/Form"
 
-import { addProject } from "../store/actions";
+import { addProject, fetchProjects } from "../store/actions/projects";
 
 class Layout extends Component {
     state = {
         sideMenuOpen: false,
         newProjectOpen: false
     };
+
+    componentDidMount() {
+        this.props.fetchProjects()
+    }
+
     createID() {
         return (
             "_" +
@@ -93,6 +98,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        fetchProjects: () => dispatch(fetchProjects()),
         addProject: payload => dispatch(addProject(payload))
     };
 };
