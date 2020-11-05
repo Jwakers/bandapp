@@ -9,21 +9,19 @@ import Thumbnav from "../Components/Navigation/Thumbnav";
 import Project from "./Project";
 import Form from "../Components/Modal/Form"
 
-import { addProject } from "../store/actions";
+import * as actions from "../store/actions/index";
 
 class Layout extends Component {
     state = {
         sideMenuOpen: false,
         newProjectOpen: false
     };
-    createID() {
-        return (
-            "_" +
-            Math.random()
-                .toString(36)
-                .substr(2, 9)
-        );
+
+    componentDidMount() {
+        this.props.fetchProjects();
+        this.props.fetchTasks()
     }
+
     handleMenuToggle = () => {
         this.setState(prevState => ({ sideMenuOpen: !prevState.sideMenuOpen }));
     };
@@ -38,12 +36,11 @@ class Layout extends Component {
             dueDate: event.target.elements["due-date"].value
         };
         const project = {
-            id: this.createID(),
             heading: form.title,
             description: form.desc,
             dueDate: form.dueDate
         };
-        this.props.addProject(project);
+        this.props.createNewProject(project);
         this.setState({ newProjectOpen: false });
     };
     render() {
@@ -53,7 +50,7 @@ class Layout extends Component {
                 <SideMenu
                     toggle={this.handleMenuToggle}
                     active={this.state.sideMenuOpen}
-                    projects={this.props.projects.length}
+                    projects={Object.keys(this.props.projects).length}
                 />
                 <main className="container">
                     <Switch>
@@ -93,7 +90,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addProject: payload => dispatch(addProject(payload))
+        fetchProjects: () => dispatch(actions.fetchProjects()),
+        fetchTasks: () => dispatch(actions.fetchTasks()),
+        createNewProject: payload => dispatch(actions.createNewProject(payload))
     };
 };
 

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Progress from "../Components/Project/Progress";
 import Task from "../Components/Project/Task";
-import { addTask, updateProject } from "../store/actions";
+import * as actions from "../store/actions/index";
 import Form from "../Components/Modal/Form";
 
 import filterIcon from "../assets/icons/filter.svg";
@@ -16,49 +16,44 @@ class Project extends Component {
     };
 
     createID() {
-        return (
-            "_" +
-            Math.random()
-                .toString(36)
-                .substr(2, 9)
-        );
+        return "_" + Math.random().toString(36).substr(2, 9);
     }
 
     handleTaskFormToggle = () => {
-        this.setState(prevState => ({
-            addTaskOpen: !prevState.addTaskOpen
+        this.setState((prevState) => ({
+            addTaskOpen: !prevState.addTaskOpen,
         }));
     };
 
     handleProjectUpdateFormToggle = () => {
-        this.setState(prevState => ({
-            updateProject: !prevState.updateProject
+        this.setState((prevState) => ({
+            updateProject: !prevState.updateProject,
         }));
     };
     handleTaskStatusModalToggle = () => {
-        this.setState(prevState => ({
-            changeStatusModal: !prevState.changeStatusModal
+        this.setState((prevState) => ({
+            changeStatusModal: !prevState.changeStatusModal,
         }));
-    }
+    };
 
-    handleTaskFormSubmit = event => {
+    handleTaskFormSubmit = (event) => {
         event.preventDefault();
         const form = {
             title: event.target.elements["title"].value,
             desc: event.target.elements["description"].value,
-            dueDate: event.target.elements["due-date"].value
+            dueDate: event.target.elements["due-date"].value,
         };
         const task = {
-            id: this.createID(),
-            projectId: this.props.project.id,
+            projectId: this.props.match.params.projectid,
             heading: form.title,
             description: form.desc,
-            dueDate: form.dueDate
+            dueDate: form.dueDate,
+            status: 'pending'
         };
-        this.props.addTask(task);
+        this.props.createNewTask(task);
         this.setState({ addTaskOpen: false });
     };
-    handleProjectUpdateSubmit = event => {
+    handleProjectUpdateSubmit = (event) => {
         event.preventDefault();
         const form = {
             title: event.target.elements["title"].value,
@@ -66,36 +61,44 @@ class Project extends Component {
             dueDate: event.target.elements["due-date"].value,
             bpm: event.target.elements["bpm"].value,
             key: event.target.elements["key"].value,
-            demo: event.target.elements["demo"].value
+            demo: event.target.elements["demo"].value,
         };
         const project = {
             heading: form.title,
             description: form.desc,
             dueDate: form.dueDate,
-            info: {
-                bpm: form.bpm,
-                key: form.key,
-                demo: form.demo
-            }
+            bpm: form.bpm,
+            key: form.key
         };
-        this.props.updateProject(this.props.project.id, project);
+        this.props.updateProject(this.props.match.params.projectid, project);
         this.setState({ updateProject: false });
     };
 
     handleDeletedTasksToggle = () => {
-        this.setState(prevState => ({ deletedTasks: !prevState.deletedTasks }));
+        this.setState((prevState) => ({
+            deletedTasks: !prevState.deletedTasks,
+        }));
     };
 
     render() {
-        const incompleteTasks = this.props.tasks.filter(
-            task => task.status === "pending"
+        let tasks = [];
+        for (const [key, value] of Object.entries(this.props.tasks)) {
+            tasks.push({ ...value, id: key });
+        }
+
+        const incompleteTasks = tasks.filter(
+            (task) => task.status === "pending"
         );
-        const completeTasks = this.props.tasks.filter(
-            task => task.status === "complete"
+        const completeTasks = tasks.filter(
+            (task) => task.status === "complete"
         );
-        const deletedTasks = this.props.tasks.filter(
-            task => task.status === "deleted"
+        const deletedTasks = tasks.filter(
+            (task) => task.status === "deleted"
         );
+
+        // TODO: Loading Spinner
+
+        if (!this.props.project) return "loading";
 
         return (
             <>
@@ -127,38 +130,24 @@ class Project extends Component {
                         </div>
                         <div>Upload demo - [Demo link]</div>
                         <div className="project__info-bar">
-                            {this.props.project.info.bpm && (
+                            {this.props.project.bpm && (
                                 <div>
                                     BPM:{" "}
-                                    <strong>
-                                        {this.props.project.info.bpm}
-                                    </strong>
+                                    <strong>{this.props.project.bpm}</strong>
                                 </div>
                             )}
 
-                            {this.props.project.info.key && (
+                            {this.props.project.key && (
                                 <div>
                                     Key:{" "}
-                                    <strong>
-                                        {this.props.project.info.key}
-                                    </strong>
-                                </div>
-                            )}
-                            {this.props.project.info.length && (
-                                <div>
-                                    Length:{" "}
-                                    <strong>
-                                        {this.props.project.info.length.toFixed(
-                                            2
-                                        )}
-                                    </strong>
+                                    <strong>{this.props.project.key}</strong>
                                 </div>
                             )}
                             <div>
                                 Comments:{" "}
                                 <strong>
-                                    {this.props.project.info.comments
-                                        ? this.props.project.info.comments
+                                    {this.props.project.comments
+                                        ? this.props.project.comments
                                         : 0}
                                 </strong>
                             </div>
@@ -175,16 +164,18 @@ class Project extends Component {
                             <img src={sortIcon} alt="sort" />
                         </div>
                     </div>
-                    {this.props.tasks ? (
+                    {tasks ? (
                         <Progress
                             complete={completeTasks.length}
-                            total={completeTasks.length + incompleteTasks.length}
+                            total={
+                                completeTasks.length + incompleteTasks.length
+                            }
                             seperate
                         />
                     ) : (
                         <div>Add tasks</div>
                     )}
-                    {incompleteTasks.map(task => (
+                    {incompleteTasks.map((task) => (
                         <Task key={task.id} {...task} />
                     ))}
                     {completeTasks.length ? (
@@ -195,8 +186,14 @@ class Project extends Component {
                         </div>
                     ) : null}
 
-                    {completeTasks.map(task => (
-                        <Task complete key={task.id} {...task} changeStatus={this.handleTaskStatusModalToggle} statusModal={this.state.changeStatusModal} />
+                    {completeTasks.map((task) => (
+                        <Task
+                            complete
+                            key={task.id}
+                            {...task}
+                            changeStatus={this.handleTaskStatusModalToggle}
+                            statusModal={this.state.changeStatusModal}
+                        />
                     ))}
                     {deletedTasks.length ? (
                         <>
@@ -212,8 +209,13 @@ class Project extends Component {
                         </>
                     ) : null}
                     {this.state.deletedTasks &&
-                        deletedTasks.map(task => (
-                            <Task key={task.id} {...task} changeStatus={this.handleTaskStatusModalToggle} statusModal={this.state.changeStatusModal} />
+                        deletedTasks.map((task) => (
+                            <Task
+                                key={task.id}
+                                {...task}
+                                changeStatus={this.handleTaskStatusModalToggle}
+                                statusModal={this.state.changeStatusModal}
+                            />
                         ))}
 
                     <div
@@ -231,17 +233,17 @@ class Project extends Component {
                             {
                                 title: "Title",
                                 placeholder: "Task title",
-                                required: true
+                                required: true,
                             },
                             {
                                 title: "Description",
                                 type: "textarea",
-                                placeholder: "Task description"
+                                placeholder: "Task description",
                             },
                             {
                                 title: "Due date",
-                                type: "date"
-                            }
+                                type: "date",
+                            },
                         ]}
                     />
                 </div>
@@ -260,22 +262,23 @@ class Project extends Component {
                         {
                             title: "Description",
                             type: "textarea",
-                            value: this.props.project.description
+                            value: this.props.project.description,
                         },
                         {
                             title: "Due date",
                             type: "date",
-                            value: this.props.project.dueDate
+                            value: this.props.project.dueDate,
                         },
                         {
                             title: "BPM",
                             type: "number",
-                            value: this.props.project.info.bpm
+                            value: this.props.project.bpm,
                         },
                         {
                             title: "Key",
                             type: "select",
                             options: [
+                                "",
                                 "Key of C",
                                 "Key of Db / C#",
                                 "Key of D",
@@ -287,15 +290,15 @@ class Project extends Component {
                                 "Key of Ab",
                                 "Key of A",
                                 "Key of Bb",
-                                "Key of B / Cb"
+                                "Key of B / Cb",
                             ],
-                            value: this.props.project.info.key
+                            value: this.props.project.key,
                         },
                         {
                             title: "Demo Link",
                             name: "demo",
-                            value: this.props.project.info.demo
-                        }
+                            value: this.props.project.demo,
+                        },
                     ]}
                 />
             </>
@@ -304,24 +307,31 @@ class Project extends Component {
 }
 
 const getProject = (projects, id) => {
-    return projects.find(project => project.id === id);
+    // TODO only fetch relevant project, not all.
+    return projects[id];
 };
 const getTasks = (tasks, projectId) => {
-    return tasks.filter(task => task.projectId === projectId);
+    let sortedTasks = {};
+    for (const [key, value] of Object.entries(tasks)) {
+        if (value.projectId === projectId) {
+            sortedTasks[key] = value;
+        }
+    }
+    return sortedTasks;
 };
 
 const mapStateToProps = (state, ownProps) => {
     return {
         project: getProject(state.projects, ownProps.match.params.projectid),
-        tasks: getTasks(state.tasks, ownProps.match.params.projectid)
+        tasks: getTasks(state.tasks, ownProps.match.params.projectid),
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        addTask: payload => dispatch(addTask(payload)),
+        createNewTask: (payload) => dispatch(actions.createNewTask(payload)),
         updateProject: (projectId, payload) =>
-            dispatch(updateProject(projectId, payload))
+            dispatch(actions.updateProject(projectId, payload)),
     };
 };
 

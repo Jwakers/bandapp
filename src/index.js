@@ -1,13 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
-import bandApp from "./store/reducers";
+import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import projects from "./store/reducers/projects";
+import tasks from "./store/reducers/tasks";
+import thunk from 'redux-thunk';
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
-const store = createStore(bandApp);
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+// const bandApp = combineReducers({
+//     projects,
+//     tasks
+// });
+
+const store = createStore(
+    combineReducers({
+    projects,
+    tasks
+}), composeEnhancers(
+    applyMiddleware(thunk)
+));
 
 ReactDOM.render(
     <Provider store={store}>

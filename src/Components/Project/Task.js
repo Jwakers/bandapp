@@ -1,9 +1,9 @@
 import React, { createRef, Component } from "react";
 import { connect } from "react-redux";
 
-import { updateTask } from "../../store/actions";
 import Modal from "../Modal/Modal";
 import Form from "../Modal/Form";
+import * as actions from "../../store/actions/index"
 
 import completeIcon from "../../assets/icons/complete.svg";
 import deleteIcon from "../../assets/icons/delete.svg";
@@ -51,7 +51,6 @@ class Task extends Component {
             description: form.desc,
             dueDate: form.dueDate,
         };
-        console.log(this.props);
         this.props.updateTask(this.props.id, task);
         this.setState({ updateTask: false });
     };
@@ -187,10 +186,12 @@ class Task extends Component {
                     <img
                         className="task__icon task__icon--complete"
                         src={completeIcon}
+                        alt=""
                     />
                     <img
                         className="task__icon task__icon--delete"
                         src={deleteIcon}
+                        alt=""
                     />
                 </div>
                 {status !== "pending" && (
@@ -249,7 +250,7 @@ class Task extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateTask: (taskId, status) => dispatch(updateTask(taskId, status)),
+        updateTask: (taskId, status) => dispatch(actions.updateTask(taskId, status)),
     };
 };
 

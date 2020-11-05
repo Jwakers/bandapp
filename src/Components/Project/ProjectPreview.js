@@ -14,8 +14,8 @@ const parseDescription = desc => {
 };
 
 const projectPreview = props => {
-    const completeTasks = props.tasks.filter(t => t.status === "complete")
-    const totalTasks = props.tasks.filter(t => t.status !== "deleted")
+    const completeTasks = 0 // props.tasks.filter(t => t.status === "complete")
+    const totalTasks = 0 // props.tasks.filter(t => t.status !== "deleted")
     return (
         <>
             <div className="project card">
@@ -52,7 +52,13 @@ const projectPreview = props => {
 };
 
 const getProjectTasks = (tasks, projectId) => {
-    return tasks.filter(task => task.projectId === projectId);
+    let sortedTasks = {};
+    for (const [key, value] of Object.entries(tasks)) {
+        if (value.projectId === projectId) {
+            sortedTasks[key] = value;
+        }
+    }
+    return sortedTasks;
 };
 
 const mapStateToProps = (state, ownProps) => {
