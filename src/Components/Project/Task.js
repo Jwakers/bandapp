@@ -1,9 +1,9 @@
 import React, { createRef, Component } from "react";
 import { connect } from "react-redux";
 
-import { updateTask } from "../../store/actions/tasks";
 import Modal from "../Modal/Modal";
 import Form from "../Modal/Form";
+import * as actions from "../../store/actions/index"
 
 import completeIcon from "../../assets/icons/complete.svg";
 import deleteIcon from "../../assets/icons/delete.svg";
@@ -250,7 +250,7 @@ class Task extends Component {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateTask: (taskId, status) => dispatch(updateTask(taskId, status)),
+        updateTask: (taskId, status) => dispatch(actions.updateTask(taskId, status)),
     };
 };
 

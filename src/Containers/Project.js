@@ -67,13 +67,10 @@ class Project extends Component {
             heading: form.title,
             description: form.desc,
             dueDate: form.dueDate,
-            info: {
-                bpm: form.bpm,
-                key: form.key,
-                demo: form.demo,
-            },
+            bpm: form.bpm,
+            key: form.key
         };
-        this.props.updateProject(this.props.project.id, project);
+        this.props.updateProject(this.props.match.params.projectid, project);
         this.setState({ updateProject: false });
     };
 

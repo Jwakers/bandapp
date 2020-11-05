@@ -14,7 +14,6 @@ const parseDescription = desc => {
 };
 
 const projectPreview = props => {
-    console.log(props.tasks)
     const completeTasks = 0 // props.tasks.filter(t => t.status === "complete")
     const totalTasks = 0 // props.tasks.filter(t => t.status !== "deleted")
     return (
