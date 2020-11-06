@@ -1,14 +1,7 @@
 import React from "react";
-import Modal from "./Modal";
 
 const newProject = props => {
     return (
-        <Modal
-            toggle={props.toggle}
-            active={props.active}
-            theme="dark"
-        >
-            <div className="heading heading--h1">{props.heading}</div>
             <form onSubmit={props.submit} className="form" action="">
                 {props.inputs.map((input, index) => {
                     let inputTag;
@@ -110,6 +103,7 @@ const newProject = props => {
                                                 ? input.required
                                                 : false
                                         }
+                                        autoComplete={"on"}
                                     />
                                 </>
                             );
@@ -134,7 +128,6 @@ const newProject = props => {
                     </button>
                 </div>
             </form>
-        </Modal>
     );
 };
 

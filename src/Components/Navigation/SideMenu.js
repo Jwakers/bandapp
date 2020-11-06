@@ -3,13 +3,17 @@ import { NavLink } from "react-router-dom";
 import Hamburger from "./Hamburger";
 import Backdrop from "../Modal/Backdrop";
 
-const sideMenu = props => {
-    const classes = ['side-menu']
-    props.active && classes.push('side-menu--active')
+const sideMenu = (props) => {
+    const classes = ["side-menu"];
+    props.active && classes.push("side-menu--active");
     return (
         <>
-            <Backdrop active={props.active} theme="purple" close={props.toggle} />
-            <div className={classes.join(' ')}>
+            <Backdrop
+                active={props.active}
+                theme="purple"
+                close={props.toggle}
+            />
+            <div className={classes.join(" ")}>
                 <div className="side-menu__top">
                     <div className="side-menu__head">Bandapp</div>
                     <Hamburger light click={props.toggle} />
@@ -68,7 +72,13 @@ const sideMenu = props => {
                         About
                     </NavLink>
                     <div className="side-menu__bottom">
-                        <button className="button-subtle">Account</button>
+                        <NavLink
+                            to="/account"
+                            className="button-subtle"
+                            onClick={props.toggle}
+                        >
+                            Account
+                        </NavLink>
                         <button className="button-subtle">Sign out</button>
                     </div>
                 </div>

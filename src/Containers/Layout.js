@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import Topnav from "../Components/Navigation/Topnav";
@@ -7,40 +7,55 @@ import ProjectList from "../Components/Project/ProjectList";
 import SideMenu from "../Components/Navigation/SideMenu";
 import Thumbnav from "../Components/Navigation/Thumbnav";
 import Project from "./Project";
-import Form from "../Components/Modal/Form"
+import Auth from "./Auth";
+import Modal from "../Components/Modal/Modal";
+import Form from "../Components/Form/Form";
 
 import * as actions from "../store/actions/index";
 
 class Layout extends Component {
     state = {
         sideMenuOpen: false,
-        newProjectOpen: false
+        newProjectOpen: false,
     };
 
     componentDidMount() {
-        this.props.fetchProjects();
-        this.props.fetchTasks()
+        if (this.props.isAuthenticated) {
+            this.props.fetchProjects(this.props.token);
+            this.props.fetchTasks(this.props.token);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.token !== prevProps.token) {
+            this.props.fetchProjects(this.props.token);
+            this.props.fetchTasks(this.props.token);
+        }
     }
 
     handleMenuToggle = () => {
-        this.setState(prevState => ({ sideMenuOpen: !prevState.sideMenuOpen }));
+        this.setState((prevState) => ({
+            sideMenuOpen: !prevState.sideMenuOpen,
+        }));
     };
     handleNewProjectToggle = () => {
-        this.setState(prevState => ({ newProjectOpen: !prevState.newProjectOpen }));
+        this.setState((prevState) => ({
+            newProjectOpen: !prevState.newProjectOpen,
+        }));
     };
-    handleFormSubmit = event => {
+    handleFormSubmit = (event) => {
         event.preventDefault();
         const form = {
             title: event.target.elements["title"].value,
             desc: event.target.elements["description"].value,
-            dueDate: event.target.elements["due-date"].value
+            dueDate: event.target.elements["due-date"].value,
         };
         const project = {
             heading: form.title,
             description: form.desc,
-            dueDate: form.dueDate
+            dueDate: form.dueDate,
         };
-        this.props.createNewProject(project);
+        this.props.createNewProject(project, this.props.token);
         this.setState({ newProjectOpen: false });
     };
     render() {
@@ -54,45 +69,63 @@ class Layout extends Component {
                 />
                 <main className="container">
                     <Switch>
-                        <Route path="/:projectid" component={Project} />
-                        <Route path="/" exact component={ProjectList} />
+                        <Route path="/account" exact component={Auth} />
+                        {this.props.token ? (
+                            <>
+                                <Route path="/:projectid" component={Project} />
+                                <Route path="/" exact component={ProjectList} />
+                            </>
+                        ) : (
+                            <Redirect to="/account" />
+                        )}
                     </Switch>
                 </main>
-                <Form
-                    submit={this.handleFormSubmit}
+                <Modal
                     toggle={this.handleNewProjectToggle}
                     active={this.state.newProjectOpen}
-                    heading="Create project"
-                    inputs={[{
-                        title: 'Title',
-                        placeholder: 'Project title',
-                        required: true,
-                    },{
-                        title: 'Description',
-                        type: 'textarea',
-                        placeholder: 'Project description'
-                    },{
-                        title: 'Due date',
-                        type: 'date',
-                    }]}
-                />
+                >
+                    <div className="heading">Create project</div>
+                    <Form
+                        submit={this.handleFormSubmit}
+                        heading="Create project"
+                        inputs={[
+                            {
+                                title: "Title",
+                                placeholder: "Project title",
+                                required: true,
+                            },
+                            {
+                                title: "Description",
+                                type: "textarea",
+                                placeholder: "Project description",
+                            },
+                            {
+                                title: "Due date",
+                                type: "date",
+                            },
+                        ]}
+                    />
+                </Modal>
+
                 <Thumbnav newProjectOpen={this.handleNewProjectToggle} />
             </>
         );
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
-        projects: state.projects
+        projects: state.projects.projects,
+        token: state.auth.token,
     };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        fetchProjects: () => dispatch(actions.fetchProjects()),
-        fetchTasks: () => dispatch(actions.fetchTasks()),
-        createNewProject: payload => dispatch(actions.createNewProject(payload))
+        fetchProjects: (token) => dispatch(actions.fetchProjects(token)),
+        fetchTasks: (token) => dispatch(actions.fetchTasks(token)),
+        createNewProject: (payload, token) =>
+            dispatch(actions.createNewProject(payload, token)),
     };
 };
 

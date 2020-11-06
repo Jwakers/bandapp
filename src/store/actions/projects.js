@@ -2,71 +2,69 @@ import axios from "../../axios-projects";
 
 import * as actionTypes from './actionTypes'
 
-export const fetchProjects = () => {
+export const projectsStart = () => {
+    return {
+        type: actionTypes.PROJECTS_START,
+    };
+};
+
+export const projectsSuccess = (payload) => {
+    return {
+        type: actionTypes.PROJECTS_SUCCESS,
+        payload,
+    };
+};
+
+export const projectsFail = (error) => {
+    return {
+        type: actionTypes.PROJECTS_FAIL,
+        error,
+    };
+};
+
+export const fetchProjects = (token) => {
     return (dispatch) => {
+        dispatch(projectsStart())
         axios
-            .get("/projects.json")
+            .get(`/projects.json?auth=${token}`)
             .then((response) => {
-                dispatch(setProjects(response.data))
+                dispatch(projectsSuccess(response.data))
             })
             .catch((error) => {
                 // TODO: Handle error
-                console.log(error);
+                dispatch(projectsFail(error.response.data.error.message))
             });
     };
 };
 
-export const fetchProject = (projectId) => {
+export const createNewProject = (projectData, token) => {
     return (dispatch) => {
         axios
-            .get(`/projects/${projectId}.json`)
-            .then((response) => {
-                console.log('Single:', response);
-                // dispatch(addProject(response.data))
-            })
-            .catch((error) => {
-                // TODO: Handle error
-                console.log(error);
-            });
-    };
-};
-
-export const createNewProject = (projectData) => {
-    return (dispatch) => {
-        axios
-            .post("/projects.json", projectData)
+            .post(`/projects.json?auth=${token}`, projectData)
             .then(response => {
-                dispatch(fetchProjects())
+                dispatch(fetchProjects(token))
             })
             .catch(error => {
                 // TODO: Handle error
-                console.log(error);
             });
     };
 };
 
 // TODO: Convert: create, update, and fetch (projects and tasks) into utility functions.
-export function updateProject(projectId, projectData) {
+export function updateProject(projectId, projectData, token) {
     return (dispatch) => {
         axios
-            .patch(`/projects/${projectId}.json`, projectData)
+            .patch(`/projects/${projectId}.json?auth=${token}`, projectData)
             .then(response => {
-                console.log(response);
-                dispatch(fetchProjects())
+                dispatch(fetchProjects(token))
             })
             .catch(error => {
                 // TODO: Handle error
-                console.log(error);
             });
     };
 }
 
-export const setProjects = (payload) => {
-    return {
-        type: actionTypes.SET_PROJECTS,
-        payload,
-    }
-}
+
 
 // export function updateProject(projectId, payload) {
 //     return {

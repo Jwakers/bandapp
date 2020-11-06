@@ -2,8 +2,8 @@ import React, { createRef, Component } from "react";
 import { connect } from "react-redux";
 
 import Modal from "../Modal/Modal";
-import Form from "../Modal/Form";
-import * as actions from "../../store/actions/index"
+import Form from "../Form/Form";
+import * as actions from "../../store/actions/index";
 
 import completeIcon from "../../assets/icons/complete.svg";
 import deleteIcon from "../../assets/icons/delete.svg";
@@ -51,7 +51,7 @@ class Task extends Component {
             description: form.desc,
             dueDate: form.dueDate,
         };
-        this.props.updateTask(this.props.id, task);
+        this.props.updateTask(this.props.id, task, this.props.token);
         this.setState({ updateTask: false });
     };
     down = (event) => {
@@ -111,7 +111,7 @@ class Task extends Component {
                 element.addEventListener("transitionend", () => {
                     this.props.updateTask(this.props.id, {
                         status: "complete",
-                    });
+                    }, this.props.token);
                 });
             });
         });
@@ -128,7 +128,7 @@ class Task extends Component {
                 element.classList.add("task--out-left");
 
                 element.addEventListener("transitionend", () => {
-                    this.props.updateTask(this.props.id, { status: "deleted" });
+                    this.props.updateTask(this.props.id, { status: "deleted" }, this.props.token);
                 });
             });
         });
@@ -136,7 +136,7 @@ class Task extends Component {
     resetTransition = (element) => (element.style.transform = null);
 
     handleTaskStatus = () => {
-        this.props.updateTask(this.props.id, { status: "pending" });
+        this.props.updateTask(this.props.id, { status: "pending" }, this.props.token);
     };
 
     render() {
@@ -220,38 +220,51 @@ class Task extends Component {
                         </div>
                     </Modal>
                 )}
-                <Form
-                    submit={this.handleTaskUpdateSubmit}
+                <Modal
                     toggle={this.handleUpdateModalToggle}
                     active={this.state.updateTask}
-                    heading={"Edit " + this.props.heading}
-                    buttonText="update"
-                    inputs={[
-                        {
-                            title: "Title",
-                            value: this.props.heading,
-                        },
-                        {
-                            title: "Description",
-                            type: "textarea",
-                            value: this.props.description,
-                        },
-                        {
-                            title: "Due date",
-                            type: "date",
-                            value: this.props.dueDate,
-                        },
-                    ]}
-                />
+                >
+                    <div className="heading">
+                        {"Edit " + this.props.heading}
+                    </div>
+                    <Form
+                        submit={this.handleTaskUpdateSubmit}
+                        buttonText="update"
+                        inputs={[
+                            {
+                                title: "Title",
+                                value: this.props.heading,
+                            },
+                            {
+                                title: "Description",
+                                type: "textarea",
+                                value: this.props.description,
+                            },
+                            {
+                                title: "Due date",
+                                type: "date",
+                                value: this.props.dueDate,
+                            },
+                        ]}
+                    />
+                </Modal>
             </>
         );
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
     return {
-        updateTask: (taskId, status) => dispatch(actions.updateTask(taskId, status)),
+        token: state.auth.token
     };
 };
 
-export default connect(null, mapDispatchToProps)(Task);
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateTask: (taskId, status, token) =>
+            dispatch(actions.updateTask(taskId, status, token)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Task);
