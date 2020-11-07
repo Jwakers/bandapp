@@ -23,9 +23,25 @@
         font-size: rem(12);
         color: $grey;
         padding-top: rem(10);
-        div {
+        &__item {
             flex-grow: 1;
             text-align: center;
+            &--date {
+                flex-grow: 0;
+                border-left: 1px solid $lightGrey;
+                padding-left: rem(10);
+                color: $green;
+                &__highlight {
+                    color: $red;
+                }
+                &__urgent {
+                    color: $red;
+                    font-weight: 600;
+                }
+                span {
+                    color: $darkGrey;
+                }
+            }
         }
     }
     &__labels {
@@ -37,16 +53,6 @@
             background-color: pink;
             padding: rem(2) rem(4);
             border-radius: $radius-small;
-        }
-    }
-    &__date {
-        color: $green;
-        &__highlight {
-            color: $red;
-        }
-        &__urgent {
-            color: $red;
-            font-weight: 600;
         }
     }
     // Tasks

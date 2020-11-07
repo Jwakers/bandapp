@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import Progress from "../Components/Project/Progress";
 import Task from "../Components/Project/Task";
 import * as actions from "../store/actions/index";
-import Form from "../Components/Modal/Form";
+import Modal from "../Components/Modal/Modal";
+import Form from "../Components/Form/Form";
 
 import filterIcon from "../assets/icons/filter.svg";
 import sortIcon from "../assets/icons/sort.svg";
@@ -48,9 +49,9 @@ class Project extends Component {
             heading: form.title,
             description: form.desc,
             dueDate: form.dueDate,
-            status: 'pending'
+            status: "pending",
         };
-        this.props.createNewTask(task);
+        this.props.createNewTask(task, this.props.token);
         this.setState({ addTaskOpen: false });
     };
     handleProjectUpdateSubmit = (event) => {
@@ -61,16 +62,15 @@ class Project extends Component {
             dueDate: event.target.elements["due-date"].value,
             bpm: event.target.elements["bpm"].value,
             key: event.target.elements["key"].value,
-            demo: event.target.elements["demo"].value,
         };
         const project = {
             heading: form.title,
             description: form.desc,
             dueDate: form.dueDate,
             bpm: form.bpm,
-            key: form.key
+            key: form.key,
         };
-        this.props.updateProject(this.props.match.params.projectid, project);
+        this.props.updateProject(this.props.match.params.projectid, project, this.props.token);
         this.setState({ updateProject: false });
     };
 
@@ -92,9 +92,7 @@ class Project extends Component {
         const completeTasks = tasks.filter(
             (task) => task.status === "complete"
         );
-        const deletedTasks = tasks.filter(
-            (task) => task.status === "deleted"
-        );
+        const deletedTasks = tasks.filter((task) => task.status === "deleted");
 
         // TODO: Loading Spinner
 
@@ -124,32 +122,31 @@ class Project extends Component {
                                 <div className="label">Label</div>
                                 <div className="label">info</div>
                             </div>
-                            <div className="project__date">
-                                {this.props.project.dueDate}
-                            </div>
                         </div>
-                        <div>Upload demo - [Demo link]</div>
                         <div className="project__info-bar">
                             {this.props.project.bpm && (
-                                <div>
+                                <div className="project__info-bar__item">
                                     BPM:{" "}
                                     <strong>{this.props.project.bpm}</strong>
                                 </div>
                             )}
 
                             {this.props.project.key && (
-                                <div>
+                                <div className="project__info-bar__item">
                                     Key:{" "}
                                     <strong>{this.props.project.key}</strong>
                                 </div>
                             )}
-                            <div>
+                            <div className="project__info-bar__item">
                                 Comments:{" "}
                                 <strong>
                                     {this.props.project.comments
                                         ? this.props.project.comments
                                         : 0}
                                 </strong>
+                            </div>
+                            <div className="project__info-bar__item project__info-bar__item--date">
+                                <span>Due:</span> {new Date(this.props.project.dueDate).toLocaleDateString()}
                             </div>
                         </div>
                     </div>
@@ -224,83 +221,87 @@ class Project extends Component {
                     >
                         <span className="floating-button__content">+</span>
                     </div>
-                    <Form
-                        submit={this.handleTaskFormSubmit}
+                    <Modal
                         toggle={this.handleTaskFormToggle}
                         active={this.state.addTaskOpen}
-                        heading={"Add task to " + this.props.project.heading}
+                    >
+                        <div className="heading heading--h2">
+                            {"Add task to " + this.props.project.heading}
+                        </div>
+                        <Form
+                            submit={this.handleTaskFormSubmit}
+                            inputs={[
+                                {
+                                    title: "Title",
+                                    placeholder: "Task title",
+                                    required: true,
+                                },
+                                {
+                                    title: "Description",
+                                    type: "textarea",
+                                    placeholder: "Task description",
+                                },
+                                {
+                                    title: "Due date",
+                                    type: "date",
+                                },
+                            ]}
+                        />
+                    </Modal>
+                </div>
+                <Modal
+                    toggle={this.handleProjectUpdateFormToggle}
+                    active={this.state.updateProject}
+                >
+                    <div className="heading heading--h2">
+                        {"Edit " + this.props.project.heading}
+                    </div>
+                    <Form
+                        submit={this.handleProjectUpdateSubmit}
+                        buttonText="update"
                         inputs={[
                             {
                                 title: "Title",
-                                placeholder: "Task title",
-                                required: true,
+                                value: this.props.project.heading,
                             },
                             {
                                 title: "Description",
                                 type: "textarea",
-                                placeholder: "Task description",
+                                value: this.props.project.description,
                             },
                             {
                                 title: "Due date",
                                 type: "date",
+                                value: this.props.project.dueDate,
                             },
+                            {
+                                title: "BPM",
+                                type: "number",
+                                value: this.props.project.bpm,
+                            },
+                            {
+                                title: "Key",
+                                type: "select",
+                                options: [
+                                    "",
+                                    "Key of C",
+                                    "Key of Db / C#",
+                                    "Key of D",
+                                    "Key of Eb",
+                                    "Key of E",
+                                    "Key of F",
+                                    "Key of Gb / F#",
+                                    "Key of G",
+                                    "Key of Ab",
+                                    "Key of A",
+                                    "Key of Bb",
+                                    "Key of B / Cb",
+                                ],
+                                value: this.props.project.key,
+                            }
                         ]}
                     />
-                </div>
-
-                <Form
-                    submit={this.handleProjectUpdateSubmit}
-                    toggle={this.handleProjectUpdateFormToggle}
-                    active={this.state.updateProject}
-                    heading={"Edit " + this.props.project.heading}
-                    buttonText="update"
-                    inputs={[
-                        {
-                            title: "Title",
-                            value: this.props.project.heading,
-                        },
-                        {
-                            title: "Description",
-                            type: "textarea",
-                            value: this.props.project.description,
-                        },
-                        {
-                            title: "Due date",
-                            type: "date",
-                            value: this.props.project.dueDate,
-                        },
-                        {
-                            title: "BPM",
-                            type: "number",
-                            value: this.props.project.bpm,
-                        },
-                        {
-                            title: "Key",
-                            type: "select",
-                            options: [
-                                "",
-                                "Key of C",
-                                "Key of Db / C#",
-                                "Key of D",
-                                "Key of Eb",
-                                "Key of E",
-                                "Key of F",
-                                "Key of Gb / F#",
-                                "Key of G",
-                                "Key of Ab",
-                                "Key of A",
-                                "Key of Bb",
-                                "Key of B / Cb",
-                            ],
-                            value: this.props.project.key,
-                        },
-                        {
-                            title: "Demo Link",
-                            name: "demo",
-                            value: this.props.project.demo,
-                        },
-                    ]}
-                />
+                </Modal>
             </>
         );
     }
@@ -322,16 +323,17 @@ const getTasks = (tasks, projectId) => {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        project: getProject(state.projects, ownProps.match.params.projectid),
-        tasks: getTasks(state.tasks, ownProps.match.params.projectid),
+        project: getProject(state.projects.projects, ownProps.match.params.projectid),
+        tasks: getTasks(state.tasks.tasks, ownProps.match.params.projectid),
+        token: state.auth.token
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createNewTask: (payload) => dispatch(actions.createNewTask(payload)),
-        updateProject: (projectId, payload) =>
-            dispatch(actions.updateProject(projectId, payload)),
+        createNewTask: (payload, token) => dispatch(actions.createNewTask(payload, token)),
+        updateProject: (projectId, payload, token) =>
+            dispatch(actions.updateProject(projectId, payload, token)),
     };
 };
 

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import projects from "./store/reducers/projects";
+import auth from "./store/reducers/auth";
 import tasks from "./store/reducers/tasks";
 import thunk from 'redux-thunk';
 
@@ -11,15 +12,11 @@ import * as serviceWorker from "./serviceWorker";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-// const bandApp = combineReducers({
-//     projects,
-//     tasks
-// });
-
 const store = createStore(
     combineReducers({
     projects,
-    tasks
+    tasks,
+    auth
 }), composeEnhancers(
     applyMiddleware(thunk)
 ));

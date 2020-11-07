@@ -1,33 +1,48 @@
 import * as actionTypes from "../actions/actionTypes";
 
-const projectsState = {}
+const projectsState = {
+    loading: false,
+    error: null,
+    projects: {}
+};
 
-function setProjects(state, action) {
+function projectsStart(state) {
     return {
         ...state,
-        ...action.payload
-    }
+        loading: true
+    };
 }
 
-// function updateProject(state, action) {
-//     const projectIndex = state.findIndex(
-//         project => project.id === action.projectId
-//     );
-//     const projectsCopy = [...state];
-//     projectsCopy[projectIndex] = {
-//         ...projectsCopy[projectIndex],
-//         ...action.payload
-//     };
-//     return [...projectsCopy];
-// }
+function projectsSuccess(state, action) {
+    return {
+        ...state,
+        loading: false,
+        error: null,
+        projects: {
+            ...action.payload,
+        }
+    };
+}
+
+function projectsFail(state, action) {
+    return {
+        ...state,
+        loading: false,
+        error: action.error,
+    };
+}
 
 export default (state = projectsState, action) => {
     switch (action.type) {
-        case actionTypes.SET_PROJECTS:
-            return setProjects(state, action)
-        // case actionTypes.UPDATE_PROJECT: 
+        case actionTypes.PROJECTS_START:
+            return projectsStart(state, action);
+        case actionTypes.PROJECTS_SUCCESS:
+            return projectsSuccess(state, action);
+        case actionTypes.PROJECTS_FAIL:
+            return projectsFail(state, action);
+        // case actionTypes.UPDATE_PROJECT:
         //     return updateProject(state, action)
         default:
             return state;
     }
-}
+};

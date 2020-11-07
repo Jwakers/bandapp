@@ -8,6 +8,7 @@ const projectList = (props) => {
     for (const [key, value] of Object.entries(props.projects))  {
         projects.push({...value, id: key })
     }
+    if (props.projects.loading) return <div className="spinner"></div>;
     return (
         <>
             <div className="projects">
@@ -35,7 +36,8 @@ const projectList = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        projects: state.projects,
+        projects: state.projects.projects,
+        loading: state.projects.loading
     };
 };
 

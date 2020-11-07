@@ -1,50 +1,48 @@
 import * as actionTypes from "../actions/actionTypes";
 
-const tasksState = [];
+const taskState = {
+    loading: false,
+    error: null,
+    tasks: {}
+};
 
-function setTasks(state, action) {
+function taskStart(state) {
     return {
         ...state,
-        ...action.payload
-    }
+        loading: true
+    };
 }
 
-function addTask(state, action) {
-    return [
+function taskSuccess(state, action) {
+    return {
         ...state,
-        {
-            id: action.payload.id,
-            projectId: action.payload.projectId,
-            heading: action.payload.heading,
-            description: action.payload.description,
-            dueDate: action.payload.dueDate,
-            assignee: "",
-            status: "pending"
+        loading: false,
+        error: null,
+        tasks: {
+            ...action.payload,
         }
-    ];
+    };
 }
 
-// function updateTask(state, action) {
-//     const taskIndex = state.findIndex(
-//         task => task.id === action.taskId
-//     );
-//     const tasksCopy = [...state];
-//     tasksCopy[taskIndex] = {
-//         ...tasksCopy[taskIndex],
-//         ...action.payload
-//     };
-//     return [...tasksCopy];
-// }
+function taskFail(state, action) {
+    return {
+        ...state,
+        loading: false,
+        error: action.error,
+    };
+}
 
-export default (state = tasksState, action) => {
+export default (state = taskState, action) => {
     switch (action.type) {
-        case actionTypes.SET_TASKS:
-            return setTasks(state, action)
-        case actionTypes.ADD_TASK:
-            return addTask(state, action)
-        // case actionTypes.UPDATE_TASK:
-        //     return updateTask(state, action)
+        case actionTypes.TASKS_START:
+            return taskStart(state, action);
+        case actionTypes.TASKS_SUCCESS:
+            return taskSuccess(state, action);
+        case actionTypes.TASKS_FAIL:
+            return taskFail(state, action);
+        // case actionTypes.UPDATE_PROJECT:
+        //     return updateProject(state, action)
         default:
             return state;
     }
-}
+};

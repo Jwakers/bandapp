@@ -63,7 +63,7 @@ const getProjectTasks = (tasks, projectId) => {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        tasks: getProjectTasks(state.tasks, ownProps.id)
+        tasks: getProjectTasks(state.tasks.tasks, ownProps.id)
     };
 };
 
