@@ -11,5 +11,7 @@ export {
 } from "./tasks"
 
 export {
-    auth
+    auth,
+    logout,
+    authCheckState
 } from "./auth"

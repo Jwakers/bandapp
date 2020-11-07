@@ -18,8 +18,8 @@ export default (state = initialState, action) => {
         case actionTypes.AUTH_SUCCESS:
             return {
                 ...state,
-                token: action.payload.idToken,
-                userId: action.payload.localId,
+                token: action.token,
+                userId: action.localId,
                 error: null,
                 loading: false,
             };
