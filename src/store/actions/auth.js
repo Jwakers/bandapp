@@ -9,11 +9,12 @@ export const authStart = () => {
     };
 };
 
-export const authSuccess = (token, userId) => {
+export const authSuccess = (token, userId, refreshToken) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         token: token,
-        userId: userId
+        userId: userId,
+        refreshToken: refreshToken,
     };
 };
 
@@ -24,11 +25,50 @@ export const authFail = (error) => {
     };
 };
 
-export const setAuthTimeout = (expirationTime) => {
+export const setAuthTimeout = (expirationTime, refreshToken) => {
     return (dispatch) => {
         setTimeout(() => {
-            dispatch(logout())
-        }, (expirationTime))
+            if (refreshToken) {
+                dispatch(refreshAuth(refreshToken));
+            } else {
+                dispatch(logout());
+            }
+        }, expirationTime);
+    };
+};
+
+export const refreshAuth = (token) => {
+    return (dispatch) => {
+        axios
+            .post(
+                `https://securetoken.googleapis.com/v1/token?key=${API_KEY}`,
+                {
+                    grantType: "refresh_token",
+                    refreshToken: token,
+                }
+            )
+            .then((response) => {
+                dispatch(
+                    authSuccess(
+                        response.data.id_token,
+                        response.data.user_id,
+                        response.data.refresh_token
+                    )
+                );
+                dispatch(
+                    setAuthTimeout(
+                        response.data.expires_in * 1000,
+                        response.data.refresh_token
+                    )
+                );
+            })
+            .catch((error) => {
+                dispatch(authFail(error.response.data.error.message));
+            });
+        return {
+            type: actionTypes.AUTH_REFRESH,
+            token,
+        };
     };
 };
 
@@ -51,11 +91,17 @@ export const authCheckState = () => {
                 localStorage.getItem("expirationDate")
             );
             const userId = localStorage.getItem("userId");
+            const refreshToken = localStorage.getItem("refreshToken");
             if (expirationDate <= new Date()) {
-                dispatch(logout())
+                dispatch(logout());
             } else {
-                dispatch(authSuccess(token, userId));
-                dispatch(setAuthTimeout((expirationDate.getTime() - new Date().getTime())));
+                dispatch(authSuccess(token, userId, refreshToken));
+                dispatch(
+                    setAuthTimeout(
+                        expirationDate.getTime() - new Date().getTime(),
+                        refreshToken
+                    )
+                );
             }
         }
     };
@@ -82,8 +128,20 @@ export const auth = (email, password, isSignUp) => {
                 localStorage.setItem("token", response.data.idToken);
                 localStorage.setItem("expirationDate", expirationDate);
                 localStorage.setItem("userId", response.data.localId);
-                dispatch(authSuccess(response.data.idToken, response.data.localId));
-                dispatch(setAuthTimeout(response.data.expiresIn * 1000));
+                localStorage.setItem("refreshToken", response.data.refreshToken);
+                dispatch(
+                    authSuccess(
+                        response.data.idToken,
+                        response.data.localId,
+                        response.data.refreshToken
+                    )
+                );
+                dispatch(
+                    setAuthTimeout(
+                        response.data.expiresIn * 1000,
+                        response.data.refreshToken
+                    )
+                );
             })
             .catch((error) => {
                 dispatch(authFail(error.response.data.error.message));

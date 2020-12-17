@@ -1,17 +1,21 @@
-import React from 'react'
+import React from "react";
+import  { NavLink } from "react-router-dom";
 
-import Hamburger from './Hamburger'
+import Hamburger from "./Hamburger";
 
 const topnav = (props) => {
-
     return (
         <nav className="nav">
             <div className="container">
-                <div className="nav__head heading">{props.heading}</div>
-                <Hamburger open="false" click={props.toggle} />
+                <NavLink to="/" className="nav__head">
+                    <div className="heading">{props.heading}</div>
+                </NavLink>
+                {props.isAuth && (
+                    <Hamburger open="false" click={props.toggle} />
+                )}
             </div>
         </nav>
-    )
-}
+    );
+};
 
-export default topnav
+export default topnav;

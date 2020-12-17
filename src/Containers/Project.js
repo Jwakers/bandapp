@@ -16,10 +16,6 @@ class Project extends Component {
         showDeleted: false,
     };
 
-    createID() {
-        return "_" + Math.random().toString(36).substr(2, 9);
-    }
-
     handleTaskFormToggle = () => {
         this.setState((prevState) => ({
             addTaskOpen: !prevState.addTaskOpen,
@@ -50,6 +46,7 @@ class Project extends Component {
             description: form.desc,
             dueDate: form.dueDate,
             status: "pending",
+            userId: this.props.userId
         };
         this.props.createNewTask(task, this.props.token);
         this.setState({ addTaskOpen: false });
@@ -70,7 +67,7 @@ class Project extends Component {
             bpm: form.bpm,
             key: form.key,
         };
-        this.props.updateProject(this.props.match.params.projectid, project, this.props.token);
+        this.props.updateProject(this.props.match.params.projectid, project, this.props.token, this.props.userId);
         this.setState({ updateProject: false });
     };
 
@@ -325,15 +322,16 @@ const mapStateToProps = (state, ownProps) => {
     return {
         project: getProject(state.projects.projects, ownProps.match.params.projectid),
         tasks: getTasks(state.tasks.tasks, ownProps.match.params.projectid),
-        token: state.auth.token
+        token: state.auth.token,
+        userId: state.auth.userId
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         createNewTask: (payload, token) => dispatch(actions.createNewTask(payload, token)),
-        updateProject: (projectId, payload, token) =>
-            dispatch(actions.updateProject(projectId, payload, token)),
+        updateProject: (projectId, payload, token, userId) =>
+            dispatch(actions.updateProject(projectId, payload, token, userId)),
     };
 };
 

@@ -3,6 +3,7 @@ import * as actionTypes from "../actions/actionTypes";
 const initialState = {
     token: null,
     userId: null,
+    refreshToken: null,
     error: null,
     loading: false,
 };
@@ -19,7 +20,8 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 token: action.token,
-                userId: action.localId,
+                userId: action.userId,
+                refreshToken: action.refreshToken,
                 error: null,
                 loading: false,
             };

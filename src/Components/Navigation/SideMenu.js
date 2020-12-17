@@ -1,5 +1,7 @@
 import React from "react";
+import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
+import * as actions from "../../store/actions/index"
 import Hamburger from "./Hamburger";
 import Backdrop from "../Modal/Backdrop";
 
@@ -19,15 +21,6 @@ const sideMenu = (props) => {
                     <Hamburger light click={props.toggle} />
                 </div>
                 <div className="side-menu__list">
-                    <NavLink
-                        to="/"
-                        exact
-                        className="side-menu__item"
-                        activeClassName="side-menu__item--active"
-                        onClick={props.toggle}
-                    >
-                        Home
-                    </NavLink>
                     <NavLink
                         to="/"
                         className="side-menu__item"
@@ -79,7 +72,7 @@ const sideMenu = (props) => {
                         >
                             Account
                         </NavLink>
-                        <button className="button-subtle">Sign out</button>
+                        <button className="button-subtle" onClick={() => props.logout()}>Sign out</button>
                     </div>
                 </div>
             </div>
@@ -87,4 +80,10 @@ const sideMenu = (props) => {
     );
 };
 
-export default sideMenu;
+const mapDispatchToProps = dispatch => {
+    return {
+        logout: () => dispatch(actions.logout())
+    }
+}
+
+export default connect(null, mapDispatchToProps)(sideMenu);

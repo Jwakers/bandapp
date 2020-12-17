@@ -22,11 +22,12 @@ export const projectsFail = (error) => {
     };
 };
 
-export const fetchProjects = (token) => {
+export const fetchProjects = (token, userId) => {
     return (dispatch) => {
         dispatch(projectsStart())
+        const queryParams = `?auth=${token}&orderBy="userId"&equalTo="${userId}"`;
         axios
-            .get(`/projects.json?auth=${token}`)
+            .get(`/projects.json${queryParams}`)
             .then((response) => {
                 dispatch(projectsSuccess(response.data))
             })
@@ -51,12 +52,12 @@ export const createNewProject = (projectData, token) => {
 };
 
 // TODO: Convert: create, update, and fetch (projects and tasks) into utility functions.
-export function updateProject(projectId, projectData, token) {
+export function updateProject(projectId, projectData, token, userId) {
     return (dispatch) => {
         axios
             .patch(`/projects/${projectId}.json?auth=${token}`, projectData)
             .then(response => {
-                dispatch(fetchProjects(token))
+                dispatch(fetchProjects(token, userId))
             })
             .catch(error => {
                 // TODO: Handle error

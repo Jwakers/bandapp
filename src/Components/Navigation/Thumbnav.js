@@ -3,6 +3,7 @@ import addIcon from '../../assets/icons/add.svg'
 import musicIcon from '../../assets/icons/music-note.svg'
 
 const thumbnav = props => {
+    if (!props.isAuth) return null;
     return (
         <div className="thumbnav">
             <div className="thumbnav__item" onClick={props.newProjectOpen}>

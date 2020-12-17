@@ -26,14 +26,14 @@ class Auth extends Component {
     getMethodText(reverse) {
         let signUp = this.state.isSignUp;
         if (reverse) signUp = !signUp;
-        return signUp ? "Sign up" : "Sign in";
+        return signUp ? "sign up" : "sign in";
     }
     render() {
         if (this.props.auth.token) return <Redirect to="/" />
         if (this.props.auth.loading) return <div className="spinner"></div>;
         return (
             <>
-                <div className="heading heading--h1">
+                <div className="heading heading--h1 capitalize">
                     {this.getMethodText()}
                 </div>
                 <div className="message message--error">
@@ -57,10 +57,10 @@ class Auth extends Component {
                     ]}
                 />
                 <button
-                    className="button"
+                    className="button-subtle"
                     onClick={this.handleFormState.bind(this)}
                 >
-                    Switch to {this.getMethodText(true)}
+                    switch to {this.getMethodText(true)}
                 </button>
             </>
         );

@@ -20,16 +20,15 @@ class Layout extends Component {
     };
 
     componentDidMount() {
-        if (this.props.isAuthenticated) {
-            this.props.fetchProjects(this.props.token);
-            this.props.fetchTasks(this.props.token);
+        if (this.props.token) {
+            this.props.fetchProjects(this.props.token, this.props.userId);
         }
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.token !== prevProps.token) {
-            this.props.fetchProjects(this.props.token);
-            this.props.fetchTasks(this.props.token);
+            this.props.fetchProjects(this.props.token, this.props.userId);
+            this.props.fetchTasks(this.props.token, this.props.userId);
         }
     }
 
@@ -54,6 +53,7 @@ class Layout extends Component {
             heading: form.title,
             description: form.desc,
             dueDate: form.dueDate,
+            userId: this.props.userId
         };
         this.props.createNewProject(project, this.props.token);
         this.setState({ newProjectOpen: false });
@@ -61,7 +61,7 @@ class Layout extends Component {
     render() {
         return (
             <>
-                <Topnav heading="Bandapp" toggle={this.handleMenuToggle} />
+                <Topnav heading="Bandapp" toggle={this.handleMenuToggle} isAuth={this.props.token} />
                 <SideMenu
                     toggle={this.handleMenuToggle}
                     active={this.state.sideMenuOpen}
@@ -78,6 +78,7 @@ class Layout extends Component {
                         ) : (
                             <Redirect to="/account" />
                         )}
+                        <Redirect to="/" />
                     </Switch>
                 </main>
                 <Modal
@@ -107,7 +108,7 @@ class Layout extends Component {
                     />
                 </Modal>
 
-                <Thumbnav newProjectOpen={this.handleNewProjectToggle} />
+                <Thumbnav newProjectOpen={this.handleNewProjectToggle} isAuth={this.props.token} />
             </>
         );
     }
@@ -117,13 +118,15 @@ const mapStateToProps = (state) => {
     return {
         projects: state.projects.projects,
         token: state.auth.token,
+        userId: state.auth.userId,
+        auth: state.auth
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchProjects: (token) => dispatch(actions.fetchProjects(token)),
-        fetchTasks: (token) => dispatch(actions.fetchTasks(token)),
+        fetchProjects: (token, userId) => dispatch(actions.fetchProjects(token, userId)),
+        fetchTasks: (token, userId) => dispatch(actions.fetchTasks(token, userId)),
         createNewProject: (payload, token) =>
             dispatch(actions.createNewProject(payload, token)),
     };

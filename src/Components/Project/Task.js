@@ -51,7 +51,12 @@ class Task extends Component {
             description: form.desc,
             dueDate: form.dueDate,
         };
-        this.props.updateTask(this.props.id, task, this.props.token);
+        this.props.updateTask(
+            this.props.id,
+            task,
+            this.props.token,
+            this.props.userId
+        );
         this.setState({ updateTask: false });
     };
     down = (event) => {
@@ -107,11 +112,16 @@ class Task extends Component {
                 this.resetTransition(element);
                 element.classList.add("task--shrink");
                 element.classList.add("task--out-right");
-
+                console.log(this.props)
                 element.addEventListener("transitionend", () => {
-                    this.props.updateTask(this.props.id, {
-                        status: "complete",
-                    }, this.props.token);
+                    this.props.updateTask(
+                        this.props.id,
+                        {
+                            status: "complete",
+                        },
+                        this.props.token,
+                        this.props.userId
+                    );
                 });
             });
         });
@@ -128,7 +138,12 @@ class Task extends Component {
                 element.classList.add("task--out-left");
 
                 element.addEventListener("transitionend", () => {
-                    this.props.updateTask(this.props.id, { status: "deleted" }, this.props.token);
+                    this.props.updateTask(
+                        this.props.id,
+                        { status: "deleted" },
+                        this.props.token,
+                        this.props.userId
+                    );
                 });
             });
         });
@@ -136,7 +151,12 @@ class Task extends Component {
     resetTransition = (element) => (element.style.transform = null);
 
     handleTaskStatus = () => {
-        this.props.updateTask(this.props.id, { status: "pending" }, this.props.token);
+        this.props.updateTask(
+            this.props.id,
+            { status: "pending" },
+            this.props.token,
+            this.props.userId
+        );
     };
 
     render() {
@@ -255,15 +275,15 @@ class Task extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        token: state.auth.token
+        token: state.auth.token,
+        userId: state.auth.userId,
     };
 };
 
-
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateTask: (taskId, status, token) =>
-            dispatch(actions.updateTask(taskId, status, token)),
+        updateTask: (taskId, status, token, userId) =>
+            dispatch(actions.updateTask(taskId, status, token, userId)),
     };
 };
 
