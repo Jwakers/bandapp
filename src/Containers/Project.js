@@ -6,6 +6,7 @@ import Task from "../Components/Project/Task";
 import * as actions from "../store/actions/index";
 import Modal from "../Components/Modal/Modal";
 import Form from "../Components/Form/Form";
+import Placeholder from "../Components/Message/Placeholder";
 
 import filterIcon from "../assets/icons/filter.svg";
 import sortIcon from "../assets/icons/sort.svg";
@@ -47,7 +48,7 @@ class Project extends Component {
             description: form.desc,
             dueDate: form.dueDate,
             status: "pending",
-            userId: this.props.userId
+            userId: this.props.userId,
         };
         this.props.createNewTask(task, this.props.userId);
         this.setState({ addTaskOpen: false });
@@ -67,17 +68,23 @@ class Project extends Component {
             dueDate: form.dueDate,
             bpm: form.bpm,
             key: form.key,
-            status: "pending"
+            status: "pending",
         };
-        this.props.updateProject(this.props.match.params.projectid, project, this.props.userId);
+        this.props.updateProject(
+            this.props.match.params.projectid,
+            project,
+            this.props.userId
+        );
         this.setState({ updateProject: false });
     };
     handleProjectArchive = () => {
-        if (window.confirm('Are you sure you want to archive this project?')) {
-            this.props.updateProject(this.props.match.params.projectid, {status: 'deleted'});
-            this.props.history.push('/')
+        if (window.confirm("Are you sure you want to archive this project?")) {
+            this.props.updateProject(this.props.match.params.projectid, {
+                status: "deleted",
+            });
+            this.props.history.push("/");
         }
-    }
+    };
 
     handleDeletedTasksToggle = () => {
         this.setState((prevState) => ({
@@ -148,7 +155,10 @@ class Project extends Component {
                                 </strong>
                             </div>
                             <div className="project__info-bar__item project__info-bar__item--date">
-                                <span>Due:</span> {new Date(this.props.project.dueDate).toLocaleDateString()}
+                                <span>Due:</span>{" "}
+                                {new Date(
+                                    this.props.project.dueDate
+                                ).toLocaleDateString()}
                             </div>
                         </div>
                     </div>
@@ -174,6 +184,12 @@ class Project extends Component {
                     ) : (
                         <div>Add tasks</div>
                     )}
+                    {!tasks.length ? (
+                        <Placeholder
+                            heading="No tasks"
+                            altMessage="Click + to add a new tasks to this project."
+                        />
+                    ) : null}
                     {incompleteTasks.map((task) => (
                         <Task key={task.id} {...task} />
                     ))}
@@ -300,10 +316,15 @@ class Project extends Component {
                                     "Key of B / Cb",
                                 ],
                                 value: this.props.project.key,
-                            }
+                            },
                         ]}
                     />
-                    <button className="button button--warning" onClick={this.handleProjectArchive}>Archive project</button>
+                    <button
+                        className="button button--warning"
+                        onClick={this.handleProjectArchive}
+                    >
+                        Archive project
+                    </button>
                 </Modal>
             </>
         );
@@ -318,20 +339,21 @@ const getTasks = (tasks, projectId) => {
         }
     }
     return arr;
-}
+};
 
 const mapStateToProps = (state, ownProps) => {
     return {
         project: state.projects.projects[ownProps.match.params.projectid],
         tasks: getTasks(state.tasks.tasks, ownProps.match.params.projectid),
         token: state.auth.token,
-        userId: state.auth.userId
+        userId: state.auth.userId,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createNewTask: (payload, userId) => dispatch(actions.createNewTask(payload, userId)),
+        createNewTask: (payload, userId) =>
+            dispatch(actions.createNewTask(payload, userId)),
         updateProject: (projectId, payload, userId) =>
             dispatch(actions.updateProject(projectId, payload, userId)),
     };
