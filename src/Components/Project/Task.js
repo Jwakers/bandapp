@@ -138,7 +138,6 @@ class Task extends Component {
                     this.props.updateTask(
                         this.props.id,
                         { status: "deleted" },
-                        this.props.token,
                         this.props.userId
                     );
                 });
@@ -165,6 +164,7 @@ class Task extends Component {
             case "deleted":
                 classes.push("task--deleted");
                 break;
+            default:
         }
         return (
             <>

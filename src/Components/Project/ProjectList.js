@@ -2,6 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import ProjectPreview from "../Project/ProjectPreview";
+import Placeholder from "../Message/Placeholder"
+import addIcon from '../../assets/icons/add.svg'
+
 
 const projectList = (props) => {
     let projects = []
@@ -9,6 +12,8 @@ const projectList = (props) => {
         projects.push({...value, id: key })
     }
     if (props.projects.loading) return <div className="spinner"></div>;
+    console.log(props.projects.length)
+    if (Object.entries(props.projects).length === 0) return <Placeholder heading="Looks like you have no projects" icon={addIcon} modifier="placeholder-message--center" />
     return (
         <>
             <div className="projects">
