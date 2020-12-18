@@ -2,7 +2,7 @@ import firebase from "firebase/app";
 import "firebase/database";
 import "firebase/auth";
 
-import * as actionTypes from './actionTypes'
+import * as actionTypes from "./actionTypes";
 
 export const tasksStart = () => {
     return {
@@ -26,24 +26,32 @@ export const tasksFail = (error) => {
 
 export const fetchTasks = (userId) => {
     return (dispatch) => {
-        dispatch(tasksStart())
-        const ref = firebase.database().ref("tasks").orderByChild('userId').equalTo(userId);
-        ref.on('value', snap => {
-            dispatch(tasksSuccess(snap.val()))
-        }, error => {
-            dispatch(tasksFail(error.message))
-        })
+        dispatch(tasksStart());
+        firebase
+            .database()
+            .ref(`tasks/${userId}`)
+            .on(
+                "value",
+                (snap) => {
+                    dispatch(tasksSuccess(snap.val()));
+                },
+                (error) => {
+                    dispatch(tasksFail(error.message));
+                }
+            );
     };
 };
 
-export const createNewTask = (taskData) => {
+export const createNewTask = (taskData, userId) => {
     return () => {
-        firebase.database().ref('tasks').push(taskData)
+        firebase.database().ref(`tasks/${userId}`).push(taskData);
     };
 };
 
-export function updateTask(taskId, taskData) {
-    return (dispatch) => {
-        firebase.database().ref(`tasks/${taskId}`).update(taskData);
+export function updateTask(taskId, taskData, userId) {
+    return () => {
+        firebase.database().ref(`tasks/${userId}/${taskId}`).update(taskData).catch(error => {
+            console.log(error)
+        });
     };
 }

@@ -49,7 +49,7 @@ class Project extends Component {
             status: "pending",
             userId: this.props.userId
         };
-        this.props.createNewTask(task);
+        this.props.createNewTask(task, this.props.userId);
         this.setState({ addTaskOpen: false });
     };
     handleProjectUpdateSubmit = (event) => {
@@ -69,7 +69,7 @@ class Project extends Component {
             key: form.key,
             status: "pending"
         };
-        this.props.updateProject(this.props.match.params.projectid, project);
+        this.props.updateProject(this.props.match.params.projectid, project, this.props.userId);
         this.setState({ updateProject: false });
     };
     handleProjectArchive = () => {
@@ -310,10 +310,20 @@ class Project extends Component {
     }
 }
 
+const getTasks = (tasks, projectId) => {
+    const arr = [];
+    for (const [key, value] of Object.entries(tasks)) {
+        if (value.projectId === projectId) {
+            arr[key] = value;
+        }
+    }
+    return arr;
+}
+
 const mapStateToProps = (state, ownProps) => {
     return {
         project: state.projects.projects[ownProps.match.params.projectid],
-        tasks: Object.values(state.tasks.tasks).filter(item => item.projectId === ownProps.match.params.projectid),
+        tasks: getTasks(state.tasks.tasks, ownProps.match.params.projectid),
         token: state.auth.token,
         userId: state.auth.userId
     };
@@ -321,9 +331,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createNewTask: (payload) => dispatch(actions.createNewTask(payload)),
-        updateProject: (projectId, payload) =>
-            dispatch(actions.updateProject(projectId, payload)),
+        createNewTask: (payload, userId) => dispatch(actions.createNewTask(payload, userId)),
+        updateProject: (projectId, payload, userId) =>
+            dispatch(actions.updateProject(projectId, payload, userId)),
     };
 };
 

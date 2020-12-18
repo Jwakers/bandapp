@@ -54,7 +54,6 @@ class Task extends Component {
         this.props.updateTask(
             this.props.id,
             task,
-            this.props.token,
             this.props.userId
         );
         this.setState({ updateTask: false });
@@ -118,7 +117,6 @@ class Task extends Component {
                         {
                             status: "complete",
                         },
-                        this.props.token,
                         this.props.userId
                     );
                 });
@@ -153,7 +151,6 @@ class Task extends Component {
         this.props.updateTask(
             this.props.id,
             { status: "pending" },
-            this.props.token,
             this.props.userId
         );
     };
@@ -281,8 +278,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateTask: (taskId, status, token, userId) =>
-            dispatch(actions.updateTask(taskId, status, token, userId)),
+        updateTask: (taskId, status, userId) =>
+            dispatch(actions.updateTask(taskId, status, userId)),
     };
 };
 

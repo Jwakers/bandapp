@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/database";
 
-import * as actionTypes from './actionTypes'
+import * as actionTypes from "./actionTypes";
 
 export const projectsStart = () => {
     return {
@@ -25,25 +25,31 @@ export const projectsFail = (error) => {
 
 export const fetchProjects = (userId) => {
     return (dispatch) => {
-        dispatch(projectsStart())
-        const ref = firebase.database().ref("projects").orderByChild('userId').equalTo(userId);
-        ref.on('value', snap => {
-            dispatch(projectsSuccess(snap.val()))
-        }, error => {
-            dispatch(projectsFail(error.message))
-        })
+        dispatch(projectsStart());
+        firebase
+            .database()
+            .ref(`projects/${userId}`)
+            .on(
+                "value",
+                (snap) => {
+                    dispatch(projectsSuccess(snap.val()));
+                },
+                (error) => {
+                    dispatch(projectsFail(error.message));
+                }
+            );
     };
 };
 
-export const createNewProject = (projectData) => {
+export const createNewProject = (projectData, userId) => {
     return () => {
-        firebase.database().ref('projects').push(projectData)
+        firebase.database().ref(`projects/${userId}`).push(projectData);
     };
 };
 
 // TODO: Convert: create, update, and fetch (projects and tasks) into utility functions.
-export function updateProject(projectId, projectData) {
+export function updateProject(projectId, projectData, userId) {
     return (dispatch) => {
-        firebase.database().ref(`projects/${projectId}`).update(projectData);
+        firebase.database().ref(`projects/${userId}/${projectId}`).update(projectData);
     };
 }
