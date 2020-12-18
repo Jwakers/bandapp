@@ -19,16 +19,10 @@ class Layout extends Component {
         newProjectOpen: false,
     };
 
-    componentDidMount() {
-        if (this.props.token) {
-            this.props.fetchProjects(this.props.token, this.props.userId);
-        }
-    }
-
     componentDidUpdate(prevProps) {
-        if (this.props.token !== prevProps.token) {
-            this.props.fetchProjects(this.props.token, this.props.userId);
-            this.props.fetchTasks(this.props.token, this.props.userId);
+        if (this.props.userId !== prevProps.userId) {
+            this.props.fetchProjects(this.props.userId);
+            this.props.fetchTasks(this.props.userId);
         }
     }
 
@@ -53,15 +47,16 @@ class Layout extends Component {
             heading: form.title,
             description: form.desc,
             dueDate: form.dueDate,
-            userId: this.props.userId
+            userId: this.props.userId,
+            status: "pending"
         };
-        this.props.createNewProject(project, this.props.token);
+        this.props.createNewProject(project);
         this.setState({ newProjectOpen: false });
     };
     render() {
         return (
             <>
-                <Topnav heading="Bandapp" toggle={this.handleMenuToggle} isAuth={this.props.token} />
+                <Topnav heading="Bandapp" toggle={this.handleMenuToggle} isAuth={this.props.userId} />
                 <SideMenu
                     toggle={this.handleMenuToggle}
                     active={this.state.sideMenuOpen}
@@ -70,7 +65,7 @@ class Layout extends Component {
                 <main className="container">
                     <Switch>
                         <Route path="/account" exact component={Auth} />
-                        {this.props.token ? (
+                        {this.props.userId ? (
                             <>
                                 <Route path="/:projectid" component={Project} />
                                 <Route path="/" exact component={ProjectList} />
@@ -108,7 +103,7 @@ class Layout extends Component {
                     />
                 </Modal>
 
-                <Thumbnav newProjectOpen={this.handleNewProjectToggle} isAuth={this.props.token} />
+                <Thumbnav newProjectOpen={this.handleNewProjectToggle} isAuth={this.props.userId} />
             </>
         );
     }
@@ -117,18 +112,16 @@ class Layout extends Component {
 const mapStateToProps = (state) => {
     return {
         projects: state.projects.projects,
-        token: state.auth.token,
-        userId: state.auth.userId,
-        auth: state.auth
+        userId: state.auth.userId
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchProjects: (token, userId) => dispatch(actions.fetchProjects(token, userId)),
-        fetchTasks: (token, userId) => dispatch(actions.fetchTasks(token, userId)),
-        createNewProject: (payload, token) =>
-            dispatch(actions.createNewProject(payload, token)),
+        fetchProjects: (userId) => dispatch(actions.fetchProjects(userId)),
+        fetchTasks: (userId) => dispatch(actions.fetchTasks(userId)),
+        createNewProject: (payload) =>
+            dispatch(actions.createNewProject(payload)),
     };
 };
 

@@ -6,11 +6,26 @@ import projects from "./store/reducers/projects";
 import auth from "./store/reducers/auth";
 import tasks from "./store/reducers/tasks";
 import thunk from 'redux-thunk';
+import firebase from "firebase/app";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const firebaseConfig = {
+    apiKey: "AIzaSyCKsBfSIX8H_O7c_5cuOtnoHvdQC65XQtQ",
+    authDomain: "bandapp-1ddad.firebaseapp.com",
+    databaseURL: "https://bandapp-1ddad.firebaseio.com",
+    projectId: "bandapp-1ddad",
+    storageBucket: "bandapp-1ddad.appspot.com",
+    messagingSenderId: "846292116539",
+    appId: "1:846292116539:web:cf04924bcb141cf3a1e81e",
+    measurementId: "G-FC0M6BYE62"
+  };
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
 
 const store = createStore(
     combineReducers({

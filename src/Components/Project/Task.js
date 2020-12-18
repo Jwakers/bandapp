@@ -112,7 +112,6 @@ class Task extends Component {
                 this.resetTransition(element);
                 element.classList.add("task--shrink");
                 element.classList.add("task--out-right");
-                console.log(this.props)
                 element.addEventListener("transitionend", () => {
                     this.props.updateTask(
                         this.props.id,

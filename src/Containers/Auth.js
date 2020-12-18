@@ -16,7 +16,10 @@ class Auth extends Component {
             email: event.target.elements["email-address"].value,
             password: event.target.elements["password"].value,
         };
-        this.props.onAuth(form.email, form.password, this.state.isSignUp);
+        this.state.isSignUp
+            ? this.props.onSignUp(form.email, form.password)
+            : this.props.onSignIn(form.email, form.password);
+        // this.props.onAuth(form.email, form.password, this.state.isSignUp);
     }
     handleFormState() {
         this.setState((prevState) => {
@@ -29,15 +32,15 @@ class Auth extends Component {
         return signUp ? "sign up" : "sign in";
     }
     render() {
-        if (this.props.auth.token) return <Redirect to="/" />
-        if (this.props.auth.loading) return <div className="spinner"></div>;
+        if (this.props.userId) return <Redirect to="/" />;
+        if (this.props.loading) return <div className="spinner"></div>;
         return (
             <>
                 <div className="heading heading--h1 capitalize">
                     {this.getMethodText()}
                 </div>
                 <div className="message message--error">
-                    {this.props.auth.error}
+                    {this.props.error}
                 </div>
                 <Form
                     submit={this.handleAuthFormSubmit.bind(this)}
@@ -69,14 +72,20 @@ class Auth extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        auth: state.auth
+        userId: state.auth.userId,
+        loading: state.auth.loading,
+        error: state.auth.error
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onAuth: (email, password, isSignUp) =>
-            dispatch(actions.auth(email, password, isSignUp)),
+        // onAuth: (email, password, isSignUp) =>
+        //     dispatch(actions.auth(email, password, isSignUp)),
+        onSignIn: (email, password) =>
+            dispatch(actions.authSignIn(email, password)),
+        onSignUp: (email, password) =>
+            dispatch(actions.authSignUp(email, password)),
     };
 };
 

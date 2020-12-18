@@ -1,4 +1,6 @@
-import axios from "../../axios-projects";
+import firebase from "firebase/app";
+import "firebase/database";
+import "firebase/auth";
 
 import * as actionTypes from './actionTypes'
 
@@ -22,45 +24,26 @@ export const tasksFail = (error) => {
     };
 };
 
-export const fetchTasks = (token, userId) => {
+export const fetchTasks = (userId) => {
     return (dispatch) => {
         dispatch(tasksStart())
-        const queryParams = `?auth=${token}&orderBy="userId"&equalTo="${userId}"`;
-        axios
-            .get(`/tasks.json${queryParams}`)
-            .then((response) => {
-                dispatch(tasksSuccess(response.data))
-            })
-            .catch((error) => {
-                // TODO: Handle error
-                dispatch(tasksFail(error.response.data.error.message))
-            });
+        const ref = firebase.database().ref("tasks").orderByChild('userId').equalTo(userId);
+        ref.on('value', snap => {
+            dispatch(tasksSuccess(snap.val()))
+        }, error => {
+            dispatch(tasksFail(error.message))
+        })
     };
 };
 
-export const createNewTask = (taskData, token) => {
-    return (dispatch) => {
-        axios
-            .post(`/tasks.json?auth=${token}`, taskData)
-            .then(response => {
-                dispatch(fetchTasks(token))
-            })
-            .catch(error => {
-                // TODO: Handle error
-            });
+export const createNewTask = (taskData) => {
+    return () => {
+        firebase.database().ref('tasks').push(taskData)
     };
 };
 
-// TODO: Convert: create, update, and fetch (tasks and tasks) into utility functions.
-export function updateTask(taskId, taskData, token, userId) {
+export function updateTask(taskId, taskData) {
     return (dispatch) => {
-        axios
-            .patch(`/tasks/${taskId}.json?auth=${token}`, taskData)
-            .then(response => {
-                dispatch(fetchTasks(token, userId))
-            })
-            .catch(error => {
-                // TODO: Handle error
-            });
+        firebase.database().ref(`tasks/${taskId}`).update(taskData);
     };
 }

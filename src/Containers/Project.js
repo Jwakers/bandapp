@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+
 import Progress from "../Components/Project/Progress";
 import Task from "../Components/Project/Task";
 import * as actions from "../store/actions/index";
@@ -48,7 +49,7 @@ class Project extends Component {
             status: "pending",
             userId: this.props.userId
         };
-        this.props.createNewTask(task, this.props.token);
+        this.props.createNewTask(task);
         this.setState({ addTaskOpen: false });
     };
     handleProjectUpdateSubmit = (event) => {
@@ -66,10 +67,17 @@ class Project extends Component {
             dueDate: form.dueDate,
             bpm: form.bpm,
             key: form.key,
+            status: "pending"
         };
-        this.props.updateProject(this.props.match.params.projectid, project, this.props.token, this.props.userId);
+        this.props.updateProject(this.props.match.params.projectid, project);
         this.setState({ updateProject: false });
     };
+    handleProjectArchive = () => {
+        if (window.confirm('Are you sure you want to archive this project?')) {
+            this.props.updateProject(this.props.match.params.projectid, {status: 'deleted'});
+            this.props.history.push('/')
+        }
+    }
 
     handleDeletedTasksToggle = () => {
         this.setState((prevState) => ({
@@ -91,10 +99,7 @@ class Project extends Component {
         );
         const deletedTasks = tasks.filter((task) => task.status === "deleted");
 
-        // TODO: Loading Spinner
-
-        if (!this.props.project) return "loading";
-
+        if (!this.props.project) return <div className="spinner"></div>;
         return (
             <>
                 <div
@@ -298,30 +303,17 @@ class Project extends Component {
                             }
                         ]}
                     />
+                    <button className="button button--warning" onClick={this.handleProjectArchive}>Archive project</button>
                 </Modal>
             </>
         );
     }
 }
 
-const getProject = (projects, id) => {
-    // TODO only fetch relevant project, not all.
-    return projects[id];
-};
-const getTasks = (tasks, projectId) => {
-    let sortedTasks = {};
-    for (const [key, value] of Object.entries(tasks)) {
-        if (value.projectId === projectId) {
-            sortedTasks[key] = value;
-        }
-    }
-    return sortedTasks;
-};
-
 const mapStateToProps = (state, ownProps) => {
     return {
-        project: getProject(state.projects.projects, ownProps.match.params.projectid),
-        tasks: getTasks(state.tasks.tasks, ownProps.match.params.projectid),
+        project: state.projects.projects[ownProps.match.params.projectid],
+        tasks: Object.values(state.tasks.tasks).filter(item => item.projectId === ownProps.match.params.projectid),
         token: state.auth.token,
         userId: state.auth.userId
     };
@@ -329,9 +321,9 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createNewTask: (payload, token) => dispatch(actions.createNewTask(payload, token)),
-        updateProject: (projectId, payload, token, userId) =>
-            dispatch(actions.updateProject(projectId, payload, token, userId)),
+        createNewTask: (payload) => dispatch(actions.createNewTask(payload)),
+        updateProject: (projectId, payload) =>
+            dispatch(actions.updateProject(projectId, payload)),
     };
 };
 

@@ -1,4 +1,5 @@
-import axios from "../../axios-projects";
+import firebase from "firebase/app";
+import "firebase/database";
 
 import * as actionTypes from './actionTypes'
 
@@ -22,55 +23,27 @@ export const projectsFail = (error) => {
     };
 };
 
-export const fetchProjects = (token, userId) => {
+export const fetchProjects = (userId) => {
     return (dispatch) => {
         dispatch(projectsStart())
-        const queryParams = `?auth=${token}&orderBy="userId"&equalTo="${userId}"`;
-        axios
-            .get(`/projects.json${queryParams}`)
-            .then((response) => {
-                dispatch(projectsSuccess(response.data))
-            })
-            .catch((error) => {
-                // TODO: Handle error
-                dispatch(projectsFail(error.response.data.error.message))
-            });
+        const ref = firebase.database().ref("projects").orderByChild('userId').equalTo(userId);
+        ref.on('value', snap => {
+            dispatch(projectsSuccess(snap.val()))
+        }, error => {
+            dispatch(projectsFail(error.message))
+        })
     };
 };
 
-export const createNewProject = (projectData, token) => {
-    return (dispatch) => {
-        axios
-            .post(`/projects.json?auth=${token}`, projectData)
-            .then(response => {
-                dispatch(fetchProjects(token))
-            })
-            .catch(error => {
-                // TODO: Handle error
-            });
+export const createNewProject = (projectData) => {
+    return () => {
+        firebase.database().ref('projects').push(projectData)
     };
 };
 
 // TODO: Convert: create, update, and fetch (projects and tasks) into utility functions.
-export function updateProject(projectId, projectData, token, userId) {
+export function updateProject(projectId, projectData) {
     return (dispatch) => {
-        axios
-            .patch(`/projects/${projectId}.json?auth=${token}`, projectData)
-            .then(response => {
-                dispatch(fetchProjects(token, userId))
-            })
-            .catch(error => {
-                // TODO: Handle error
-            });
+        firebase.database().ref(`projects/${projectId}`).update(projectData);
     };
 }
-
-
-
-// export function updateProject(projectId, payload) {
-//     return {
-//         type: actionTypes.UPDATE_PROJECT,
-//         projectId: projectId,
-//         payload: payload,
-//     };
-// }

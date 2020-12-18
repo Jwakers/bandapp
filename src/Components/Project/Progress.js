@@ -20,7 +20,6 @@ const progress = props => {
                     <strong>{props.complete}</strong> of{" "}
                     <strong>{props.total}</strong> subtasks complete
                 </div>
-                <div className="progress__update">Update status</div>
             </div>
         </div>
     );

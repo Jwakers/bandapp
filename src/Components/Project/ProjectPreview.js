@@ -14,8 +14,8 @@ const parseDescription = desc => {
 };
 
 const projectPreview = props => {
-    const completeTasks = 0 // props.tasks.filter(t => t.status === "complete")
-    const totalTasks = 0 // props.tasks.filter(t => t.status !== "deleted")
+    const completeTasks = Object.values(props.tasks).filter(value => value.status === "complete")
+    const totalTasks = Object.values(props.tasks).filter(value => value.status !== "deleted")
     return (
         <>
             <div className="project card">
@@ -40,12 +40,12 @@ const projectPreview = props => {
                         <div className="project__date">{props.dueDate}</div>
                     </div>
                 </div>
-                {props.tasks && (
+                {totalTasks.length ? (
                     <Progress
                         complete={completeTasks ? completeTasks.length : 0}
                         total={totalTasks.length}
                     />
-                )}
+                ) : null}
             </div>
         </>
     );

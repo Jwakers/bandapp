@@ -24,7 +24,6 @@ const projectList = (props) => {
                             id={project.id}
                             heading={project.heading}
                             description={project.description}
-                            tasks={project.tasks ? project.tasks : null}
                             dueDate={project.dueDate}
                         />
                     </Link>
@@ -37,6 +36,7 @@ const projectList = (props) => {
 const mapStateToProps = (state) => {
     return {
         projects: state.projects.projects,
+        tasks: state.tasks.tasks,
         loading: state.projects.loading
     };
 };
