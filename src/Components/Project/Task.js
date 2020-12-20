@@ -7,6 +7,7 @@ import * as actions from "../../store/actions/index";
 
 import completeIcon from "../../assets/icons/complete.svg";
 import deleteIcon from "../../assets/icons/delete.svg";
+import {objectStatus} from "../../shared/strings"
 
 class Task extends Component {
     taskRef = createRef();
@@ -115,7 +116,7 @@ class Task extends Component {
                     this.props.updateTask(
                         this.props.id,
                         {
-                            status: "complete",
+                            status: objectStatus.completed,
                         },
                         this.props.userId
                     );
@@ -137,7 +138,7 @@ class Task extends Component {
                 element.addEventListener("transitionend", () => {
                     this.props.updateTask(
                         this.props.id,
-                        { status: "deleted" },
+                        { status: objectStatus.archived },
                         this.props.userId
                     );
                 });
@@ -149,7 +150,7 @@ class Task extends Component {
     handleTaskStatus = () => {
         this.props.updateTask(
             this.props.id,
-            { status: "pending" },
+            { status: objectStatus.pending },
             this.props.userId
         );
     };
@@ -158,10 +159,10 @@ class Task extends Component {
         const status = this.props.status;
         const classes = ["task", "card"];
         switch (status) {
-            case "complete":
+            case objectStatus.completed:
                 classes.push("task--complete");
                 break;
-            case "deleted":
+            case objectStatus.archived:
                 classes.push("task--deleted");
                 break;
             default:
@@ -172,13 +173,13 @@ class Task extends Component {
                     <div
                         className={classes.join(" ")}
                         onTouchStart={
-                            status === "pending" ? this.down : undefined
+                            status === objectStatus.pending ? this.down : undefined
                         }
                         onTouchEnd={
-                            status === "pending" ? this.leave : undefined
+                            status === objectStatus.pending ? this.leave : undefined
                         }
                         onClick={
-                            status !== "pending"
+                            status !== objectStatus.pending
                                 ? this.handleStatusModalToggle
                                 : this.handleUpdateModalToggle
                         }
@@ -210,7 +211,7 @@ class Task extends Component {
                         alt=""
                     />
                 </div>
-                {status !== "pending" && (
+                {status !== objectStatus.pending && (
                     <Modal
                         theme="dark"
                         active={this.state.changeStatusModal}

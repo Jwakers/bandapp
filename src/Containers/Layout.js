@@ -7,13 +7,16 @@ import ProjectList from "../Components/Project/ProjectList";
 import SideMenu from "../Components/Navigation/SideMenu";
 import Thumbnav from "../Components/Navigation/Thumbnav";
 import Project from "./Project";
+import Band from "./Band";
 import Account from "../Components/User/Account";
 import Auth from "./Auth";
 import Modal from "../Components/Modal/Modal";
 import Form from "../Components/Form/Form";
+import ProjectArchive from "../Components/Project/ProjectArchive"
 
 import * as actions from "../store/actions/index";
 import urls from "../shared/urls";
+import {objectStatus} from "../shared/strings"
 
 class Layout extends Component {
     state = {
@@ -50,8 +53,9 @@ class Layout extends Component {
             description: form.desc,
             dueDate: form.dueDate,
             userId: this.props.userId,
-            status: "pending",
-            createdOn: new Date()
+            status: objectStatus.pending,
+            createdOn: new Date().toString(),
+            createdBy: this.props.username,
         };
         this.props.createNewProject(project, this.props.userId);
         this.setState({ newProjectOpen: false });
@@ -60,14 +64,14 @@ class Layout extends Component {
         return (
             <>
                 <Topnav
-                    heading="Bandapp"
+                    heading={"Bandapp"}
                     toggle={this.handleMenuToggle}
                     isAuth={this.props.userId}
                 />
                 <SideMenu
                     toggle={this.handleMenuToggle}
                     active={this.state.sideMenuOpen}
-                    projects={Object.keys(this.props.projects).length}
+                    projects={Object.values(this.props.projects).filter(p => p.status === objectStatus.pending).length}
                 />
                 {this.props.loading ? (
                     <div className="spinner"></div>
@@ -75,7 +79,11 @@ class Layout extends Component {
                     <>
                         <main className="container">
                             <Switch>
-                                <Route path={urls.auth} exact component={Auth} />
+                                <Route
+                                    path={urls.auth}
+                                    exact
+                                    component={Auth}
+                                />
                                 {this.props.userId ? (
                                     <>
                                         <Route
@@ -88,10 +96,22 @@ class Layout extends Component {
                                             component={Project}
                                         />
                                         <Route
+                                            path={urls.bands}
+                                            component={Band}
+                                            exact
+                                        />
+                                        <Route
+                                            path={urls.archive}
+                                            exact
+                                        >
+                                            <ProjectArchive heading="Project archive" />
+                                        </Route>
+                                        <Route
                                             path={urls.projects}
                                             exact
-                                            component={ProjectList}
-                                        />
+                                        >
+                                            <ProjectList status={objectStatus.pending} />
+                                        </Route>
                                     </>
                                 ) : (
                                     <Redirect to={urls.auth} />
@@ -127,7 +147,6 @@ class Layout extends Component {
                         </Modal>
                     </>
                 )}
-
                 <Thumbnav
                     newProjectOpen={this.handleNewProjectToggle}
                     isAuth={this.props.userId}
@@ -142,6 +161,7 @@ const mapStateToProps = (state) => {
         projects: state.projects.projects,
         loading: state.projects.loading,
         userId: state.auth.userId,
+        username: state.user.user.username,
     };
 };
 

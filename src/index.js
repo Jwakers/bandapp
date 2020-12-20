@@ -9,6 +9,7 @@ import projects from "./store/reducers/projects";
 import auth from "./store/reducers/auth";
 import tasks from "./store/reducers/tasks";
 import user from "./store/reducers/user";
+import band from "./store/reducers/band";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
@@ -34,7 +35,8 @@ const store = createStore(
     projects,
     tasks,
     auth,
-    user
+    user,
+    band
 }), composeEnhancers(
     applyMiddleware(thunk)
 ));

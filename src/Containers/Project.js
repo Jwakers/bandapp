@@ -11,6 +11,9 @@ import Placeholder from "../Components/Message/Placeholder";
 import filterIcon from "../assets/icons/filter.svg";
 import sortIcon from "../assets/icons/sort.svg";
 
+import urls from "../shared/urls";
+import {objectStatus} from "../shared/strings";
+
 class Project extends Component {
     state = {
         addTaskOpen: false,
@@ -47,9 +50,10 @@ class Project extends Component {
             heading: form.title,
             description: form.desc,
             dueDate: form.dueDate,
-            status: "pending",
+            status: objectStatus.pending,
             userId: this.props.userId,
-            createdOn: new Date()
+            createdOn: new Date().toString(),
+            createdBy: this.props.username
         };
         this.props.createNewTask(task, this.props.userId);
         this.setState({ addTaskOpen: false });
@@ -69,7 +73,7 @@ class Project extends Component {
             dueDate: form.dueDate,
             bpm: form.bpm,
             key: form.key,
-            status: "pending",
+            status: objectStatus.pending,
         };
         this.props.updateProject(
             this.props.match.params.projectid,
@@ -81,15 +85,15 @@ class Project extends Component {
     handleProjectArchive = () => {
         if (window.confirm("Are you sure you want to archive this project?")) {
             this.props.updateProject(this.props.match.params.projectid, {
-                status: "deleted",
-            });
-            this.props.history.push("/");
+                status: objectStatus.archived,
+            }, this.props.userId);
+            this.props.history.push(urls.projects);
         }
     };
 
     handleDeletedTasksToggle = () => {
         this.setState((prevState) => ({
-            deletedTasks: !prevState.deletedTasks,
+            archivedTasks: !prevState.archivedTasks,
         }));
     };
 
@@ -100,12 +104,12 @@ class Project extends Component {
         }
 
         const incompleteTasks = tasks.filter(
-            (task) => task.status === "pending"
+            (task) => task.status === objectStatus.pending
         );
         const completeTasks = tasks.filter(
-            (task) => task.status === "complete"
+            (task) => task.status === objectStatus.completed
         );
-        const deletedTasks = tasks.filter((task) => task.status === "deleted");
+        const archivedTasks = tasks.filter((task) => task.status === objectStatus.archived);
 
         if (!this.props.project) return <div className="spinner"></div>;
         return (
@@ -211,21 +215,21 @@ class Project extends Component {
                             statusModal={this.state.changeStatusModal}
                         />
                     ))}
-                    {deletedTasks.length ? (
+                    {archivedTasks.length ? (
                         <>
                             <hr className="project__rule" />
                             <button
                                 className="button-subtle"
                                 onClick={this.handleDeletedTasksToggle}
                             >
-                                {this.state.deletedTasks
-                                    ? "Hide deleted tasks"
-                                    : "Show deleted tasks"}
+                                {this.state.archivedTasks
+                                    ? "Hide archived tasks"
+                                    : "Show archived tasks"}
                             </button>
                         </>
                     ) : null}
-                    {this.state.deletedTasks &&
-                        deletedTasks.map((task) => (
+                    {this.state.archivedTasks &&
+                        archivedTasks.map((task) => (
                             <Task
                                 key={task.id}
                                 {...task}
@@ -349,6 +353,7 @@ const mapStateToProps = (state, ownProps) => {
         tasks: getTasks(state.tasks.tasks, ownProps.match.params.projectid),
         token: state.auth.token,
         userId: state.auth.userId,
+        username: state.user.user.username
     };
 };
 

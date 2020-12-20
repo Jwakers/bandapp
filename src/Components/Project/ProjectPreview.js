@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 
 import Progress from "../Project/Progress";
+import {objectStatus} from "../../shared/strings"
 
 const parseDescription = desc => {
     // Add ellipsis to the string if greater than 100 characters
@@ -14,8 +15,8 @@ const parseDescription = desc => {
 };
 
 const projectPreview = props => {
-    const completeTasks = Object.values(props.tasks).filter(value => value.status === "complete")
-    const totalTasks = Object.values(props.tasks).filter(value => value.status !== "deleted")
+    const completeTasks = Object.values(props.tasks).filter(value => value.status === objectStatus.completed)
+    const totalTasks = Object.values(props.tasks).filter(value => value.status !== objectStatus.archived)
     return (
         <>
             <div className="project card">

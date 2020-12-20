@@ -20,3 +20,7 @@ export {
 export {
     fetchUser
 } from "./user"
+
+export {
+    createNewBand
+} from "./band"

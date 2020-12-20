@@ -76,8 +76,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onSignIn: (email, password) =>
             dispatch(actions.authSignIn(email, password)),
-        onSignUp: (email, password, userName) =>
-            dispatch(actions.authSignUp(email, password, userName)),
+        onSignUp: (email, password, username) =>
+            dispatch(actions.authSignUp(email, password, username)),
     };
 };
 

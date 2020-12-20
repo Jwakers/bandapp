@@ -42,7 +42,7 @@ const sideMenu = (props) => {
                         Songs
                     </NavLink>
                     <NavLink
-                        to={urls.home}
+                        to={urls.bands}
                         className="side-menu__item"
                         activeClassName="side-menu__item--active"
                         onClick={props.toggle}
@@ -64,6 +64,14 @@ const sideMenu = (props) => {
                         onClick={props.toggle}
                     >
                         About
+                    </NavLink>
+                    <NavLink
+                        to={urls.archive}
+                        className="side-menu__item"
+                        activeClassName="side-menu__item--active"
+                        onClick={props.toggle}
+                    >
+                        Archive
                     </NavLink>
                     <div className="side-menu__bottom">
                         <NavLink

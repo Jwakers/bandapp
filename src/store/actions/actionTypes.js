@@ -21,3 +21,7 @@ export const AUTH_LOGOUT = "AUTH_LOGOUT"
 export const USER_START = "USER_START"
 export const USER_SUCCESS = "USER_SUCCESS"
 export const USER_FAIL = "USER_FAIL"
+
+export const BAND_START = "BAND_START"
+export const BAND_SUCCESS = "BAND_SUCCESS"
+export const BAND_FAIL = "BAND_FAIL"
