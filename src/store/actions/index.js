@@ -14,5 +14,9 @@ export {
     authAutoSignIn,
     authSignIn,
     authSignUp,
-    logout
+    authSignOut
 } from "./auth"
+
+export {
+    fetchUser
+} from "./user"

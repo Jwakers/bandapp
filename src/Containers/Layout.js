@@ -7,6 +7,7 @@ import ProjectList from "../Components/Project/ProjectList";
 import SideMenu from "../Components/Navigation/SideMenu";
 import Thumbnav from "../Components/Navigation/Thumbnav";
 import Project from "./Project";
+import Account from "../Components/User/Account";
 import Auth from "./Auth";
 import Modal from "../Components/Modal/Modal";
 import Form from "../Components/Form/Form";
@@ -72,23 +73,28 @@ class Layout extends Component {
                     <>
                         <main className="container">
                             <Switch>
-                                <Route path="/account" exact component={Auth} />
+                                <Route path="/auth" exact component={Auth} />
                                 {this.props.userId ? (
                                     <>
                                         <Route
-                                            path="/:projectid"
+                                            path="/account"
+                                            exact
+                                            component={Account}
+                                        />
+                                        <Route
+                                            path="/projects/:projectid"
                                             component={Project}
                                         />
                                         <Route
-                                            path="/"
+                                            path="/projects"
                                             exact
                                             component={ProjectList}
                                         />
                                     </>
                                 ) : (
-                                    <Redirect to="/account" />
+                                    <Redirect to="/auth" />
                                 )}
-                                <Redirect to="/" />
+                                <Redirect to="/projects" />
                             </Switch>
                         </main>
                         <Modal

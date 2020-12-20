@@ -73,7 +73,7 @@ const sideMenu = (props) => {
                             Account
                         </NavLink>
                         <button className="button-subtle" onClick={() => {
-                            props.logout();
+                            props.handleSignOut();
                             props.toggle();
                             }}>Sign out</button>
                     </div>
@@ -85,7 +85,7 @@ const sideMenu = (props) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        logout: () => dispatch(actions.logout())
+        handleSignOut: () => dispatch(actions.authSignOut())
     }
 }
 
