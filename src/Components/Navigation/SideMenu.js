@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import * as actions from "../../store/actions/index"
 import Hamburger from "./Hamburger";
 import Backdrop from "../Modal/Backdrop";
+import urls from "../../shared/urls";
 
 const sideMenu = (props) => {
     const classes = ["side-menu"];
@@ -22,7 +23,7 @@ const sideMenu = (props) => {
                 </div>
                 <div className="side-menu__list">
                     <NavLink
-                        to="/"
+                        to={urls.projects}
                         className="side-menu__item"
                         activeClassName="side-menu__item--active"
                         onClick={props.toggle}
@@ -33,7 +34,7 @@ const sideMenu = (props) => {
                         </span>
                     </NavLink>
                     <NavLink
-                        to="/songs"
+                        to={urls.home}
                         className="side-menu__item"
                         activeClassName="side-menu__item--active"
                         onClick={props.toggle}
@@ -41,7 +42,7 @@ const sideMenu = (props) => {
                         Songs
                     </NavLink>
                     <NavLink
-                        to="/bands"
+                        to={urls.home}
                         className="side-menu__item"
                         activeClassName="side-menu__item--active"
                         onClick={props.toggle}
@@ -49,7 +50,7 @@ const sideMenu = (props) => {
                         Bands
                     </NavLink>
                     <NavLink
-                        to="/settings"
+                        to={urls.home}
                         className="side-menu__item"
                         activeClassName="side-menu__item--active"
                         onClick={props.toggle}
@@ -57,7 +58,7 @@ const sideMenu = (props) => {
                         Settings
                     </NavLink>
                     <NavLink
-                        to="/about"
+                        to={urls.home}
                         className="side-menu__item"
                         activeClassName="side-menu__item--active"
                         onClick={props.toggle}
@@ -66,7 +67,7 @@ const sideMenu = (props) => {
                     </NavLink>
                     <div className="side-menu__bottom">
                         <NavLink
-                            to="/account"
+                            to={urls.account}
                             className="button-subtle"
                             onClick={props.toggle}
                         >

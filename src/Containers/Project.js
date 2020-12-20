@@ -49,6 +49,7 @@ class Project extends Component {
             dueDate: form.dueDate,
             status: "pending",
             userId: this.props.userId,
+            createdOn: new Date()
         };
         this.props.createNewTask(task, this.props.userId);
         this.setState({ addTaskOpen: false });
@@ -277,6 +278,7 @@ class Project extends Component {
                     <Form
                         submit={this.handleProjectUpdateSubmit}
                         buttonText="update"
+                        close={this.handleProjectUpdateFormToggle}
                         inputs={[
                             {
                                 title: "Title",

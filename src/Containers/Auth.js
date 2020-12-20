@@ -7,7 +7,7 @@ import SignUpForm from "../Components/User/SignUpForm";
 
 import * as actions from "../store/actions/index";
 
-import Form from "../Components/Form/Form";
+import urls from "../shared/urls"
 
 class Auth extends Component {
     state = {
@@ -34,7 +34,7 @@ class Auth extends Component {
         return signUp ? "sign up" : "sign in";
     }
     render() {
-        if (this.props.userId) return <Redirect to="/projects" />;
+        if (this.props.userId) return <Redirect to={urls.projects} />;
         if (this.props.loading) return <div className="spinner"></div>;
         return (
             <>

@@ -61,7 +61,7 @@ const newProject = props => {
                             >
                                 {input.title}
                             </label>
-                            <select name={input.title.toLowerCase()}>
+                            <select class="form__select" name={input.title.toLowerCase()}>
                                 {input.options.map((option, i) => <option key={i} value={option} >{option}</option>)}
                             </select>
                             </>)
