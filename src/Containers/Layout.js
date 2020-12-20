@@ -13,6 +13,7 @@ import Modal from "../Components/Modal/Modal";
 import Form from "../Components/Form/Form";
 
 import * as actions from "../store/actions/index";
+import urls from "../shared/urls";
 
 class Layout extends Component {
     state = {
@@ -50,6 +51,7 @@ class Layout extends Component {
             dueDate: form.dueDate,
             userId: this.props.userId,
             status: "pending",
+            createdOn: new Date()
         };
         this.props.createNewProject(project, this.props.userId);
         this.setState({ newProjectOpen: false });
@@ -73,28 +75,28 @@ class Layout extends Component {
                     <>
                         <main className="container">
                             <Switch>
-                                <Route path="/auth" exact component={Auth} />
+                                <Route path={urls.auth} exact component={Auth} />
                                 {this.props.userId ? (
                                     <>
                                         <Route
-                                            path="/account"
+                                            path={urls.account}
                                             exact
                                             component={Account}
                                         />
                                         <Route
-                                            path="/projects/:projectid"
+                                            path={urls.project}
                                             component={Project}
                                         />
                                         <Route
-                                            path="/projects"
+                                            path={urls.projects}
                                             exact
                                             component={ProjectList}
                                         />
                                     </>
                                 ) : (
-                                    <Redirect to="/auth" />
+                                    <Redirect to={urls.auth} />
                                 )}
-                                <Redirect to="/projects" />
+                                <Redirect to={urls.projects} />
                             </Switch>
                         </main>
                         <Modal
