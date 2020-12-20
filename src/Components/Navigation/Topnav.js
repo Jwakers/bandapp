@@ -7,7 +7,7 @@ const topnav = (props) => {
     return (
         <nav className="nav">
             <div className="container">
-                <NavLink to="/" className="nav__head">
+                <NavLink to="/projects" className="nav__head">
                     <div className="heading">{props.heading}</div>
                 </NavLink>
                 {props.isAuth && (

@@ -2,11 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import thunk from 'redux-thunk';
+import firebase from "firebase/app";
+
 import projects from "./store/reducers/projects";
 import auth from "./store/reducers/auth";
 import tasks from "./store/reducers/tasks";
-import thunk from 'redux-thunk';
-import firebase from "firebase/app";
+import user from "./store/reducers/user";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
@@ -31,7 +33,8 @@ const store = createStore(
     combineReducers({
     projects,
     tasks,
-    auth
+    auth,
+    user
 }), composeEnhancers(
     applyMiddleware(thunk)
 ));

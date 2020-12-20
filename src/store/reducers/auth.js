@@ -2,6 +2,7 @@ import * as actionTypes from "../actions/actionTypes";
 
 const initialState = {
     userId: null,
+    email: null,
     error: null,
     loading: false,
 };
@@ -18,6 +19,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 userId: action.userId,
+                email: action.email,
                 error: null,
                 loading: false,
             };

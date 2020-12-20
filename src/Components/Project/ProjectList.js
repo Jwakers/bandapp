@@ -12,7 +12,6 @@ const projectList = (props) => {
         projects.push({...value, id: key })
     }
     if (props.projects.loading) return <div className="spinner"></div>;
-    console.log(props.projects.length)
     if (Object.entries(props.projects).length === 0) return <Placeholder heading="Looks like you have no projects" icon={addIcon} modifier="placeholder-message--center" />
     return (
         <>
@@ -24,7 +23,7 @@ const projectList = (props) => {
                     </span>
                 </div>
                 {projects.map((project) => (
-                    <Link to={`/${project.id}`} key={project.id}>
+                    <Link to={`projects/${project.id}`} key={project.id}>
                         <ProjectPreview
                             id={project.id}
                             heading={project.heading}

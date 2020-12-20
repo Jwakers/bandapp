@@ -2,16 +2,19 @@ import * as actionTypes from "./actionTypes";
 import firebase from "firebase/app";
 import "firebase/auth";
 
+import {fetchUser} from "./user";
+
 export const authStart = () => {
     return {
         type: actionTypes.AUTH_START,
     };
 };
 
-export const authSuccess = (userId) => {
+export const authSuccess = (userId, email) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         userId: userId,
+        email: email
     };
 };
 
@@ -26,22 +29,21 @@ export const authAutoSignIn = () => {
     return (dispatch) => {
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                dispatch(authSuccess(user.uid))
+                dispatch(authSuccess(user.uid, user.email))
+                dispatch(fetchUser(user.uid))
             }
         });
     };
 };
 
-export const logout = () => {
+export const authSignOut = () => {
     firebase
         .auth()
         .signOut()
         .then(() => {
-            // Sign-out successful.
             console.log("Signed out");
         })
         .catch((error) => {
-            // An error happened
             console.log(error);
         });
     return {
@@ -49,7 +51,7 @@ export const logout = () => {
     };
 };
 
-export const authSignUp = (email, password) => {
+export const authSignUp = (email, password, userName) => {
     return (dispatch) => {
         dispatch(authStart());
         firebase
@@ -57,22 +59,20 @@ export const authSignUp = (email, password) => {
             .createUserWithEmailAndPassword(email, password)
             .then((user) => {
                 // User signed in
-                console.dir(user.user.uid);
                 var userData = {
-                    name: "Jack",
-                    phone: "779797329",
-                    address: "474 Mercer Drive",
-                    uid: user.user.uid,
+                    userName: userName,
+                    userId: user.user.uid,
                     email: user.user.email,
                 };
                 firebase
                     .database()
-                    .ref("users/" + user.uid)
+                    .ref("users/" + userData.userId)
                     .set(userData)
                     .catch((error) => {
                         console.log(error.message);
                     });
                 dispatch(authSuccess(user.user.uid));
+                dispatch(fetchUser(user.uid));
             })
             .catch((error) => {
                 console.error(error.code);
@@ -93,7 +93,9 @@ export const authSignIn = (email, password) => {
                     .auth()
                     .signInWithEmailAndPassword(email, password)
                     .then((user) => {
-                        dispatch(authSuccess(user.user.uid));
+                        console.log(user.user)
+                        dispatch(authSuccess(user.user.uid, user.user.email));
+                        dispatch(fetchUser(user.uid));
                     })
                     .catch((error) => {
                         console.error(error.code);
