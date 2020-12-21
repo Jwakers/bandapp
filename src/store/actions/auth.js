@@ -64,6 +64,7 @@ export const authSignUp = (email, password, username) => {
                 if (snapshot.val() !== null) {
                     return dispatch(authFail("Username already exists"));
                 } else {
+                    // Authorize user
                     firebase
                         .auth()
                         .createUserWithEmailAndPassword(email, password)

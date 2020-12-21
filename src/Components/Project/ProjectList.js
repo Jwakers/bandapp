@@ -11,7 +11,7 @@ import urls from '../../shared/urls';
 const projectList = (props) => {
     let projects = []
     for (const [key, value] of Object.entries(props.projects))  {
-        if (value.status === props.status) {
+        if (value[props.filterType] === props.filterValue) {
             projects.push({...value, id: key })
         }
     }
@@ -21,7 +21,7 @@ const projectList = (props) => {
         <>
             <div className="projects">
                 <div>
-                    <h1 className="heading heading--h1">{props.heading ? props.heading : 'Projects'}</h1>
+                    <h1 className="heading heading--h1">{props.heading ? props.heading : 'All Projects'}</h1>
                     <span className="projects__index">
                         {projects.length}
                     </span>

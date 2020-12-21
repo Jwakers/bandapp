@@ -42,7 +42,6 @@ export const fetchProjects = (userId) => {
 };
 
 export const createNewProject = (projectData, userId) => {
-    console.log(projectData)
     return () => {
         firebase.database().ref(`projects/${userId}`).push(projectData)
         .catch(error => console.log(error));

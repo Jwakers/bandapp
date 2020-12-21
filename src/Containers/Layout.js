@@ -7,16 +7,18 @@ import ProjectList from "../Components/Project/ProjectList";
 import SideMenu from "../Components/Navigation/SideMenu";
 import Thumbnav from "../Components/Navigation/Thumbnav";
 import Project from "./Project";
-import Band from "./Band";
+import CreateBand from "../Components/Band/CreateBand";
 import Account from "../Components/User/Account";
 import Auth from "./Auth";
 import Modal from "../Components/Modal/Modal";
 import Form from "../Components/Form/Form";
 import ProjectArchive from "../Components/Project/ProjectArchive"
+import BandProjects from "../Components/Band/BandProjects"
 
 import * as actions from "../store/actions/index";
 import urls from "../shared/urls";
 import {objectStatus} from "../shared/strings"
+import {objectCollectionToArray} from "../shared/utility"
 
 class Layout extends Component {
     state = {
@@ -25,11 +27,20 @@ class Layout extends Component {
     };
 
     componentDidUpdate(prevProps) {
+        // On auth state change
         if (this.props.userId !== prevProps.userId) {
             this.props.fetchProjects(this.props.userId);
             this.props.fetchTasks(this.props.userId);
+            
         }
-    }
+        // On user object change
+        if (this.props.username !== prevProps.username) {
+            //
+        }
+        if (this.props.userBands !== prevProps.userBands) {
+            this.props.userBands && this.props.fetchBands(Object.keys(this.props.userBands))
+        }
+    } 
 
     handleMenuToggle = () => {
         this.setState((prevState) => ({
@@ -57,10 +68,17 @@ class Layout extends Component {
             createdOn: new Date().toString(),
             createdBy: this.props.username,
         };
+        const bandId = event.target.elements["location"].value
+        if (bandId) project.bandId = bandId;
         this.props.createNewProject(project, this.props.userId);
         this.setState({ newProjectOpen: false });
     };
     render() {
+        let bandSelectOptions = [];
+        for (const [key, value] of Object.entries(this.props.bands)) {
+            bandSelectOptions.push({value: key, content: value.bandName})
+        }
+
         return (
             <>
                 <Topnav
@@ -72,6 +90,7 @@ class Layout extends Component {
                     toggle={this.handleMenuToggle}
                     active={this.state.sideMenuOpen}
                     projects={Object.values(this.props.projects).filter(p => p.status === objectStatus.pending).length}
+                    bands={objectCollectionToArray(this.props.bands)}
                 />
                 {this.props.loading ? (
                     <div className="spinner"></div>
@@ -96,8 +115,12 @@ class Layout extends Component {
                                             component={Project}
                                         />
                                         <Route
-                                            path={urls.bands}
-                                            component={Band}
+                                            path={urls.band}
+                                            component={BandProjects}
+                                        />
+                                        <Route
+                                            path={urls.createBand}
+                                            component={CreateBand}
                                             exact
                                         />
                                         <Route
@@ -110,7 +133,7 @@ class Layout extends Component {
                                             path={urls.projects}
                                             exact
                                         >
-                                            <ProjectList status={objectStatus.pending} />
+                                            <ProjectList filterType="status" filterValue={objectStatus.pending} />
                                         </Route>
                                     </>
                                 ) : (
@@ -119,6 +142,7 @@ class Layout extends Component {
                                 <Redirect to={urls.projects} />
                             </Switch>
                         </main>
+                        
                         <Modal
                             toggle={this.handleNewProjectToggle}
                             active={this.state.newProjectOpen}
@@ -142,6 +166,14 @@ class Layout extends Component {
                                         title: "Due date",
                                         type: "date",
                                     },
+                                    {
+                                        title: "Location",
+                                        type: "select",
+                                        options: [
+                                            {value: null, content: 'My projects'},
+                                            ...bandSelectOptions
+                                        ]
+                                    }
                                 ]}
                             />
                         </Modal>
@@ -162,6 +194,8 @@ const mapStateToProps = (state) => {
         loading: state.projects.loading,
         userId: state.auth.userId,
         username: state.user.user.username,
+        userBands: state.user.user.bands,
+        bands: state.band.bands
     };
 };
 
@@ -169,6 +203,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         fetchProjects: (userId) => dispatch(actions.fetchProjects(userId)),
         fetchTasks: (userId) => dispatch(actions.fetchTasks(userId)),
+        fetchBands: (bandIds) => dispatch(actions.fetchBands(bandIds)),
         createNewProject: (payload, userId) =>
             dispatch(actions.createNewProject(payload, userId)),
     };

@@ -22,5 +22,6 @@ export {
 } from "./user"
 
 export {
+    fetchBands,
     createNewBand
 } from "./band"

@@ -26,7 +26,7 @@ const projectPreview = props => {
                             {props.heading}
                         </div>
                         <div className="project__head__assignees">
-                            [assignees]
+                            <em>by: ___</em>
                         </div>
                     </div>
 
