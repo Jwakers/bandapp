@@ -23,12 +23,12 @@ export const projectsFail = (error) => {
     };
 };
 
-export const fetchProjects = (userId) => {
+export const fetchProjects = (locationId) => {
     return (dispatch) => {
         dispatch(projectsStart());
         firebase
             .database()
-            .ref(`projects/${userId}`)
+            .ref(`projects/${locationId}`)
             .on(
                 "value",
                 (snap) => {
@@ -41,9 +41,10 @@ export const fetchProjects = (userId) => {
     };
 };
 
-export const createNewProject = (projectData, userId) => {
+export const createNewProject = (projectData, locationId) => {
     return () => {
-        firebase.database().ref(`projects/${userId}`).push(projectData)
+        console.log(projectData, locationId)
+        firebase.database().ref(`projects/${locationId}`).push(projectData)
         .catch(error => console.log(error));
     };
 };

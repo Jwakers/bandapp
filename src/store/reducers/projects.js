@@ -19,6 +19,7 @@ function projectsSuccess(state, action) {
         loading: false,
         error: null,
         projects: {
+            ...state.projects,
             ...action.payload,
         }
     };
@@ -40,8 +41,6 @@ export default (state = projectsState, action) => {
             return projectsSuccess(state, action);
         case actionTypes.PROJECTS_FAIL:
             return projectsFail(state, action);
-        // case actionTypes.UPDATE_PROJECT:
-        //     return updateProject(state, action)
         default:
             return state;
     }

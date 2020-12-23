@@ -53,7 +53,7 @@ class Project extends Component {
             status: objectStatus.pending,
             userId: this.props.userId,
             createdOn: new Date().toString(),
-            createdBy: this.props.username
+            createdBy: this.props.userId
         };
         this.props.createNewTask(task, this.props.userId);
         this.setState({ addTaskOpen: false });

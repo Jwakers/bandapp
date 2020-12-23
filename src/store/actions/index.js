@@ -23,5 +23,7 @@ export {
 
 export {
     fetchBands,
-    createNewBand
-} from "./band"
+    createNewBand,
+    addBandMember,
+    removeBandMember
+} from "./bands"

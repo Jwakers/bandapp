@@ -14,6 +14,7 @@ import Modal from "../Components/Modal/Modal";
 import Form from "../Components/Form/Form";
 import ProjectArchive from "../Components/Project/ProjectArchive"
 import BandProjects from "../Components/Band/BandProjects"
+import ManageBand from "../Components/Band/ManageBand"
 
 import * as actions from "../store/actions/index";
 import urls from "../shared/urls";
@@ -31,14 +32,14 @@ class Layout extends Component {
         if (this.props.userId !== prevProps.userId) {
             this.props.fetchProjects(this.props.userId);
             this.props.fetchTasks(this.props.userId);
-            
         }
         // On user object change
-        if (this.props.username !== prevProps.username) {
-            //
-        }
         if (this.props.userBands !== prevProps.userBands) {
-            this.props.userBands && this.props.fetchBands(Object.keys(this.props.userBands))
+            const bands = this.props.userBands ? Object.keys(this.props.userBands) : [];
+            this.props.fetchBands(bands);
+            bands.forEach(bandKey => {
+                this.props.fetchProjects(bandKey);
+            })
         }
     } 
 
@@ -58,6 +59,7 @@ class Layout extends Component {
             title: event.target.elements["title"].value,
             desc: event.target.elements["description"].value,
             dueDate: event.target.elements["due-date"].value,
+            locationId: event.target.elements["location"].value
         };
         const project = {
             heading: form.title,
@@ -66,11 +68,10 @@ class Layout extends Component {
             userId: this.props.userId,
             status: objectStatus.pending,
             createdOn: new Date().toString(),
-            createdBy: this.props.username,
+            createdBy: this.props.userId,
+            locationId: form.locationId
         };
-        const bandId = event.target.elements["location"].value
-        if (bandId) project.bandId = bandId;
-        this.props.createNewProject(project, this.props.userId);
+        this.props.createNewProject(project, form.locationId);
         this.setState({ newProjectOpen: false });
     };
     render() {
@@ -115,8 +116,13 @@ class Layout extends Component {
                                             component={Project}
                                         />
                                         <Route
+                                            path={urls.manageBand}
+                                            component={ManageBand}
+                                        />
+                                        <Route
                                             path={urls.band}
                                             component={BandProjects}
+                                            exact
                                         />
                                         <Route
                                             path={urls.createBand}
@@ -170,7 +176,7 @@ class Layout extends Component {
                                         title: "Location",
                                         type: "select",
                                         options: [
-                                            {value: null, content: 'My projects'},
+                                            {value: this.props.userId, content: 'My projects'},
                                             ...bandSelectOptions
                                         ]
                                     }
@@ -195,7 +201,8 @@ const mapStateToProps = (state) => {
         userId: state.auth.userId,
         username: state.user.user.username,
         userBands: state.user.user.bands,
-        bands: state.band.bands
+        bands: state.band.bands,
+        test: state.user
     };
 };
 
@@ -205,7 +212,7 @@ const mapDispatchToProps = (dispatch) => {
         fetchTasks: (userId) => dispatch(actions.fetchTasks(userId)),
         fetchBands: (bandIds) => dispatch(actions.fetchBands(bandIds)),
         createNewProject: (payload, userId) =>
-            dispatch(actions.createNewProject(payload, userId)),
+            dispatch(actions.createNewProject(payload, userId))
     };
 };
 

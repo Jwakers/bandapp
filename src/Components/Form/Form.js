@@ -1,6 +1,6 @@
 import React from "react";
 
-const newProject = props => {
+const form = props => {
     return (
             <form onSubmit={props.submit} className="form" action="">
                 {props.inputs.map((input, index) => {
@@ -131,4 +131,4 @@ const newProject = props => {
     );
 };
 
-export default newProject;
+export default form;

@@ -1,15 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware, compose, combineReducers } from "redux";
-import thunk from 'redux-thunk';
 import firebase from "firebase/app";
-
-import projects from "./store/reducers/projects";
-import auth from "./store/reducers/auth";
-import tasks from "./store/reducers/tasks";
-import user from "./store/reducers/user";
-import band from "./store/reducers/band";
+import store from "./store/reducers"
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
@@ -27,19 +20,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
-const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
-
-const store = createStore(
-    combineReducers({
-    projects,
-    tasks,
-    auth,
-    user,
-    band
-}), composeEnhancers(
-    applyMiddleware(thunk)
-));
 
 ReactDOM.render(
     <Provider store={store}>
