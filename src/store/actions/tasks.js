@@ -49,10 +49,7 @@ export const createNewTask = (taskData, locationId) => {
 };
 
 export function updateTask(locationId, taskId, taskData) {
-    console.log(locationId, taskId, taskData)
     return () => {
-        firebase.database().ref(`tasks/${locationId}/${taskId}`).update(taskData).catch(error => {
-            console.log(error)
-        });
+        firebase.database().ref(`tasks/${locationId}/${taskId}`).update(taskData).catch(error => console.log(error));
     };
 }

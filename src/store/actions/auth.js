@@ -14,7 +14,7 @@ export const authSuccess = (userId, email) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         userId: userId,
-        email: email,
+        email: email
     };
 };
 
@@ -72,8 +72,7 @@ export const authSignUp = (email, password, username) => {
                             // User signed in
                             const userData = {
                                 username: username,
-                                userId: user.user.uid,
-                                email: user.user.email,
+                                userId: user.user.uid
                             };
 
                             dispatch(setUserData(userData));

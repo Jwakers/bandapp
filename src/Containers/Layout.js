@@ -12,14 +12,13 @@ import Account from "../Components/User/Account";
 import Auth from "./Auth";
 import Modal from "../Components/Modal/Modal";
 import Form from "../Components/Form/Form";
-import ProjectArchive from "../Components/Project/ProjectArchive"
-import BandProjects from "../Components/Band/BandProjects"
-import ManageBand from "../Components/Band/ManageBand"
+import BandProjects from "../Components/Band/BandProjects";
+import ManageBand from "../Components/Band/ManageBand";
 
 import * as actions from "../store/actions/index";
 import urls from "../shared/urls";
-import {objectStatus} from "../shared/strings"
-import {objectCollectionToArray} from "../shared/utility"
+import { objectStatus } from "../shared/strings";
+import { objectCollectionToArray } from "../shared/utility";
 
 class Layout extends Component {
     state = {
@@ -35,14 +34,16 @@ class Layout extends Component {
         }
         // On user object change
         if (this.props.userBands !== prevProps.userBands) {
-            const bands = this.props.userBands ? Object.keys(this.props.userBands) : [];
+            const bands = this.props.userBands
+                ? Object.keys(this.props.userBands)
+                : [];
             this.props.fetchBands(bands);
-            bands.forEach(bandKey => {
+            bands.forEach((bandKey) => {
                 this.props.fetchProjects(bandKey);
                 this.props.fetchTasks(bandKey);
-            })
+            });
         }
-    } 
+    }
 
     handleMenuToggle = () => {
         this.setState((prevState) => ({
@@ -60,17 +61,16 @@ class Layout extends Component {
             title: event.target.elements["title"].value,
             desc: event.target.elements["description"].value,
             dueDate: event.target.elements["due-date"].value,
-            locationId: event.target.elements["location"].value
+            locationId: event.target.elements["location"].value,
         };
         const project = {
             heading: form.title,
             description: form.desc,
             dueDate: form.dueDate,
-            userId: this.props.userId,
             status: objectStatus.pending,
             createdOn: new Date().toString(),
             createdBy: this.props.userId,
-            locationId: form.locationId
+            locationId: form.locationId,
         };
         this.props.createNewProject(project, form.locationId);
         this.setState({ newProjectOpen: false });
@@ -78,7 +78,7 @@ class Layout extends Component {
     render() {
         let bandSelectOptions = [];
         for (const [key, value] of Object.entries(this.props.bands)) {
-            bandSelectOptions.push({value: key, content: value.bandName})
+            bandSelectOptions.push({ value: key, content: value.bandName });
         }
 
         return (
@@ -91,7 +91,11 @@ class Layout extends Component {
                 <SideMenu
                     toggle={this.handleMenuToggle}
                     active={this.state.sideMenuOpen}
-                    projects={Object.values(this.props.projects).filter(p => p.status === objectStatus.pending).length}
+                    projects={
+                        Object.values(this.props.projects).filter(
+                            (p) => p.status === objectStatus.pending
+                        ).length
+                    }
                     bands={objectCollectionToArray(this.props.bands)}
                 />
                 {this.props.loading ? (
@@ -100,56 +104,47 @@ class Layout extends Component {
                     <>
                         <main className="container">
                             <Switch>
-                                <Route
-                                    path={urls.auth}
-                                    exact
-                                    component={Auth}
-                                />
-                                {this.props.userId ? (
-                                    <>
-                                        <Route
-                                            path={urls.account}
-                                            exact
-                                            component={Account}
-                                        />
-                                        <Route
-                                            path={urls.project}
-                                            component={Project}
-                                        />
-                                        <Route
-                                            path={urls.manageBand}
-                                            component={ManageBand}
-                                        />
-                                        <Route
-                                            path={urls.band}
-                                            component={BandProjects}
-                                            exact
-                                        />
-                                        <Route
-                                            path={urls.createBand}
-                                            component={CreateBand}
-                                            exact
-                                        />
-                                        <Route
-                                            path={urls.archive}
-                                            exact
-                                        >
-                                            <ProjectArchive heading="Project archive" />
-                                        </Route>
-                                        <Route
-                                            path={urls.projects}
-                                            exact
-                                        >
-                                            <ProjectList filterType="status" filterValue={objectStatus.pending} />
-                                        </Route>
-                                    </>
-                                ) : (
+                                {!this.props.userId && (
                                     <Redirect to={urls.auth} />
                                 )}
-                                <Redirect to={urls.projects} />
+                                <Route path={urls.auth} component={Auth} />
+                                <Route
+                                    path={urls.account}
+                                    component={Account}
+                                />
+                                <Route
+                                    path={urls.manageBand}
+                                    component={ManageBand}
+                                />
+                                <Route
+                                    path={urls.band}
+                                    component={BandProjects}
+                                />
+                                <Route
+                                    path={urls.createBand}
+                                    component={CreateBand}
+                                />
+                                <Route path={urls.projectArchive}>
+                                    <ProjectList
+                                        heading="Project archive"
+                                        filterType="status"
+                                        filterValue={objectStatus.archived}
+                                    />
+                                </Route>
+                                <Route path={urls.projects}>
+                                    <ProjectList
+                                        heading="All projects"
+                                        filterType="status"
+                                        filterValue={objectStatus.pending}
+                                    />
+                                </Route>
+                                <Route
+                                    path={urls.project}
+                                    component={Project}
+                                />
                             </Switch>
                         </main>
-                        
+
                         <Modal
                             toggle={this.handleNewProjectToggle}
                             active={this.state.newProjectOpen}
@@ -177,19 +172,24 @@ class Layout extends Component {
                                         title: "Location",
                                         type: "select",
                                         options: [
-                                            {value: this.props.userId, content: 'My projects'},
-                                            ...bandSelectOptions
-                                        ]
-                                    }
+                                            {
+                                                value: this.props.userId,
+                                                content: "My projects",
+                                            },
+                                            ...bandSelectOptions,
+                                        ],
+                                    },
                                 ]}
                             />
                         </Modal>
                     </>
                 )}
-                <Thumbnav
-                    newProjectOpen={this.handleNewProjectToggle}
-                    isAuth={this.props.userId}
-                />
+                {this.props.userId && (
+                    <Thumbnav
+                        newProjectOpen={this.handleNewProjectToggle}
+                        toggle={this.handleMenuToggle}
+                    />
+                )}
             </>
         );
     }
@@ -202,8 +202,7 @@ const mapStateToProps = (state) => {
         userId: state.auth.userId,
         username: state.user.user.username,
         userBands: state.user.user.bands,
-        bands: state.band.bands,
-        test: state.user
+        bands: state.bands.bands
     };
 };
 
@@ -213,7 +212,7 @@ const mapDispatchToProps = (dispatch) => {
         fetchTasks: (userId) => dispatch(actions.fetchTasks(userId)),
         fetchBands: (bandIds) => dispatch(actions.fetchBands(bandIds)),
         createNewProject: (payload, userId) =>
-            dispatch(actions.createNewProject(payload, userId))
+            dispatch(actions.createNewProject(payload, userId)),
     };
 };
 

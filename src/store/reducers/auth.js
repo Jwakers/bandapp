@@ -1,13 +1,13 @@
 import * as actionTypes from "../actions/actionTypes";
 
-const initialState = {
+const INITIAL_STATE = {
     userId: null,
     email: null,
     error: null,
     loading: false,
 };
 
-export default (state = initialState, action) => {
+export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case actionTypes.AUTH_START:
             return {

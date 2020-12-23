@@ -1,6 +1,6 @@
 import * as actionTypes from "../actions/actionTypes";
 
-const taskState = {
+const INITIAL_STATE = {
     loading: false,
     error: null,
     tasks: {}
@@ -33,7 +33,7 @@ function taskFail(state, action) {
     };
 }
 
-export default (state = taskState, action) => {
+export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case actionTypes.TASKS_START:
             return taskStart(state, action);

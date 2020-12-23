@@ -1,16 +1,15 @@
 import React from 'react'
+import Hamburger from './Hamburger';
 import addIcon from '../../assets/icons/add.svg'
-import musicIcon from '../../assets/icons/music-note.svg'
 
 const thumbnav = props => {
-    if (!props.isAuth) return null;
     return (
         <div className="thumbnav">
             <div className="thumbnav__item" onClick={props.newProjectOpen}>
                 <img className="thumbnav__item__icon" src={addIcon} alt="Addition icon" />
             </div>
             <div className="thumbnav__item">
-                <img className="thumbnav__item__icon" src={musicIcon} alt="Music note icon" />
+                <Hamburger open="false" classes={["thumbnav__item__icon"]} click={props.toggle} />
             </div>
         </div>
     )

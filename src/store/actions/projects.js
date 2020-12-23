@@ -49,9 +49,9 @@ export const createNewProject = (projectData, locationId) => {
     };
 };
 
-// TODO: Convert: create, update, and fetch (projects and tasks) into utility functions.
 export function updateProject(locationId, projectId, projectData) {
     return () => {
+        console.log(locationId, projectId, projectData)
         firebase.database().ref(`projects/${locationId}/${projectId}`).update(projectData);
     };
 }

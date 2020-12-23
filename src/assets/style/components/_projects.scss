@@ -1,14 +1,24 @@
 .projects {
     margin-bottom: rem(80); // Allows gap for thumb nav
-    .heading {
-        display: inline-block;
-    }
-    &__index {
-        background-color: $purple;
-        color: #fff;
-        padding: rem(2) rem(4);
-        border-radius: $radius-small;
-        font-weight: 600;
-        margin-left: 6px;
+    &__head {
+        display: flex;
+        align-items: center;
+        margin-bottom: rem(10);
+        &__title {
+            margin-bottom: 0;
+        }
+        &__index {
+            background-color: $purple;
+            color: #fff;
+            padding: rem(2) rem(4);
+            border-radius: $radius-small;
+            font-weight: 600;
+            margin-left: rem(6);
+            display: inline-block;
+        }
+        &__filter {
+            margin-left: auto;
+            width: 34px;
+        }
     }
 }

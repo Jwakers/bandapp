@@ -41,7 +41,7 @@ const sideMenu = (props) => {
             <div className={classes.join(" ")}>
                 <div className="side-menu__top">
                     <div className="side-menu__head">Bandapp</div>
-                    <Hamburger light click={props.toggle} />
+                    <Hamburger classes={["hamburger--light"]} click={props.toggle} />
                 </div>
                 <div className="side-menu__list">
                     <NavLink
@@ -89,7 +89,7 @@ const sideMenu = (props) => {
                         About
                     </NavLink>
                     <NavLink
-                        to={urls.archive}
+                        to={urls.projectArchive}
                         className="side-menu__item"
                         activeClassName="side-menu__item--active"
                         onClick={props.toggle}

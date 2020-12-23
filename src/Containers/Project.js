@@ -12,7 +12,7 @@ import filterIcon from "../assets/icons/filter.svg";
 import sortIcon from "../assets/icons/sort.svg";
 
 import urls from "../shared/urls";
-import {objectStatus} from "../shared/strings";
+import { objectStatus } from "../shared/strings";
 
 class Project extends Component {
     state = {
@@ -53,7 +53,7 @@ class Project extends Component {
             status: objectStatus.pending,
             createdOn: new Date().toString(),
             createdBy: this.props.userId,
-            locationId: this.props.project.locationId
+            locationId: this.props.project.locationId,
         };
         this.props.createNewTask(task, this.props.project.locationId);
         this.setState({ addTaskOpen: false });
@@ -77,16 +77,21 @@ class Project extends Component {
         };
         this.props.updateProject(
             this.props.project.locationId,
-            this.props.userId,
+            this.props.match.params.projectid,
             project
         );
         this.setState({ updateProject: false });
     };
     handleProjectArchive = () => {
         if (window.confirm("Are you sure you want to archive this project?")) {
-            this.props.updateProject(this.props.match.params.projectid, {
-                status: objectStatus.archived,
-            }, this.props.userId);
+            this.props.updateProject(
+                this.props.project.locationId,
+                this.props.match.params.projectid,
+                {
+                    status: objectStatus.archived,
+                },
+                this.props.userId
+            );
             this.props.history.push(urls.projects);
         }
     };
@@ -109,7 +114,9 @@ class Project extends Component {
         const completeTasks = tasks.filter(
             (task) => task.status === objectStatus.completed
         );
-        const archivedTasks = tasks.filter((task) => task.status === objectStatus.archived);
+        const archivedTasks = tasks.filter(
+            (task) => task.status === objectStatus.archived
+        );
 
         if (!this.props.project) return <div className="spinner"></div>;
         return (
@@ -307,19 +314,37 @@ class Project extends Component {
                                 title: "Key",
                                 type: "select",
                                 options: [
-                                    {value: "", content: ""},
-                                    {value: "Key of C", content: "Key of C"},
-                                    {value: "Key of Db / C#", content: "Key of Db / C#"},
-                                    {value: "Key of D", content: "Key of D"},
-                                    {value: "Key of Eb", content: "Key of Eb"},
-                                    {value: "Key of E", content: "Key of E"},
-                                    {value: "Key of F", content: "Key of F"},
-                                    {value: "Key of Gb / F#", content: "Key of Gb / F#"},
-                                    {value: "Key of G", content: "Key of G"},
-                                    {value: "Key of Ab", content: "Key of Ab"},
-                                    {value: "Key of A", content: "Key of A"},
-                                    {value: "Key of Bb", content: "Key of Bb"},
-                                    {value: "Key of B / Cb", content: "Key of B / Cb"},
+                                    { value: "", content: "" },
+                                    { value: "Key of C", content: "Key of C" },
+                                    {
+                                        value: "Key of Db / C#",
+                                        content: "Key of Db / C#",
+                                    },
+                                    { value: "Key of D", content: "Key of D" },
+                                    {
+                                        value: "Key of Eb",
+                                        content: "Key of Eb",
+                                    },
+                                    { value: "Key of E", content: "Key of E" },
+                                    { value: "Key of F", content: "Key of F" },
+                                    {
+                                        value: "Key of Gb / F#",
+                                        content: "Key of Gb / F#",
+                                    },
+                                    { value: "Key of G", content: "Key of G" },
+                                    {
+                                        value: "Key of Ab",
+                                        content: "Key of Ab",
+                                    },
+                                    { value: "Key of A", content: "Key of A" },
+                                    {
+                                        value: "Key of Bb",
+                                        content: "Key of Bb",
+                                    },
+                                    {
+                                        value: "Key of B / Cb",
+                                        content: "Key of B / Cb",
+                                    },
                                 ],
                                 value: this.props.project.key,
                             },
@@ -353,7 +378,7 @@ const mapStateToProps = (state, ownProps) => {
         tasks: getTasks(state.tasks.tasks, ownProps.match.params.projectid),
         token: state.auth.token,
         userId: state.auth.userId,
-        username: state.user.user.username
+        username: state.user.user.username,
     };
 };
 
