@@ -24,12 +24,12 @@ export const tasksFail = (error) => {
     };
 };
 
-export const fetchTasks = (userId) => {
+export const fetchTasks = (locationId) => {
     return (dispatch) => {
         dispatch(tasksStart());
         firebase
             .database()
-            .ref(`tasks/${userId}`)
+            .ref(`tasks/${locationId}`)
             .on(
                 "value",
                 (snap) => {
@@ -42,15 +42,16 @@ export const fetchTasks = (userId) => {
     };
 };
 
-export const createNewTask = (taskData, userId) => {
+export const createNewTask = (taskData, locationId) => {
     return () => {
-        firebase.database().ref(`tasks/${userId}`).push(taskData);
+        firebase.database().ref(`tasks/${locationId}`).push(taskData);
     };
 };
 
-export function updateTask(taskId, taskData, userId) {
+export function updateTask(locationId, taskId, taskData) {
+    console.log(locationId, taskId, taskData)
     return () => {
-        firebase.database().ref(`tasks/${userId}/${taskId}`).update(taskData).catch(error => {
+        firebase.database().ref(`tasks/${locationId}/${taskId}`).update(taskData).catch(error => {
             console.log(error)
         });
     };

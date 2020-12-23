@@ -19,6 +19,6 @@
     }
     &--active {
         opacity: .4;
-        pointer-events: visible;
+        pointer-events: all;
     }
 }

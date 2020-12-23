@@ -53,9 +53,9 @@ class Task extends Component {
             dueDate: form.dueDate,
         };
         this.props.updateTask(
+            this.props.locationId,
             this.props.id,
-            task,
-            this.props.userId
+            task
         );
         this.setState({ updateTask: false });
     };
@@ -114,11 +114,9 @@ class Task extends Component {
                 element.classList.add("task--out-right");
                 element.addEventListener("transitionend", () => {
                     this.props.updateTask(
+                        this.props.locationId,
                         this.props.id,
-                        {
-                            status: objectStatus.completed,
-                        },
-                        this.props.userId
+                        { status: objectStatus.completed }
                     );
                 });
             });
@@ -137,9 +135,9 @@ class Task extends Component {
 
                 element.addEventListener("transitionend", () => {
                     this.props.updateTask(
+                        this.props.locationId,
                         this.props.id,
-                        { status: objectStatus.archived },
-                        this.props.userId
+                        { status: objectStatus.archived }
                     );
                 });
             });
@@ -149,9 +147,9 @@ class Task extends Component {
 
     handleTaskStatus = () => {
         this.props.updateTask(
+            this.props.locationId,
             this.props.id,
-            { status: objectStatus.pending },
-            this.props.userId
+            { status: objectStatus.pending }
         );
     };
 
@@ -270,17 +268,17 @@ class Task extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
     return {
-        token: state.auth.token,
         userId: state.auth.userId,
+        locationId: state.tasks.tasks[ownProps.id].locationId
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateTask: (taskId, status, userId) =>
-            dispatch(actions.updateTask(taskId, status, userId)),
+        updateTask: (taskId, userId, taskData) =>
+            dispatch(actions.updateTask(taskId, userId, taskData)),
     };
 };
 

@@ -51,11 +51,11 @@ class Project extends Component {
             description: form.desc,
             dueDate: form.dueDate,
             status: objectStatus.pending,
-            userId: this.props.userId,
             createdOn: new Date().toString(),
-            createdBy: this.props.userId
+            createdBy: this.props.userId,
+            locationId: this.props.project.locationId
         };
-        this.props.createNewTask(task, this.props.userId);
+        this.props.createNewTask(task, this.props.project.locationId);
         this.setState({ addTaskOpen: false });
     };
     handleProjectUpdateSubmit = (event) => {
@@ -76,9 +76,9 @@ class Project extends Component {
             status: objectStatus.pending,
         };
         this.props.updateProject(
-            this.props.match.params.projectid,
-            project,
-            this.props.userId
+            this.props.project.locationId,
+            this.props.userId,
+            project
         );
         this.setState({ updateProject: false });
     };
@@ -359,10 +359,10 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createNewTask: (payload, userId) =>
-            dispatch(actions.createNewTask(payload, userId)),
-        updateProject: (projectId, payload, userId) =>
-            dispatch(actions.updateProject(projectId, payload, userId)),
+        createNewTask: (payload, locationId) =>
+            dispatch(actions.createNewTask(payload, locationId)),
+        updateProject: (locationId, userId, projectData) =>
+            dispatch(actions.updateProject(locationId, userId, projectData)),
     };
 };
 

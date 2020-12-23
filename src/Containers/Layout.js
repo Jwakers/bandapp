@@ -39,6 +39,7 @@ class Layout extends Component {
             this.props.fetchBands(bands);
             bands.forEach(bandKey => {
                 this.props.fetchProjects(bandKey);
+                this.props.fetchTasks(bandKey);
             })
         }
     } 

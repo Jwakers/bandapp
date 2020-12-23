@@ -19,6 +19,7 @@ function taskSuccess(state, action) {
         loading: false,
         error: null,
         tasks: {
+            ...state.tasks,
             ...action.payload,
         }
     };
