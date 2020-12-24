@@ -1,15 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import Progress from "../Components/Project/Progress";
-import Task from "../Components/Project/Task";
 import * as actions from "../store/actions/index";
 import Modal from "../Components/Modal/Modal";
-import Form from "../Components/Form/Form";
-import Placeholder from "../Components/Message/Placeholder";
+import ProjectForm from "../Components/Form/ProjectForm";
 
-import filterIcon from "../assets/icons/filter.svg";
-import sortIcon from "../assets/icons/sort.svg";
+import TaskList from "../Components/Project/TaskList";
 
 import urls from "../shared/urls";
 import { objectStatus } from "../shared/strings";
@@ -32,56 +28,7 @@ class Project extends Component {
             updateProject: !prevState.updateProject,
         }));
     };
-    handleTaskStatusModalToggle = () => {
-        this.setState((prevState) => ({
-            changeStatusModal: !prevState.changeStatusModal,
-        }));
-    };
 
-    handleTaskFormSubmit = (event) => {
-        event.preventDefault();
-        const form = {
-            title: event.target.elements["title"].value,
-            desc: event.target.elements["description"].value,
-            dueDate: event.target.elements["due-date"].value,
-        };
-        const task = {
-            projectId: this.props.match.params.projectid,
-            heading: form.title,
-            description: form.desc,
-            dueDate: form.dueDate,
-            status: objectStatus.pending,
-            createdOn: new Date().toString(),
-            createdBy: this.props.userId,
-            locationId: this.props.project.locationId,
-        };
-        this.props.createNewTask(task, this.props.project.locationId);
-        this.setState({ addTaskOpen: false });
-    };
-    handleProjectUpdateSubmit = (event) => {
-        event.preventDefault();
-        const form = {
-            title: event.target.elements["title"].value,
-            desc: event.target.elements["description"].value,
-            dueDate: event.target.elements["due-date"].value,
-            bpm: event.target.elements["bpm"].value,
-            key: event.target.elements["key"].value,
-        };
-        const project = {
-            heading: form.title,
-            description: form.desc,
-            dueDate: form.dueDate,
-            bpm: form.bpm,
-            key: form.key,
-            status: objectStatus.pending,
-        };
-        this.props.updateProject(
-            this.props.project.locationId,
-            this.props.match.params.projectid,
-            project
-        );
-        this.setState({ updateProject: false });
-    };
     handleProjectArchive = () => {
         if (window.confirm("Are you sure you want to archive this project?")) {
             this.props.updateProject(
@@ -103,21 +50,6 @@ class Project extends Component {
     };
 
     render() {
-        let tasks = [];
-        for (const [key, value] of Object.entries(this.props.tasks)) {
-            tasks.push({ ...value, id: key });
-        }
-
-        const incompleteTasks = tasks.filter(
-            (task) => task.status === objectStatus.pending
-        );
-        const completeTasks = tasks.filter(
-            (task) => task.status === objectStatus.completed
-        );
-        const archivedTasks = tasks.filter(
-            (task) => task.status === objectStatus.archived
-        );
-
         if (!this.props.project) return <div className="spinner"></div>;
         return (
             <>
@@ -175,181 +107,12 @@ class Project extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="project__tasks">
-                    <div className="project__tasks__topbar">
-                        <div className="project__tasks__topbar__head heading heading--h2">
-                            Tasks
-                        </div>
-                        <div className="project__tasks__topbar__filter">
-                            <img src={filterIcon} alt="filter" />
-                            <img src={sortIcon} alt="sort" />
-                        </div>
-                    </div>
-                    {tasks ? (
-                        <Progress
-                            complete={completeTasks.length}
-                            total={
-                                completeTasks.length + incompleteTasks.length
-                            }
-                            seperate
-                        />
-                    ) : (
-                        <div>Add tasks</div>
-                    )}
-                    {!tasks.length ? (
-                        <Placeholder
-                            heading="No tasks"
-                            altMessage="Click + to add a new tasks to this project."
-                        />
-                    ) : null}
-                    {incompleteTasks.map((task) => (
-                        <Task key={task.id} {...task} />
-                    ))}
-                    {completeTasks.length ? (
-                        <div className="project__tasks__topbar">
-                            <div className="project__tasks__topbar__head heading heading--h2">
-                                Complete
-                            </div>
-                        </div>
-                    ) : null}
-
-                    {completeTasks.map((task) => (
-                        <Task
-                            complete
-                            key={task.id}
-                            {...task}
-                            changeStatus={this.handleTaskStatusModalToggle}
-                            statusModal={this.state.changeStatusModal}
-                        />
-                    ))}
-                    {archivedTasks.length ? (
-                        <>
-                            <hr className="project__rule" />
-                            <button
-                                className="button-subtle"
-                                onClick={this.handleDeletedTasksToggle}
-                            >
-                                {this.state.archivedTasks
-                                    ? "Hide archived tasks"
-                                    : "Show archived tasks"}
-                            </button>
-                        </>
-                    ) : null}
-                    {this.state.archivedTasks &&
-                        archivedTasks.map((task) => (
-                            <Task
-                                key={task.id}
-                                {...task}
-                                changeStatus={this.handleTaskStatusModalToggle}
-                                statusModal={this.state.changeStatusModal}
-                            />
-                        ))}
-
-                    <div
-                        onClick={this.handleTaskFormToggle}
-                        className="floating-button"
-                    >
-                        <span className="floating-button__content">+</span>
-                    </div>
-                    <Modal
-                        toggle={this.handleTaskFormToggle}
-                        active={this.state.addTaskOpen}
-                    >
-                        <div className="heading heading--h2">
-                            {"Add task to " + this.props.project.heading}
-                        </div>
-                        <Form
-                            submit={this.handleTaskFormSubmit}
-                            inputs={[
-                                {
-                                    title: "Title",
-                                    placeholder: "Task title",
-                                    required: true,
-                                },
-                                {
-                                    title: "Description",
-                                    type: "textarea",
-                                    placeholder: "Task description",
-                                },
-                                {
-                                    title: "Due date",
-                                    type: "date",
-                                },
-                            ]}
-                        />
-                    </Modal>
-                </div>
+                <TaskList projectId={this.props.match.params.projectid} />
                 <Modal
                     toggle={this.handleProjectUpdateFormToggle}
                     active={this.state.updateProject}
                 >
-                    <div className="heading heading--h2">
-                        {"Edit " + this.props.project.heading}
-                    </div>
-                    <Form
-                        submit={this.handleProjectUpdateSubmit}
-                        buttonText="update"
-                        close={this.handleProjectUpdateFormToggle}
-                        inputs={[
-                            {
-                                title: "Title",
-                                value: this.props.project.heading,
-                            },
-                            {
-                                title: "Description",
-                                type: "textarea",
-                                value: this.props.project.description,
-                            },
-                            {
-                                title: "Due date",
-                                type: "date",
-                                value: this.props.project.dueDate,
-                            },
-                            {
-                                title: "BPM",
-                                type: "number",
-                                value: this.props.project.bpm,
-                            },
-                            {
-                                title: "Key",
-                                type: "select",
-                                options: [
-                                    { value: "", content: "" },
-                                    { value: "Key of C", content: "Key of C" },
-                                    {
-                                        value: "Key of Db / C#",
-                                        content: "Key of Db / C#",
-                                    },
-                                    { value: "Key of D", content: "Key of D" },
-                                    {
-                                        value: "Key of Eb",
-                                        content: "Key of Eb",
-                                    },
-                                    { value: "Key of E", content: "Key of E" },
-                                    { value: "Key of F", content: "Key of F" },
-                                    {
-                                        value: "Key of Gb / F#",
-                                        content: "Key of Gb / F#",
-                                    },
-                                    { value: "Key of G", content: "Key of G" },
-                                    {
-                                        value: "Key of Ab",
-                                        content: "Key of Ab",
-                                    },
-                                    { value: "Key of A", content: "Key of A" },
-                                    {
-                                        value: "Key of Bb",
-                                        content: "Key of Bb",
-                                    },
-                                    {
-                                        value: "Key of B / Cb",
-                                        content: "Key of B / Cb",
-                                    },
-                                ],
-                                value: this.props.project.key,
-                            },
-                        ]}
-                    />
+                    <ProjectForm projectId={this.props.match.params.projectid} close={this.handleProjectUpdateFormToggle} />
                     <button
                         className="button button--warning"
                         onClick={this.handleProjectArchive}

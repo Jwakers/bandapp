@@ -23,21 +23,23 @@ export const projectsFail = (error) => {
     };
 };
 
-export const fetchProjects = (locationId) => {
+export const fetchProjects = (locationIds) => {
     return (dispatch) => {
         dispatch(projectsStart());
-        firebase
-            .database()
-            .ref(`projects/${locationId}`)
-            .on(
-                "value",
-                (snap) => {
-                    dispatch(projectsSuccess(snap.val()));
-                },
-                (error) => {
-                    dispatch(projectsFail(error.message));
-                }
-            );
+        locationIds.forEach(location => {
+            firebase
+                .database()
+                .ref(`projects/${location}`)
+                .on(
+                    "value",
+                    (snap) => {
+                        dispatch(projectsSuccess(snap.val()));
+                    },
+                    (error) => {
+                        dispatch(projectsFail(error.message));
+                    }
+                );
+        })
     };
 };
 

@@ -12,7 +12,6 @@ import Account from "../Components/User/Account";
 import Auth from "./Auth";
 import Modal from "../Components/Modal/Modal";
 import Form from "../Components/Form/Form";
-import BandProjects from "../Components/Band/BandProjects";
 import ManageBand from "../Components/Band/ManageBand";
 
 import * as actions from "../store/actions/index";
@@ -29,19 +28,17 @@ class Layout extends Component {
     componentDidUpdate(prevProps) {
         // On auth state change
         if (this.props.userId !== prevProps.userId) {
-            this.props.fetchProjects(this.props.userId);
-            this.props.fetchTasks(this.props.userId);
+            this.props.fetchProjects([this.props.userId]);
+            this.props.fetchTasks([this.props.userId]);
         }
         // On user object change
         if (this.props.userBands !== prevProps.userBands) {
-            const bands = this.props.userBands
+            const bandKeys = this.props.userBands
                 ? Object.keys(this.props.userBands)
                 : [];
-            this.props.fetchBands(bands);
-            bands.forEach((bandKey) => {
-                this.props.fetchProjects(bandKey);
-                this.props.fetchTasks(bandKey);
-            });
+            this.props.fetchBands(bandKeys);
+            this.props.fetchProjects(bandKeys);
+            this.props.fetchTasks(bandKeys);
         }
     }
 
@@ -103,11 +100,14 @@ class Layout extends Component {
                 ) : (
                     <>
                         <main className="container">
-                            <Switch>
-                                {!this.props.userId && (
+                            {!this.props.userId ? (
+                                <>
                                     <Redirect to={urls.auth} />
-                                )}
-                                <Route path={urls.auth} component={Auth} />
+                                    <Route path={urls.auth} component={Auth} exact />
+                                </>
+                            ) : (
+                            <Switch>
+                                <Route path={urls.auth} component={Auth} exact />
                                 <Route
                                     path={urls.account}
                                     component={Account}
@@ -118,24 +118,22 @@ class Layout extends Component {
                                 />
                                 <Route
                                     path={urls.band}
-                                    component={BandProjects}
+                                    component={ManageBand}
                                 />
                                 <Route
                                     path={urls.createBand}
                                     component={CreateBand}
                                 />
-                                <Route path={urls.projectArchive}>
+                                <Route path={urls.projectArchive} exact>
                                     <ProjectList
                                         heading="Project archive"
                                         filterType="status"
                                         filterValue={objectStatus.archived}
                                     />
                                 </Route>
-                                <Route path={urls.projects}>
+                                <Route path={urls.projects} exact>
                                     <ProjectList
                                         heading="All projects"
-                                        filterType="status"
-                                        filterValue={objectStatus.pending}
                                     />
                                 </Route>
                                 <Route
@@ -143,6 +141,7 @@ class Layout extends Component {
                                     component={Project}
                                 />
                             </Switch>
+                            )}
                         </main>
 
                         <Modal

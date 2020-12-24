@@ -7,37 +7,49 @@ import addIcon from "../../assets/icons/add.svg";
 
 import urls from "../../shared/urls";
 import filterIcon from "../../assets/icons/filter.svg";
-import { render } from "@testing-library/react";
-import { objectStatus } from "../../shared/strings";
 
 class ProjectList extends Component {
     state = {
-        projects: [],
+        projects: this.props.projects,
         heading: this.props.heading,
         defaultFilter: this.props.filterType ? this.props.filterType : null,
         defaultValue: this.props.filterValue ? this.props.filterValue : null,
         showFilters: false,
     };
-
-    componentDidMount() {
-        if (this.state.defaultFilter && this.state.defaultValue)
+ 
+    componentDidUpdate(prevProps) {
+        if (this.props.projects !== prevProps.projects) {
             this.handleProjectFilters(
                 null,
                 this.state.defaultFilter,
-                this.state.defaultValue
+                this.state.defaultValue,
+                this.state.heading
             );
+        }
     }
 
-    handleProjectFilters = (event, filterType, filterValue) => {
+    handleProjectFilters = (event, filterType, filterValue, heading) => {
         filterValue = event ? event.target.value : filterValue;
-        if (filterValue === 'null') return this.setState({ projects: this.props.projects });
-        let collection = this.props.projects.filter((el) => el[filterType] === filterValue);
-        this.setState({ projects: [...collection] });
+        if (filterValue === "null" || !filterValue) {
+            return this.setState({
+                projects: [...this.props.projects],
+                heading: "All projects",
+            });
+        }
+        let collection = this.props.projects.filter(
+            (el) => el[filterType] === filterValue
+        );
+        this.setState({
+            projects: [...collection],
+            heading: heading
+                ? heading
+                : event.target.selectedOptions[0].innerText,
+        });
     };
 
     toggleFilterMenu = () => {
-        this.setState((prevState) => ({showFilters: !prevState.showFilters}))        
-    }
+        this.setState((prevState) => ({ showFilters: !prevState.showFilters }));
+    };
 
     render() {
         if (this.props.projects.length === 0)
@@ -66,20 +78,30 @@ class ProjectList extends Component {
                             <img src={filterIcon} alt="filter" />
                         </div>
                     </div>
-                    {this.state.showFilters && 
-                        <select className="form__select" onChange={(event) => this.handleProjectFilters(event, 'locationId')}>
+                    {this.state.showFilters && (
+                        <select
+                            className="form__select"
+                            onChange={(event) =>
+                                this.handleProjectFilters(event, "locationId")
+                            }
+                        >
                             <option value="null">All projects</option>
-                            <option value={this.props.userId}>My projects</option>
+                            <option value={this.props.userId}>
+                                My projects
+                            </option>
                             {Object.entries(this.props.bands).map((band) => {
-                                const [key, bandName] = [band[0], band[1].bandName];
+                                const [key, bandName] = [
+                                    band[0],
+                                    band[1].bandName,
+                                ];
                                 return (
                                     <option key={key} value={key}>
-                                        {bandName}
+                                        {bandName} projects
                                     </option>
                                 );
                             })}
                         </select>
-                    }
+                    )}
                     {this.state.projects.map((project) => (
                         <Link
                             to={`${urls.projects}/${project.id}`}
@@ -101,16 +123,16 @@ class ProjectList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        projects: Object.entries(state.projects.projects).map(project => {
-            const [key, val] = [...project]
+        projects: Object.entries(state.projects.projects).map((project) => {
+            const [key, val] = [...project];
             return {
                 ...val,
-                id: key
-            }
+                id: key,
+            };
         }),
         loading: state.projects.loading,
         bands: state.bands.bands,
-        userId: state.auth.userId
+        userId: state.auth.userId,
     };
 };
 

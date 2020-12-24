@@ -24,12 +24,13 @@ export const tasksFail = (error) => {
     };
 };
 
-export const fetchTasks = (locationId) => {
+export const fetchTasks = (locationIds) => {
     return (dispatch) => {
         dispatch(tasksStart());
+        locationIds.forEach(location => {
         firebase
             .database()
-            .ref(`tasks/${locationId}`)
+            .ref(`tasks/${location}`)
             .on(
                 "value",
                 (snap) => {
@@ -39,6 +40,7 @@ export const fetchTasks = (locationId) => {
                     dispatch(tasksFail(error.message));
                 }
             );
+        })
     };
 };
 

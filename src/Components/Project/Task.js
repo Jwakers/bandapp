@@ -11,6 +11,7 @@ import {objectStatus} from "../../shared/strings"
 
 class Task extends Component {
     taskRef = createRef();
+    
     position = {
         down: null,
         move: null,
@@ -20,45 +21,12 @@ class Task extends Component {
         delete: null,
         complete: null,
     };
-    state = {
-        changeStatusModal: false,
-        updateTask: false,
-    };
 
     componentDidMount() {
-        setTimeout(() => {
-            this.taskRef.current.classList.add("task--set");
-        }, 0);
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => this.taskRef.current.classList.add("task--set"))
+        })
     }
-    handleStatusModalToggle = () => {
-        this.setState((prevState) => ({
-            changeStatusModal: !prevState.changeStatusModal,
-        }));
-    };
-    handleUpdateModalToggle = () => {
-        this.setState((prevState) => ({
-            updateTask: !prevState.updateTask,
-        }));
-    };
-    handleTaskUpdateSubmit = (event) => {
-        event.preventDefault();
-        const form = {
-            title: event.target.elements["title"].value,
-            desc: event.target.elements["description"].value,
-            dueDate: event.target.elements["due-date"].value,
-        };
-        const task = {
-            heading: form.title,
-            description: form.desc,
-            dueDate: form.dueDate,
-        };
-        this.props.updateTask(
-            this.props.locationId,
-            this.props.id,
-            task
-        );
-        this.setState({ updateTask: false });
-    };
     down = (event) => {
         this.position.down = event.touches[0].clientX;
         event.currentTarget.addEventListener("touchmove", this.move, false);
@@ -114,14 +82,15 @@ class Task extends Component {
                 element.classList.add("task--out-right");
                 element.addEventListener("transitionend", () => {
                     this.props.updateTask(
-                        this.props.locationId,
-                        this.props.id,
+                        this.props.task.locationId,
+                        this.props.taskId,
                         { status: objectStatus.completed }
                     );
                 });
             });
         });
     };
+
     deleteEl = (element) => {
         element.classList.add("task--transition");
         element.style.height = `${element.offsetHeight}px`;
@@ -135,28 +104,28 @@ class Task extends Component {
 
                 element.addEventListener("transitionend", () => {
                     this.props.updateTask(
-                        this.props.locationId,
-                        this.props.id,
+                        this.props.task.locationId,
+                        this.props.taskId,
                         { status: objectStatus.archived }
                     );
                 });
             });
         });
     };
+
     resetTransition = (element) => (element.style.transform = null);
 
-    handleTaskStatus = () => {
+    revertTaskStatus = () => {
         this.props.updateTask(
-            this.props.locationId,
-            this.props.id,
+            this.props.task.locationId,
+            this.props.taskId,
             { status: objectStatus.pending }
         );
     };
 
     render() {
-        const status = this.props.status;
         const classes = ["task", "card"];
-        switch (status) {
+        switch (this.props.task.status) {
             case objectStatus.completed:
                 classes.push("task--complete");
                 break;
@@ -171,30 +140,25 @@ class Task extends Component {
                     <div
                         className={classes.join(" ")}
                         onTouchStart={
-                            status === objectStatus.pending ? this.down : undefined
+                            this.props.task.status === objectStatus.pending ? this.down : undefined
                         }
                         onTouchEnd={
-                            status === objectStatus.pending ? this.leave : undefined
+                            this.props.task.status === objectStatus.pending ? this.leave : undefined
                         }
-                        onClick={
-                            status !== objectStatus.pending
-                                ? this.handleStatusModalToggle
-                                : this.handleUpdateModalToggle
-                        }
-                        data-id={this.props.id}
+                        onClick={this.props.clicked.bind(this, {...this.props.task, id: this.props.taskId})}
                         ref={this.taskRef}
                     >
                         <div className="task__wrap card__wrap">
                             <div className="task__content">
                                 <div className="task__title">
-                                    {this.props.heading}
+                                    {this.props.task.heading}
                                 </div>
                                 <div className="task__description">
-                                    {this.props.description}
+                                    {this.props.task.description}
                                 </div>
                             </div>
                             <div className="task__assignee">
-                                {this.props.assignee}
+                                [assignee]
                             </div>
                         </div>
                     </div>
@@ -209,60 +173,6 @@ class Task extends Component {
                         alt=""
                     />
                 </div>
-                {status !== objectStatus.pending && (
-                    <Modal
-                        theme="dark"
-                        active={this.state.changeStatusModal}
-                        toggle={this.handleStatusModalToggle}
-                    >
-                        <p>
-                            Add <strong>{this.props.heading}</strong> back to
-                            incomplete tasks?
-                        </p>
-                        <div className="form__control">
-                            <button
-                                className="button-subtle button-subtle--warning"
-                                onClick={this.handleStatusModalToggle}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className="button button--continue"
-                                onClick={this.handleTaskStatus}
-                            >
-                                Confirm
-                            </button>
-                        </div>
-                    </Modal>
-                )}
-                <Modal
-                    toggle={this.handleUpdateModalToggle}
-                    active={this.state.updateTask}
-                >
-                    <div className="heading">
-                        {"Edit " + this.props.heading}
-                    </div>
-                    <Form
-                        submit={this.handleTaskUpdateSubmit}
-                        buttonText="update"
-                        inputs={[
-                            {
-                                title: "Title",
-                                value: this.props.heading,
-                            },
-                            {
-                                title: "Description",
-                                type: "textarea",
-                                value: this.props.description,
-                            },
-                            {
-                                title: "Due date",
-                                type: "date",
-                                value: this.props.dueDate,
-                            },
-                        ]}
-                    />
-                </Modal>
             </>
         );
     }
@@ -270,8 +180,8 @@ class Task extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        userId: state.auth.userId,
-        locationId: state.tasks.tasks[ownProps.id].locationId
+        task: state.tasks.tasks[ownProps.taskId],
+        userId: state.auth.userId
     };
 };
 

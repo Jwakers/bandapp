@@ -1,6 +1,9 @@
 import React from "react";
 
 const form = props => {
+    const handleOnChange = event => {
+        //
+    }
     return (
             <form onSubmit={props.submit} className="form" action="">
                 {props.inputs.map((input, index) => {
@@ -44,6 +47,7 @@ const form = props => {
                                                 ? input.required
                                                 : false
                                         }
+                                        onChange={e => handleOnChange(e)}
                                     ></textarea>
                                 </>
                             );
@@ -95,7 +99,7 @@ const form = props => {
                                                 ? input.name
                                                 : input.title.toLowerCase().replace(' ', '-')
                                         }
-                                        defaultValue={
+                                        value={
                                             input.value && input.value
                                         }
                                         required={
@@ -103,6 +107,7 @@ const form = props => {
                                                 ? input.required
                                                 : false
                                         }
+                                        onChange={e => handleOnChange(e)}
                                         autoComplete={"on"}
                                     />
                                 </>
