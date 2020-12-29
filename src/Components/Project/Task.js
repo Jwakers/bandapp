@@ -1,8 +1,6 @@
 import React, { createRef, Component } from "react";
 import { connect } from "react-redux";
 
-import Modal from "../Modal/Modal";
-import Form from "../Form/Form";
 import * as actions from "../../store/actions/index";
 
 import completeIcon from "../../assets/icons/complete.svg";

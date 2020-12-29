@@ -1,9 +1,6 @@
 import React from "react";
 
 const form = props => {
-    const handleOnChange = event => {
-        //
-    }
     return (
             <form onSubmit={props.submit} className="form" action="">
                 {props.inputs.map((input, index) => {
@@ -47,7 +44,7 @@ const form = props => {
                                                 ? input.required
                                                 : false
                                         }
-                                        onChange={e => handleOnChange(e)}
+                                        onChange={props.onChange}
                                     ></textarea>
                                 </>
                             );
@@ -107,7 +104,7 @@ const form = props => {
                                                 ? input.required
                                                 : false
                                         }
-                                        onChange={e => handleOnChange(e)}
+                                        onChange={(e) => input.onChange(e)}
                                         autoComplete={"on"}
                                     />
                                 </>

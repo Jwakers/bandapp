@@ -9,9 +9,8 @@ const parseDescription = desc => {
     if (!desc) return false;
     if (desc.length > 100) {
         return desc.split(" ", 14).join(" ") + "...";
-    } else {
-        return desc;
     }
+    return desc;
 };
 
 const projectPreview = props => {

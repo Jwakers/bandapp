@@ -113,10 +113,6 @@ class Layout extends Component {
                                     component={Account}
                                 />
                                 <Route
-                                    path={urls.manageBand}
-                                    component={ManageBand}
-                                />
-                                <Route
                                     path={urls.band}
                                     component={ManageBand}
                                 />
@@ -129,11 +125,15 @@ class Layout extends Component {
                                         heading="Project archive"
                                         filterType="status"
                                         filterValue={objectStatus.archived}
+                                        canFilter={false}
                                     />
                                 </Route>
                                 <Route path={urls.projects} exact>
                                     <ProjectList
                                         heading="All projects"
+                                        filterType="status"
+                                        filterValue={objectStatus.pending}
+                                        canFilter
                                     />
                                 </Route>
                                 <Route
@@ -148,7 +148,7 @@ class Layout extends Component {
                             toggle={this.handleNewProjectToggle}
                             active={this.state.newProjectOpen}
                         >
-                            <div className="heading">Create project</div>
+                            <h2 className="heading heading--h2">Create project</h2>
                             <Form
                                 submit={this.handleFormSubmit}
                                 heading="Create project"

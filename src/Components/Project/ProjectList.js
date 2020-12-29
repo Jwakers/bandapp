@@ -11,19 +11,27 @@ import filterIcon from "../../assets/icons/filter.svg";
 class ProjectList extends Component {
     state = {
         projects: this.props.projects,
-        heading: this.props.heading,
         defaultFilter: this.props.filterType ? this.props.filterType : null,
         defaultValue: this.props.filterValue ? this.props.filterValue : null,
         showFilters: false,
     };
- 
+
+    componentDidMount() {
+        this.handleProjectFilters(
+            null,
+            this.state.defaultFilter,
+            this.state.defaultValue,
+            this.props.heading
+        );
+    }
+
     componentDidUpdate(prevProps) {
-        if (this.props.projects !== prevProps.projects) {
+        if (this.props.filterValue !== prevProps.filterValue) {
             this.handleProjectFilters(
                 null,
-                this.state.defaultFilter,
-                this.state.defaultValue,
-                this.state.heading
+                this.props.filterType,
+                this.props.filterValue,
+                this.props.heading
             );
         }
     }
@@ -60,25 +68,27 @@ class ProjectList extends Component {
                     modifier="placeholder-message--center"
                 />
             );
-        if (this.props.projects.loading) return <div className="spinner"></div>;
+        if (this.props.loading) return <div className="spinner"></div>;
         return (
             <>
                 <div className="projects">
                     <div className="projects__head">
                         <h1 className="projects__head__title heading heading--h1">
-                            {this.state.heading}
+                            {this.props.heading}
                         </h1>
                         <span className="projects__head__index">
                             {this.state.projects.length}
                         </span>
-                        <div
-                            onClick={this.toggleFilterMenu}
-                            className="projects__head__filter"
-                        >
-                            <img src={filterIcon} alt="filter" />
-                        </div>
+                        {this.props.canFilter && (
+                            <div
+                                onClick={this.toggleFilterMenu}
+                                className="projects__head__filter"
+                            >
+                                <img src={filterIcon} alt="filter" />
+                            </div>
+                        )}
                     </div>
-                    {this.state.showFilters && (
+                    {this.state.showFilters && this.props.canFilter && (
                         <select
                             className="form__select"
                             onChange={(event) =>

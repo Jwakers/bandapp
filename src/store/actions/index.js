@@ -25,5 +25,6 @@ export {
     fetchBands,
     createNewBand,
     addBandMember,
-    removeBandMember
+    removeBandMember,
+    updateBandInfo
 } from "./bands"

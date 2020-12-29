@@ -81,7 +81,6 @@ export const authSignUp = (email, password, username) => {
                             );
                         })
                         .catch((error) => {
-                            console.error(error.code);
                             console.error(error.message);
                             dispatch(authFail(error.message));
                         });
@@ -104,7 +103,6 @@ export const authSignIn = (email, password) => {
                     .auth()
                     .signInWithEmailAndPassword(email, password)
                     .then((user) => {
-                        console.log(user.user);
                         dispatch(authSuccess(user.user.uid, user.user.email));
                         dispatch(fetchUser(user.uid));
                     })

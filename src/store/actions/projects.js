@@ -45,7 +45,6 @@ export const fetchProjects = (locationIds) => {
 
 export const createNewProject = (projectData, locationId) => {
     return () => {
-        console.log(projectData, locationId)
         firebase.database().ref(`projects/${locationId}`).push(projectData)
         .catch(error => console.log(error));
     };
@@ -53,7 +52,6 @@ export const createNewProject = (projectData, locationId) => {
 
 export function updateProject(locationId, projectId, projectData) {
     return () => {
-        console.log(locationId, projectId, projectData)
         firebase.database().ref(`projects/${locationId}/${projectId}`).update(projectData);
     };
 }
