@@ -1,0 +1,15 @@
+.placeholder-message {
+    text-align: center;
+    width: 100%;
+    padding: rem(20) 0;
+    &--center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    &__icon {
+        display: inline;
+        width: 20px;
+    }
+}
