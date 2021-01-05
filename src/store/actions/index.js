@@ -18,7 +18,8 @@ export {
 } from "./auth"
 
 export {
-    fetchUser
+    fetchUser,
+    uploadUserProfileImage
 } from "./user"
 
 export {

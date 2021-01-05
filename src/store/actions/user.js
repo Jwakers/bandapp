@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/database";
+import "firebase/storage";
 
 import * as actionTypes from "./actionTypes";
 
@@ -50,6 +51,34 @@ export const setUsername = (username, userId) => {
             });
     };
 };
+
+export const uploadUserProfileImage = (userId, image) => {
+    return (dispatch) => {
+        const pathRef = `images/profiles/${userId}`;
+        firebase
+            .storage()
+            .ref(pathRef)
+            .put(image)
+            .then((res) => {
+                console.dir(res);
+                dispatch(setUserProfileImage(userId, pathRef))
+            })
+            .catch((err) => {
+                console.dir(err);
+            });
+    };
+};
+
+export const setUserProfileImage = (userId, imagePath) => {
+    return () => {
+        firebase.storage().ref(imagePath).getDownloadURL().then(url => {
+            console.log(url)
+            firebase
+                .database()
+                .ref(`users/${userId}`).update({profileImage: url}).catch(err => console.log(err))
+        }).catch(err => console.log(err))
+    }
+}
 
 export const fetchUser = (userId) => {
     return (dispatch) => {
