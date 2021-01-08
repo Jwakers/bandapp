@@ -39,7 +39,7 @@ const CreateProjectForm = (props) => {
                 className="form__input"
                 onChange={(e) => handleChange(e)}
                 type="text"
-                placeholder="Bio"
+                placeholder="Project description"
                 name="description"
                 value={formState.description}
             ></textarea>

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 
 import * as actions from "../store/actions/index";
@@ -10,7 +10,7 @@ import TaskList from "../Components/Project/TaskList";
 import urls from "../shared/urls";
 import { objectStatus } from "../shared/strings";
 
-class Project extends Component {
+class Project extends PureComponent {
     state = {
         addTaskOpen: false,
         updateProject: false,

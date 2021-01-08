@@ -3,16 +3,16 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import Topnav from "../Components/Navigation/Topnav";
-import ProjectList from "../Components/Project/ProjectList";
 import SideMenu from "../Components/Navigation/SideMenu";
 import Thumbnav from "../Components/Navigation/Thumbnav";
 import Project from "./Project";
-import CreateBand from "../Components/Band/CreateBand";
-import Account from "../Components/User/Account";
-import Auth from "./Auth";
-import Modal from "../Components/Modal/Modal";
+import ProjectList from "./ProjectList";
 import CreateProjectForm from "../Components/Form/CreateProjectForm";
-import ManageBand from "../Components/Band/ManageBand";
+import Band from "./Band";
+import CreateBand from "../Components/Band/CreateBand";
+import Auth from "./Auth";
+import Account from "./Account";
+import Modal from "../Components/Modal/Modal";
 
 import * as actions from "../store/actions/index";
 import urls from "../shared/urls";
@@ -114,7 +114,7 @@ class Layout extends Component {
                                 />
                                 <Route
                                     path={urls.band}
-                                    component={ManageBand}
+                                    component={Band}
                                 />
                                 <Route
                                     path={urls.createBand}
@@ -149,7 +149,7 @@ class Layout extends Component {
                             active={this.state.newProjectOpen}
                         >
                             <h2 className="heading heading--h2">Create project</h2>
-                            <CreateProjectForm onSubmit={e => this.handleFormSubmit(e)} userId={this.props.userId} bands={bandSelectOptions} />
+                            <CreateProjectForm onSubmit={e => this.handleFormSubmit(e)} userId={this.props.userId} bands={bandSelectOptions} close={this.handleNewProjectToggle} />
                             
                         </Modal>
                     </>

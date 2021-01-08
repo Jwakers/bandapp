@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
@@ -9,7 +9,7 @@ import * as actions from "../store/actions/index";
 
 import urls from "../shared/urls"
 
-class Auth extends Component {
+class Auth extends PureComponent {
     state = {
         isSignUp: false,
     };

@@ -40,8 +40,22 @@ const sideMenu = (props) => {
             />
             <div className={classes.join(" ")}>
                 <div className="side-menu__top">
-                    <div className="side-menu__head">Bandapp</div>
-                    <Hamburger classes={["hamburger--light"]} click={props.toggle} />
+                    <NavLink
+                        to={urls.account}
+                        onClick={props.toggle}
+                        className="side-menu__head"
+                    >
+                        <img
+                            className="profile-image"
+                            src={props.profileImage}
+                            alt=""
+                        />
+                        <span>{props.username}</span>
+                    </NavLink>
+                    <Hamburger
+                        classes={["hamburger--light"]}
+                        click={props.toggle}
+                    />
                 </div>
                 <div className="side-menu__list">
                     <NavLink
@@ -55,7 +69,7 @@ const sideMenu = (props) => {
                             {props.projects}
                         </span>
                     </NavLink>
-                    { bandLinks && bandLinks }
+                    {bandLinks && bandLinks}
                     <NavLink
                         to={urls.createBand}
                         className="side-menu__item"
@@ -120,10 +134,17 @@ const sideMenu = (props) => {
     );
 };
 
+const mapStateToProps = (state) => {
+    return {
+        username: state.user.user.username,
+        profileImage: state.user.user.profileImage,
+    };
+};
+
 const mapDispatchToProps = (dispatch) => {
     return {
         handleSignOut: () => dispatch(actions.authSignOut()),
     };
 };
 
-export default connect(null, mapDispatchToProps)(sideMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(sideMenu);

@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React from "react";
 import { connect } from "react-redux";
 
 import CreateBandForm from "../Form/CreateBandForm";
@@ -7,50 +7,30 @@ import urls from "../../shared/urls";
 
 import * as actions from "../../store/actions/index";
 
-class Band extends PureComponent {
-    state = {
-        bandName: undefined,
-        bio: undefined,
-    };
-
-    createNewBand(event) {
+const CreateBand = (props) => {
+    const createNewBand = (event) => {
         event.preventDefault();
         const form = {
-            bandName: event.target.elements["band-name"].value,
+            bandName: event.target.elements["bandName"].value,
             bio: event.target.elements["bio"].value,
         };
-        this.props.createNewBand(form, this.props.userId, this.props.username);
-        this.props.history.push(urls.projects);
-    }
-
-    handleChange = (event) => {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-        this.setState((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        props.createNewBand(form, props.userId, props.username);
+        props.history.push(urls.projects);
     };
 
-    render() {
-        return (
-            <>
-                <h1 className="heading heading--h1">Create a Band</h1>
+    return (
+        <>
+            <h1 className="heading heading--h1">Create a Band</h1>
 
-                <CreateBandForm onSubmit={this.createNewBand} close={this.props.close} />
-
-            </>
-        );
-    }
-}
+            <CreateBandForm onSubmit={createNewBand} close={props.close} />
+        </>
+    );
+};
 
 const mapStateToProps = (state) => {
     return {
         userId: state.auth.userId,
         username: state.user.user.username,
-        loading: state.bands.loading,
-        error: state.bands.error,
     };
 };
 
@@ -61,4 +41,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Band);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateBand);

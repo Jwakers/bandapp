@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const CreateBandForm = (props) => {
 
     const [formState, setFormState] = useState({
-        name: undefined,
+        bandName: undefined,
         bio: undefined
     })
 
@@ -27,7 +27,7 @@ const CreateBandForm = (props) => {
                 onChange={(e) => handleChange(e)}
                 type="text"
                 placeholder="band name"
-                name="name"
+                name="bandName"
                 required
                 value={formState.name}
             />

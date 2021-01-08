@@ -18,10 +18,15 @@
         display: flex;
     }
     &__head {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
         font-family: 'Sen', sans-serif;
         font-size: rem(30);
         font-weight: 600;
-        flex-grow: 1;
+        .profile-image {
+            margin-right: rem(10);
+        }
     }
     &__list {
         display: flex;

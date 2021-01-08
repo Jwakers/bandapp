@@ -107,7 +107,6 @@ const TaskList = (props) => {
             createdBy: props.userId,
             locationId: props.project.locationId,
         };
-        console.log(task)
         props.createNewTask(task, props.project.locationId);
         setAddTaskOpen(!addTaskOpen);
     };
