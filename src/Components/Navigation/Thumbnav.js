@@ -1,18 +1,24 @@
-import React from 'react'
-import Hamburger from './Hamburger';
-import addIcon from '../../assets/icons/add.svg'
+import React from "react";
 
-const thumbnav = props => {
+const thumbnav = (props) => {
     return (
         <div className="thumbnav">
             <div className="thumbnav__item" onClick={props.newProjectOpen}>
-                <img className="thumbnav__item__icon" src={addIcon} alt="Addition icon" />
+                <div className="thumbnav__item__icon">
+                    <i className="material-icons md-36">
+                        library_add
+                    </i>
+                </div>
             </div>
             <div className="thumbnav__item">
-                <Hamburger open="false" classes={["thumbnav__item__icon"]} click={props.toggle} />
+                <div className="thumbnav__item__icon">
+                    <i className="material-icons md-36" onClick={props.toggle}>
+                        menu
+                    </i>
+                </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default thumbnav
+export default thumbnav;

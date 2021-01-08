@@ -24,9 +24,6 @@ const projectPreview = props => {
                         <div className="project__head__title heading">
                             {props.heading}
                         </div>
-                        <div className="project__head__assignees">
-                            <em>by: ___</em>
-                        </div>
                     </div>
 
                     <p className="project__desc">

@@ -16,6 +16,7 @@
     }
     &__top {
         display: flex;
+        align-items: center;
     }
     &__head {
         display: flex;
@@ -35,7 +36,6 @@
         overflow-y: auto;
     }
     &__item {
-        flex-grow: 1;
         padding-top: rem(30);
         padding-bottom: rem(30);
         font-size: rem(20);

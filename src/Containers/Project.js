@@ -5,7 +5,7 @@ import * as actions from "../store/actions/index";
 import Modal from "../Components/Modal/Modal";
 import UpdateProjectForm from "../Components/Form/UpdateProjectForm";
 
-import TaskList from "../Components/Project/TaskList";
+import TaskList from "./TaskList";
 
 import urls from "../shared/urls";
 import { objectStatus } from "../shared/strings";
@@ -61,9 +61,6 @@ class Project extends PureComponent {
                         <div className="project__head">
                             <div className="project__head__title heading">
                                 {this.props.project.heading}
-                            </div>
-                            <div className="project__head__assignees">
-                                [assignees]
                             </div>
                         </div>
 
@@ -147,8 +144,6 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createNewTask: (payload, locationId) =>
-            dispatch(actions.createNewTask(payload, locationId)),
         updateProject: (locationId, userId, projectData) =>
             dispatch(actions.updateProject(locationId, userId, projectData)),
     };

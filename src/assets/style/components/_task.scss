@@ -56,12 +56,14 @@
         transition: 0.2s;
         &--complete {
             left: -100px;
+            color: $green;
         }
         &--complete.task__icon--active {
             left: 20px;
         }
         &--delete {
             right: -100px;
+            color: $red;
         }
         &--delete.task__icon--active {
             right: 20px;

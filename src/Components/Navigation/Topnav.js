@@ -1,8 +1,6 @@
 import React from "react";
-import  { NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import urls from "../../shared/urls";
-
-import Hamburger from "./Hamburger";
 
 const topnav = (props) => {
     return (
@@ -12,7 +10,7 @@ const topnav = (props) => {
                     <div className="heading">{props.heading}</div>
                 </NavLink>
                 {props.isAuth && (
-                    <Hamburger open="false" click={props.toggle} />
+                    <i className="material-icons md-36" onClick={props.toggle}>menu</i>
                 )}
             </div>
         </nav>

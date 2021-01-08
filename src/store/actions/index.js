@@ -7,7 +7,8 @@ export {
 export {
     fetchTasks,
     updateTask,
-    createNewTask
+    createNewTask,
+    deleteTask
 } from "./tasks"
 
 export {

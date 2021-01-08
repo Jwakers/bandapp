@@ -49,13 +49,7 @@ $button-types: 'default',
     position: fixed;
     right: 10px;
     bottom: 90px;
-    height: 60px;
-    width: 60px;
-    color: #fff;
-    font-size: rem(24);
-    border-radius: 50%;
-    background-color: $green;
-    box-shadow: $shadow;
+    color: $green;
     z-index: 10;
     &__content {
         position: absolute;
