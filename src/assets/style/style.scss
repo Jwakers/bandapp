@@ -1,5 +1,7 @@
 // External
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sen:wght@400;700&display=swap');
+// Icons
+@import "../../../node_modules/material-design-icons/iconfont/material-icons.css";
 // Base
 @import "./base/mixins";
 @import "./base/variables";
@@ -12,7 +14,6 @@
 @import "./components/card";
 // Components
 @import "./components/navigation";
-@import "./components/hamburger";
 @import "./components/sidemenu";
 @import "./components/thumbnav";
 @import "./components/projects";
@@ -25,3 +26,4 @@
 @import "./components/placeholder-message";
 @import "./components/profile-image";
 @import "./components/band-image";
+@import "./components/material-icons";

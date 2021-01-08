@@ -1,17 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import Task from "./Task";
-import Placeholder from "../Message/Placeholder";
-import Progress from "../Project/Progress";
-import Modal from "../Modal/Modal";
-import UpdateTaskForm from "../Form/UpdateTaskForm";
-import CreateTaskForm from "../Form/CreateTaskForm";
+import Task from "../Components/Project/Task";
+import Placeholder from "../Components/Message/Placeholder";
+import Progress from "../Components/Project/Progress";
+import Modal from "../Components/Modal/Modal";
+import UpdateTaskForm from "../Components/Form/UpdateTaskForm";
+import CreateTaskForm from "../Components/Form/CreateTaskForm";
 
-import * as actions from "../../store/actions";
-import { objectStatus } from "../../shared/strings";
-import filterIcon from "../../assets/icons/filter.svg";
-import sortIcon from "../../assets/icons/sort.svg";
+import * as actions from "../store/actions";
+import { objectStatus } from "../shared/strings";
 
 class TaskList extends Component {
     state = {
@@ -20,6 +18,11 @@ class TaskList extends Component {
         changeStatusOpen: false,
         updateForm: null,
     };
+
+    componentDidUpdate(prevProps) {
+        console.log('Task list updated')
+        console.log(this.props, prevProps)
+    }
 
     handleUpdateModalToggle = () => {
         this.setState((prev) => ({
@@ -43,7 +46,7 @@ class TaskList extends Component {
     };
 
     getTaskData = (taskData) => {
-        console.log(taskData)
+        console.log(taskData);
         switch (taskData.status) {
             case objectStatus.completed:
                 this.getAddToIncompleteForm(taskData);
@@ -60,9 +63,9 @@ class TaskList extends Component {
         this.props.updateTask(taskData.locationId, taskData.id, {
             status: objectStatus.pending,
         });
-        this.setChangeStatusOpen(false);
+        this.setState({ changeStatusOpen: false });
     };
-    
+
     getAddToIncompleteForm = (taskData) => {
         this.setState(() => ({
             updateForm: (
@@ -94,7 +97,7 @@ class TaskList extends Component {
         this.handleStatusModalToggle();
     };
     getUpdateForm = (taskData) => {
-        console.log(taskData)
+        console.log(taskData);
         this.setState(() => ({
             updateForm: (
                 <UpdateTaskForm
@@ -166,8 +169,8 @@ class TaskList extends Component {
                             Tasks
                         </div>
                         <div className="project__tasks__topbar__filter">
-                            <img src={filterIcon} alt="filter" />
-                            <img src={sortIcon} alt="sort" />
+                            <i className="material-icons">filter_list</i>
+                            <i className="material-icons">sort</i>
                         </div>
                     </div>
                     {this.props.tasks ? (
@@ -210,18 +213,18 @@ class TaskList extends Component {
                         />
                     ))}
 
-                    <div
+                    <i
+                        className="material-icons md-48 floating-button floating-button--green"
                         onClick={this.handleTaskFormToggle}
-                        className="floating-button"
                     >
-                        <span className="floating-button__content">+</span>
-                    </div>
+                        add
+                    </i>
                     <Modal
                         toggle={this.handleTaskFormToggle}
-                        active={this.addTaskOpen}
+                        active={this.state.addTaskOpen}
                     >
                         <div className="heading heading--h2">
-                            {"Add task to " + this.props.project.heading}
+                            {`Add task to ${this.props.project.heading}`}
                         </div>
                         <CreateTaskForm
                             onSubmit={(e) => this.handleCreateNewTask(e)}
@@ -258,6 +261,7 @@ const mapStateToProps = (state, ownProps) => {
                 result.push({ ...value, id: key });
             return result;
         }, []),
+        // tasks: state.tasks.tasks,
         project: state.projects.projects[ownProps.projectId],
         userId: state.auth.userId,
     };

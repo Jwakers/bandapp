@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 
 import * as actions from "../../store/actions/index";
 
-import completeIcon from "../../assets/icons/complete.svg";
-import deleteIcon from "../../assets/icons/delete.svg";
 import { objectStatus } from "../../shared/strings";
 
 const Task = (props) => {
@@ -60,7 +58,7 @@ const Task = (props) => {
             // Delete todo
             deleteEl(event.currentTarget);
         } else {
-            // return to position
+            // Return to position
             event.currentTarget.style.transform = null;
         }
 
@@ -85,26 +83,11 @@ const Task = (props) => {
         });
     };
 
-    const deleteEl = (element) => {
-        // element.classList.add("task--transition");
-        // element.style.height = `${element.offsetHeight}px`;
-        // icons.delete.classList.remove("task__icon--active");
-
-        // requestAnimationFrame(() => {
-        //     requestAnimationFrame(() => {
-        //         resetTransition(element);
-        //         element.classList.add("task--shrink");
-        //         element.classList.add("task--out-left");
-
-        //         element.addEventListener("transitionend", () => {
-        //             props.updateTask(props.task.locationId, props.taskId, {
-        //                 status: objectStatus.archived,
-        //             });
-        //         });
-        //     });
-        // });
+    const deleteEl = (el) => {
         if (window.confirm('Are you sure you want to delete this task?')) {
             props.deleteTask(props.task.locationId, props.taskId)
+        } else {
+            el.style.transform = null;
         }
     };
 
@@ -153,16 +136,8 @@ const Task = (props) => {
                         <div className="task__assignee">[assignee]</div>
                     </div>
                 </div>
-                <img
-                    className="task__icon task__icon--complete"
-                    src={completeIcon}
-                    alt=""
-                />
-                <img
-                    className="task__icon task__icon--delete"
-                    src={deleteIcon}
-                    alt=""
-                />
+                <i className="material-icons task__icon task__icon--complete">done</i>
+                <i className="material-icons task__icon task__icon--delete">delete</i>
             </div>
         </>
     );

@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import * as actions from "../../store/actions/index";
-import Hamburger from "./Hamburger";
 import Backdrop from "../Modal/Backdrop";
 import urls from "../../shared/urls";
 
@@ -52,10 +51,13 @@ const sideMenu = (props) => {
                         />
                         <span>{props.username}</span>
                     </NavLink>
-                    <Hamburger
-                        classes={["hamburger--light"]}
-                        click={props.toggle}
-                    />
+                    <NavLink
+                        to={urls.home}
+                        activeClassName="side-menu__item--active"
+                        onClick={props.toggle}
+                    >
+                        <i className="material-icons md-36" onClick={props.toggle}>settings</i>
+                    </NavLink>
                 </div>
                 <div className="side-menu__list">
                     <NavLink
@@ -85,22 +87,6 @@ const sideMenu = (props) => {
                         onClick={props.toggle}
                     >
                         Songs
-                    </NavLink>
-                    <NavLink
-                        to={urls.home}
-                        className="side-menu__item"
-                        activeClassName="side-menu__item--active"
-                        onClick={props.toggle}
-                    >
-                        Settings
-                    </NavLink>
-                    <NavLink
-                        to={urls.home}
-                        className="side-menu__item"
-                        activeClassName="side-menu__item--active"
-                        onClick={props.toggle}
-                    >
-                        About
                     </NavLink>
                     <NavLink
                         to={urls.projectArchive}

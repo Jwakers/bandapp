@@ -34,7 +34,12 @@ export const fetchTasks = (projectIds) => {
             .on(
                 "value",
                 (snap) => {
+                    console.log('Task lister', snap.val())
                     dispatch(tasksSuccess(snap.val()));
+                    // Tasks are stacking because of multiple requests(...state.tasks - see reducer),
+                    // so deleting tasks does not remove them from state, tasks can only be added and manipulated.
+                    // https://www.pluralsight.com/guides/using-firebase-with-react-and-redux
+                    dispatch(taskDelete())
                 },
                 (error) => {
                     dispatch(tasksFail(error.message));

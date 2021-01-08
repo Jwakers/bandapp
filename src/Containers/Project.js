@@ -5,7 +5,7 @@ import * as actions from "../store/actions/index";
 import Modal from "../Components/Modal/Modal";
 import UpdateProjectForm from "../Components/Form/UpdateProjectForm";
 
-import TaskList from "../Components/Project/TaskList";
+import TaskList from "./TaskList";
 
 import urls from "../shared/urls";
 import { objectStatus } from "../shared/strings";
