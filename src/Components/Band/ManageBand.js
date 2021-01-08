@@ -1,32 +1,20 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import Modal from "../Modal/Modal";
+import UpdateBandForm from "../Form/UpdateBandForm";
+import UpdateBandImageForm from "../Form/UpdateBandImageForm";
+import AddBandMemberForm from "../Form/AddBandMemberForm";
 
 import * as actions from "../../store/actions";
 
-class ManageBand extends Component {
+class ManageBand extends PureComponent {
     state = {
         showBandUpdateModal: false,
-        isBandOwner: this.props.band.owner === this.props.userId,
-        bandNameInput: this.props.band.bandName,
-        bandBioInput: this.props.band.bio,
+        isBandOwner: this.props.band.owner === this.props.userId
     };
 
-    componentDidUpdate(prevProps) {
-        if (this.props.match.params.bandid !== prevProps.match.params.bandid) {
-            console.log(this.props.band.bandName)
-            this.setState(({
-                ...this.state,
-                bandNameInput: this.props.band.bandName,
-                bandBioInput: this.props.band.bio
-            }))
-            console.log(this.state)
-        }
-    }
-
-
     toggleBandUpdateForm = () => {
-        this.setState(prev => ({
+        this.setState((prev) => ({
             showBandUpdateModal: !prev.showBandUpdateModal,
         }));
     };
@@ -34,11 +22,11 @@ class ManageBand extends Component {
     handleBandUpdateSubmit = (event) => {
         event.preventDefault();
         const bandData = {
-            bandName: this.state.bandNameInput,
-            bio: this.state.bandBioInput,
+            bandName: event.target.elements['bandName'].value,
+            bio: event.target.elements['bio'].value,
         };
-        this.props.updateBandInfo(this.props.match.params.bandid, bandData)
-        this.toggleBandUpdateForm()
+        this.props.updateBandInfo(this.props.match.params.bandid, bandData);
+        this.toggleBandUpdateForm();
     };
 
     handleInputOnChange = (event, stateProp) => {
@@ -49,7 +37,7 @@ class ManageBand extends Component {
 
     handleAddBandMemberSubmit = (event) => {
         event.preventDefault();
-        const input = event.target.elements["members-username"];
+        const input = event.target.elements["username"];
         const username = input.value;
         this.props.addBandMember(
             this.props.match.params.bandid,
@@ -57,6 +45,12 @@ class ManageBand extends Component {
         );
         input.value = "";
     };
+
+    handleUploadBandProfileImage(event) {
+        event.preventDefault();
+        const file = event.target.elements["bandImage"].files[0];
+        this.props.uploadBandProfileImage(this.props.match.params.bandid, file);
+    }
 
     removeBandMember = (memberId) => {
         this.props.removeBandMember(this.props.match.params.bandid, memberId);
@@ -66,7 +60,7 @@ class ManageBand extends Component {
         const [id, username] = [...member];
         const button = (
             <button
-                onClick={this.props.removeBandMember.bind(this, id)}
+                onClick={this.removeBandMember.bind(this, id)}
                 className="button button--warning"
             >
                 remove
@@ -85,9 +79,16 @@ class ManageBand extends Component {
         return (
             <>
                 <h1>{this.props.band.bandName}</h1>
+                <div>
+                    <img
+                        className="band-image"
+                        src={this.props.band.bandImage}
+                        alt=""
+                    />
+                </div>
                 {this.props.error ? this.props.error : null}
                 <div>
-                    <strong>Bio</strong> [update button]
+                    <strong>Bio</strong>
                 </div>
                 <p>{this.props.band.bio}</p>
                 <div>
@@ -107,57 +108,16 @@ class ManageBand extends Component {
                             Update Band Information
                         </button>
                         <h2>Add band members</h2>
-                        <form
-                            className="form"
-                            onSubmit={this.handleAddBandMemberSubmit}
-                        >
-                            <input
-                                className="form__input"
-                                type="text"
-                                name="members-username"
-                                placeholder="Members username"
-                            />
-                            <button className="button" type="submit">
-                                Submit
-                            </button>
-                        </form>
+                        <AddBandMemberForm onSubmit={this.handleAddBandMemberSubmit} />
+                        <div>
+                            <h2>Add or Update band image</h2>
+                            <UpdateBandImageForm onSubmit={e => this.handleUploadBandProfileImage(e)} />
+                        </div>
                         <Modal
                             toggle={this.toggleBandUpdateForm}
                             active={this.state.showBandUpdateModal}
                         >
-                            <form
-                                className="form"
-                                onSubmit={this.handleBandUpdateSubmit}
-                            >
-                                <input
-                                    className="form__input"
-                                    type="text"
-                                    name="band-name"
-                                    onChange={e => this.handleInputOnChange(e, 'bandNameInput')}
-                                    value={this.state.bandNameInput}
-                                />
-                                <textarea
-                                    className="form__input"
-                                    name="band-bio"
-                                    onChange={e => this.handleInputOnChange(e, 'bandBioInput')}
-                                    value={this.state.bandBioInput}
-                                ></textarea>
-                                <div className="form__control">
-                                    <button
-                                        type="button"
-                                        onClick={this.toggleBandUpdateForm}
-                                        className="form__control__cancel button-subtle button-subtle--warning"
-                                    >
-                                        cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="form__control__submit button button--continue"
-                                    >
-                                        update
-                                    </button>
-                                </div>
-                            </form>
+                            <UpdateBandForm onSubmit={this.handleBandUpdateSubmit} close={this.toggleBandUpdateForm} band={this.props.band} />
                         </Modal>
                     </>
                 )}
@@ -182,6 +142,9 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(actions.removeBandMember(bandId, username)),
         updateBandInfo: (bandId, bandData) =>
             dispatch(actions.updateBandInfo(bandId, bandData)),
+        uploadBandProfileImage: (bandId, image) => {
+            dispatch(actions.uploadBandProfileImage(bandId, image));
+        },
     };
 };
 

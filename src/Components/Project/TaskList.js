@@ -5,7 +5,8 @@ import Task from "./Task";
 import Placeholder from "../Message/Placeholder";
 import Progress from "../Project/Progress";
 import Modal from "../Modal/Modal";
-import Form from "../Form/Form";
+import UpdateTaskForm from "../Form/UpdateTaskForm";
+import CreateTaskForm from "../Form/CreateTaskForm";
 
 import * as actions from "../../store/actions";
 import { objectStatus } from "../../shared/strings";
@@ -84,28 +85,7 @@ const TaskList = (props) => {
     };
     const getUpdateForm = (taskData) => {
         setUpdateForm(
-            <Form
-                submit={(event) =>
-                    handleUpdateTask(event, taskData.locationId, taskData.id)
-                }
-                buttonText="update"
-                inputs={[
-                    {
-                        title: "Title",
-                        value: taskData.heading,
-                    },
-                    {
-                        title: "Description",
-                        type: "textarea",
-                        value: taskData.description,
-                    },
-                    {
-                        title: "Due date",
-                        type: "date",
-                        value: taskData.dueDate,
-                    },
-                ]}
-            />
+            <UpdateTaskForm onSubmit={e => handleUpdateTask(e, taskData.locationId, taskData.id)} task={taskData} close={handleTaskFormToggle} />
         );
         handleUpdateModalToggle();
     };
@@ -115,7 +95,7 @@ const TaskList = (props) => {
         const form = {
             title: event.target.elements["title"].value,
             desc: event.target.elements["description"].value,
-            dueDate: event.target.elements["due-date"].value,
+            dueDate: event.target.elements["dueDate"].value,
         };
         const task = {
             projectId: props.projectId,
@@ -127,6 +107,7 @@ const TaskList = (props) => {
             createdBy: props.userId,
             locationId: props.project.locationId,
         };
+        console.log(task)
         props.createNewTask(task, props.project.locationId);
         setAddTaskOpen(!addTaskOpen);
     };
@@ -136,7 +117,7 @@ const TaskList = (props) => {
         const form = {
             title: event.target.elements["title"].value,
             desc: event.target.elements["description"].value,
-            dueDate: event.target.elements["due-date"].value,
+            dueDate: event.target.elements["dueDate"].value,
         };
         const task = {
             heading: form.title,
@@ -232,25 +213,8 @@ const TaskList = (props) => {
                     <div className="heading heading--h2">
                         {"Add task to " + props.project.heading}
                     </div>
-                    <Form
-                        submit={handleCreateNewTask}
-                        inputs={[
-                            {
-                                title: "Title",
-                                placeholder: "Task title",
-                                required: true,
-                            },
-                            {
-                                title: "Description",
-                                type: "textarea",
-                                placeholder: "Task description",
-                            },
-                            {
-                                title: "Due date",
-                                type: "date",
-                            },
-                        ]}
-                    />
+                    <CreateTaskForm onSubmit={e => handleCreateNewTask(e)} close={handleTaskFormToggle} />
+                    
                 </Modal>
                 {updateForm && (
                     <Modal

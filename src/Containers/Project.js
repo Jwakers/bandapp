@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import * as actions from "../store/actions/index";
 import Modal from "../Components/Modal/Modal";
-import ProjectForm from "../Components/Form/ProjectForm";
+import UpdateProjectForm from "../Components/Form/UpdateProjectForm";
 
 import TaskList from "../Components/Project/TaskList";
 
@@ -112,7 +112,7 @@ class Project extends Component {
                     toggle={this.handleProjectUpdateFormToggle}
                     active={this.state.updateProject}
                 >
-                    <ProjectForm projectId={this.props.match.params.projectid} close={this.handleProjectUpdateFormToggle} />
+                    <UpdateProjectForm projectId={this.props.match.params.projectid} close={this.handleProjectUpdateFormToggle} />
                     <button
                         className="button button--warning"
                         onClick={this.handleProjectArchive}

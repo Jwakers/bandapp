@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import UpdateProfileImage from '../Form/UpdateProfileImage';
 
 import * as actions from "../../store/actions/index";
 
@@ -19,12 +20,7 @@ class Account extends Component {
                 <div>User name: {this.props.username}</div>
                 <div>Email: {this.props.email}</div>
                 <div>
-                    <form onSubmit={e => this.handleProfileImage(e)}>
-                        <input type="file" name="profile-image" />
-                        <button type="submit" className="button">
-                            Submit
-                        </button>
-                    </form>
+                    <UpdateProfileImage onSubmit={e => this.handleProfileImage(e)} />
                 </div>
 
                 <button className="button" onClick={this.props.handleSignOut}>

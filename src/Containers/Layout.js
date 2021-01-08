@@ -11,7 +11,7 @@ import CreateBand from "../Components/Band/CreateBand";
 import Account from "../Components/User/Account";
 import Auth from "./Auth";
 import Modal from "../Components/Modal/Modal";
-import Form from "../Components/Form/Form";
+import CreateProjectForm from "../Components/Form/CreateProjectForm";
 import ManageBand from "../Components/Band/ManageBand";
 
 import * as actions from "../store/actions/index";
@@ -57,7 +57,7 @@ class Layout extends Component {
         const form = {
             title: event.target.elements["title"].value,
             desc: event.target.elements["description"].value,
-            dueDate: event.target.elements["due-date"].value,
+            dueDate: event.target.elements["dueDate"].value,
             locationId: event.target.elements["location"].value,
         };
         const project = {
@@ -149,37 +149,8 @@ class Layout extends Component {
                             active={this.state.newProjectOpen}
                         >
                             <h2 className="heading heading--h2">Create project</h2>
-                            <Form
-                                submit={this.handleFormSubmit}
-                                heading="Create project"
-                                inputs={[
-                                    {
-                                        title: "Title",
-                                        placeholder: "Project title",
-                                        required: true,
-                                    },
-                                    {
-                                        title: "Description",
-                                        type: "textarea",
-                                        placeholder: "Project description",
-                                    },
-                                    {
-                                        title: "Due date",
-                                        type: "date",
-                                    },
-                                    {
-                                        title: "Location",
-                                        type: "select",
-                                        options: [
-                                            {
-                                                value: this.props.userId,
-                                                content: "My projects",
-                                            },
-                                            ...bandSelectOptions,
-                                        ],
-                                    },
-                                ]}
-                            />
+                            <CreateProjectForm onSubmit={e => this.handleFormSubmit(e)} userId={this.props.userId} bands={bandSelectOptions} />
+                            
                         </Modal>
                     </>
                 )}

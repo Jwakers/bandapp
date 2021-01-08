@@ -2,7 +2,7 @@ import React from "react";
 
 const form = props => {
     return (
-            <form onSubmit={props.submit} className="form" action="">
+            <form onSubmit={props.submit} className="form">
                 {props.inputs.map((input, index) => {
                     let inputTag;
                     if (!input.type) input.type = 'text';

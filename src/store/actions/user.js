@@ -60,7 +60,6 @@ export const uploadUserProfileImage = (userId, image) => {
             .ref(pathRef)
             .put(image)
             .then((res) => {
-                console.dir(res);
                 dispatch(setUserProfileImage(userId, pathRef))
             })
             .catch((err) => {
@@ -72,7 +71,6 @@ export const uploadUserProfileImage = (userId, image) => {
 export const setUserProfileImage = (userId, imagePath) => {
     return () => {
         firebase.storage().ref(imagePath).getDownloadURL().then(url => {
-            console.log(url)
             firebase
                 .database()
                 .ref(`users/${userId}`).update({profileImage: url}).catch(err => console.log(err))

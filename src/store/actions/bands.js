@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/database";
+import "firebase/storage";
 
 import * as actionTypes from "./actionTypes";
 
@@ -92,6 +93,32 @@ export const addBandToUser = (userId, bandId) => {
             .catch((error) => console.log(error));
     };
 };
+
+export const uploadBandProfileImage = (bandId, image) => {
+    return (dispatch) => {
+        const pathRef = `images/bands/${bandId}`;
+        firebase
+            .storage()
+            .ref(pathRef)
+            .put(image)
+            .then((res) => {
+                dispatch(setBandProfileImage(bandId, pathRef))
+            })
+            .catch((err) => {
+                console.dir(err);
+            });
+    };
+};
+
+export const setBandProfileImage = (bandId, imagePath) => {
+    return () => {
+        firebase.storage().ref(imagePath).getDownloadURL().then(url => {
+            firebase
+                .database()
+                .ref(`bands/${bandId}`).update({bandImage: url}).catch(err => console.log(err))
+        }).catch(err => console.log(err))
+    }
+}
 
 export const createNewBand = (bandData, userId, username) => {
     bandData.members = { [userId]: username };

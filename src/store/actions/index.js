@@ -27,5 +27,6 @@ export {
     createNewBand,
     addBandMember,
     removeBandMember,
-    updateBandInfo
+    updateBandInfo,
+    uploadBandProfileImage
 } from "./bands"

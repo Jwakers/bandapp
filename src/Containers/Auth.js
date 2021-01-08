@@ -16,11 +16,11 @@ class Auth extends Component {
     handleAuthFormSubmit(event) {
         event.preventDefault();
         const form = {
-            email: event.target.elements["email-address"].value,
+            email: event.target.elements["email"].value,
             password: event.target.elements["password"].value
         };
         this.state.isSignUp
-            ? this.props.onSignUp(form.email, form.password, event.target.elements["user-name"].value)
+            ? this.props.onSignUp(form.email, form.password, event.target.elements["username"].value)
             : this.props.onSignIn(form.email, form.password);
     }
     handleFormState() {
@@ -43,15 +43,9 @@ class Auth extends Component {
                 </div>
                 <div className="message message--error">{this.props.error}</div>
                 {this.state.isSignUp ? (
-                    <SignUpForm
-                        submit={this.handleAuthFormSubmit.bind(this)}
-                        buttonText={this.getMethodText()}
-                    />
+                    <SignUpForm submit={this.handleAuthFormSubmit.bind(this)} />
                 ) : (
-                    <SignInForm
-                        submit={this.handleAuthFormSubmit.bind(this)}
-                        buttonText={this.getMethodText()}
-                    />
+                    <SignInForm submit={this.handleAuthFormSubmit.bind(this)} />
                 )}
                 <button
                     className="button-subtle"
