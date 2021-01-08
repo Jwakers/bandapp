@@ -86,23 +86,26 @@ const Task = (props) => {
     };
 
     const deleteEl = (element) => {
-        element.classList.add("task--transition");
-        element.style.height = `${element.offsetHeight}px`;
-        icons.delete.classList.remove("task__icon--active");
+        // element.classList.add("task--transition");
+        // element.style.height = `${element.offsetHeight}px`;
+        // icons.delete.classList.remove("task__icon--active");
 
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                resetTransition(element);
-                element.classList.add("task--shrink");
-                element.classList.add("task--out-left");
+        // requestAnimationFrame(() => {
+        //     requestAnimationFrame(() => {
+        //         resetTransition(element);
+        //         element.classList.add("task--shrink");
+        //         element.classList.add("task--out-left");
 
-                element.addEventListener("transitionend", () => {
-                    props.updateTask(props.task.locationId, props.taskId, {
-                        status: objectStatus.archived,
-                    });
-                });
-            });
-        });
+        //         element.addEventListener("transitionend", () => {
+        //             props.updateTask(props.task.locationId, props.taskId, {
+        //                 status: objectStatus.archived,
+        //             });
+        //         });
+        //     });
+        // });
+        if (window.confirm('Are you sure you want to delete this task?')) {
+            props.deleteTask(props.task.locationId, props.taskId)
+        }
     };
 
     const resetTransition = (element) => (element.style.transform = null);
@@ -132,7 +135,7 @@ const Task = (props) => {
                             ? leave
                             : undefined
                     }
-                    onClick={props.clicked.bind(this, {
+                    onClick={props.onClick.bind(this, {
                         ...props.task,
                         id: props.taskId,
                     })}
@@ -174,8 +177,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateTask: (taskId, userId, taskData) =>
-            dispatch(actions.updateTask(taskId, userId, taskData)),
+        updateTask: (projectId, taskId, taskData) =>
+            dispatch(actions.updateTask(projectId, taskId, taskData)),
+        deleteTask: (projectId, taskId) => {
+            dispatch(actions.deleteTask(projectId, taskId))
+        }
     };
 };
 

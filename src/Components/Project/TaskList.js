@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import Task from "./Task";
@@ -13,84 +13,107 @@ import { objectStatus } from "../../shared/strings";
 import filterIcon from "../../assets/icons/filter.svg";
 import sortIcon from "../../assets/icons/sort.svg";
 
-const TaskList = (props) => {
-    const [addTaskOpen, setAddTaskOpen] = useState(false);
-    const [updateTaskOpen, setUpdateTaskOpen] = useState(false);
-    const [changeStatusOpen, setChangeStatusOpen] = useState(false);
-    const [showArchivedTasks, setShowArchivedTasks] = useState(false);
-    const [updateForm, setUpdateForm] = useState(null);
-
-    const handleUpdateModalToggle = () => {
-        setUpdateTaskOpen(!updateTaskOpen);
+class TaskList extends Component {
+    state = {
+        addTaskOpen: false,
+        updateTaskOpen: false,
+        changeStatusOpen: false,
+        updateForm: null,
     };
 
-    const handleTaskFormToggle = () => {
-        setAddTaskOpen(!addTaskOpen);
+    handleUpdateModalToggle = () => {
+        this.setState((prev) => ({
+            updateTaskOpen: !prev.updateTaskOpen,
+        }));
+        // this.setUpdateTaskOpen(!updateTaskOpen);
     };
 
-    const handleArchivedTasksToggle = () => {
-        setShowArchivedTasks(!showArchivedTasks);
+    handleTaskFormToggle = () => {
+        this.setState((prev) => ({
+            addTaskOpen: !prev.addTaskOpen,
+        }));
+        // setAddTaskOpen(!addTaskOpen);
     };
 
-    const handleStatusModalToggle = () => {
-        setChangeStatusOpen(!changeStatusOpen);
+    handleStatusModalToggle = () => {
+        this.setState((prev) => ({
+            changeStatusOpen: !prev.changeStatusOpen,
+        }));
+        // setChangeStatusOpen(!changeStatusOpen);
     };
 
-    const getTaskData = (taskData) => {
+    getTaskData = (taskData) => {
+        console.log(taskData)
         switch (taskData.status) {
             case objectStatus.completed:
-                getAddToIncompleteForm(taskData);
-                break;
-            case objectStatus.archived:
-                getAddToIncompleteForm(taskData);
+                this.getAddToIncompleteForm(taskData);
                 break;
             case objectStatus.pending:
-                getUpdateForm(taskData);
+                this.getUpdateForm(taskData);
                 break;
             default:
                 console.error(`Invalid task status: ${taskData.status}`);
         }
     };
 
-    const addTaskToIncomplete = (taskData) => {
-        props.updateTask(taskData.locationId, taskData.id, {
+    addTaskToIncomplete = (taskData) => {
+        this.props.updateTask(taskData.locationId, taskData.id, {
             status: objectStatus.pending,
         });
-        setChangeStatusOpen(false);
+        this.setChangeStatusOpen(false);
     };
-    const getAddToIncompleteForm = (taskData) => {
-        setUpdateForm(
-            <>
-                <p>
-                    Add <strong>{taskData.heading}</strong> back to incomplete
-                    tasks?
-                </p>
-                <div className="form__control">
-                    <button
-                        className="button-subtle button-subtle--warning"
-                        onClick={handleStatusModalToggle}
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        className="button button--continue"
-                        onClick={addTaskToIncomplete.bind(this, taskData)}
-                    >
-                        Confirm
-                    </button>
-                </div>
-            </>
-        );
-        handleStatusModalToggle();
+    
+    getAddToIncompleteForm = (taskData) => {
+        this.setState(() => ({
+            updateForm: (
+                <>
+                    <p>
+                        Add <strong>{taskData.heading}</strong> back to
+                        incomplete tasks?
+                    </p>
+                    <div className="form__control">
+                        <button
+                            className="button-subtle button-subtle--warning"
+                            onClick={this.handleStatusModalToggle}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="button button--continue"
+                            onClick={this.addTaskToIncomplete.bind(
+                                this,
+                                taskData
+                            )}
+                        >
+                            Confirm
+                        </button>
+                    </div>
+                </>
+            ),
+        }));
+        this.handleStatusModalToggle();
     };
-    const getUpdateForm = (taskData) => {
-        setUpdateForm(
-            <UpdateTaskForm onSubmit={e => handleUpdateTask(e, taskData.locationId, taskData.id)} task={taskData} close={handleTaskFormToggle} />
-        );
-        handleUpdateModalToggle();
+    getUpdateForm = (taskData) => {
+        console.log(taskData)
+        this.setState(() => ({
+            updateForm: (
+                <UpdateTaskForm
+                    onSubmit={(e) =>
+                        this.handleUpdateTask(
+                            e,
+                            taskData.locationId,
+                            taskData.id
+                        )
+                    }
+                    task={taskData}
+                    close={this.handleTaskFormToggle}
+                />
+            ),
+        }));
+        this.handleUpdateModalToggle();
     };
 
-    const handleCreateNewTask = (event) => {
+    handleCreateNewTask = (event) => {
         event.preventDefault();
         const form = {
             title: event.target.elements["title"].value,
@@ -98,20 +121,20 @@ const TaskList = (props) => {
             dueDate: event.target.elements["dueDate"].value,
         };
         const task = {
-            projectId: props.projectId,
+            projectId: this.props.projectId,
             heading: form.title,
             description: form.desc,
             dueDate: form.dueDate,
             status: objectStatus.pending,
             createdOn: new Date().toString(),
-            createdBy: props.userId,
-            locationId: props.project.locationId,
+            createdBy: this.props.userId,
+            locationId: this.props.project.locationId,
         };
-        props.createNewTask(task, props.project.locationId);
-        setAddTaskOpen(!addTaskOpen);
+        this.props.createNewTask(task, this.props.project.locationId);
+        this.handleTaskFormToggle();
     };
 
-    const handleUpdateTask = (event, locationId, taskId) => {
+    handleUpdateTask = (event, locationId, taskId) => {
         event.preventDefault();
         const form = {
             title: event.target.elements["title"].value,
@@ -123,118 +146,109 @@ const TaskList = (props) => {
             description: form.desc,
             dueDate: form.dueDate,
         };
-        props.updateTask(locationId, taskId, task);
-        setUpdateTaskOpen(false);
+        this.props.updateTask(locationId, taskId, task);
+        this.setState(() => ({
+            updateTaskOpen: false,
+        }));
     };
 
-    const filterTasks = (statusValue) =>
-        props.tasks.filter((task) => task.status === statusValue);
+    render() {
+        const filterTasks = (statusValue) =>
+            this.props.tasks.filter((task) => task.status === statusValue);
 
-    const incompleteTasks = filterTasks(objectStatus.pending);
-    const completeTasks = filterTasks(objectStatus.completed);
-    const archivedTasks = filterTasks(objectStatus.archived);
-
-    return (
-        <>
-            <div className="project__tasks">
-                <div className="project__tasks__topbar">
-                    <div className="project__tasks__topbar__head heading heading--h2">
-                        Tasks
-                    </div>
-                    <div className="project__tasks__topbar__filter">
-                        <img src={filterIcon} alt="filter" />
-                        <img src={sortIcon} alt="sort" />
-                    </div>
-                </div>
-                {props.tasks ? (
-                    <Progress
-                        complete={completeTasks.length}
-                        total={completeTasks.length + incompleteTasks.length}
-                        seperate
-                    />
-                ) : (
-                    <div>Add tasks</div>
-                )}
-                {!props.tasks.length ? (
-                    <Placeholder
-                        heading="No tasks"
-                        altMessage="Click + to add a new tasks to this project."
-                    />
-                ) : null}
-                {incompleteTasks.map((task) => (
-                    <Task
-                        key={task.id}
-                        taskId={task.id}
-                        clicked={getTaskData}
-                    />
-                ))}
-                {completeTasks.length ? (
+        const incompleteTasks = filterTasks(objectStatus.pending);
+        const completeTasks = filterTasks(objectStatus.completed);
+        return (
+            <>
+                <div className="project__tasks">
                     <div className="project__tasks__topbar">
                         <div className="project__tasks__topbar__head heading heading--h2">
-                            Complete
+                            Tasks
+                        </div>
+                        <div className="project__tasks__topbar__filter">
+                            <img src={filterIcon} alt="filter" />
+                            <img src={sortIcon} alt="sort" />
                         </div>
                     </div>
-                ) : null}
-                {completeTasks.map((task) => (
-                    <Task
-                        complete
-                        key={task.id}
-                        taskId={task.id}
-                        clicked={getTaskData}
-                    />
-                ))}
-                {archivedTasks.length ? (
-                    <>
-                        <hr className="project__rule" />
-                        <button
-                            className="button-subtle"
-                            onClick={handleArchivedTasksToggle}
-                        >
-                            {showArchivedTasks
-                                ? "Hide archived tasks"
-                                : "Show archived tasks"}
-                        </button>
-                    </>
-                ) : null}
-                {showArchivedTasks &&
-                    archivedTasks.map((task) => (
+                    {this.props.tasks ? (
+                        <Progress
+                            complete={completeTasks.length}
+                            total={
+                                completeTasks.length + incompleteTasks.length
+                            }
+                            seperate
+                        />
+                    ) : (
+                        <div>Add tasks</div>
+                    )}
+                    {!this.props.tasks.length ? (
+                        <Placeholder
+                            heading="No tasks"
+                            altMessage="Click + to add a new tasks to this project."
+                        />
+                    ) : null}
+                    {incompleteTasks.map((task) => (
                         <Task
                             key={task.id}
                             taskId={task.id}
-                            clicked={getTaskData}
+                            onClick={this.getTaskData}
+                        />
+                    ))}
+                    {completeTasks.length ? (
+                        <div className="project__tasks__topbar">
+                            <div className="project__tasks__topbar__head heading heading--h2">
+                                Complete
+                            </div>
+                        </div>
+                    ) : null}
+                    {completeTasks.map((task) => (
+                        <Task
+                            complete
+                            key={task.id}
+                            taskId={task.id}
+                            onClick={this.getTaskData}
                         />
                     ))}
 
-                <div onClick={handleTaskFormToggle} className="floating-button">
-                    <span className="floating-button__content">+</span>
-                </div>
-                <Modal toggle={handleTaskFormToggle} active={addTaskOpen}>
-                    <div className="heading heading--h2">
-                        {"Add task to " + props.project.heading}
-                    </div>
-                    <CreateTaskForm onSubmit={e => handleCreateNewTask(e)} close={handleTaskFormToggle} />
-                    
-                </Modal>
-                {updateForm && (
-                    <Modal
-                        toggle={handleUpdateModalToggle}
-                        active={updateTaskOpen}
+                    <div
+                        onClick={this.handleTaskFormToggle}
+                        className="floating-button"
                     >
-                        <div className="heading">{"Edit task"}</div>
-                        {updateForm}
+                        <span className="floating-button__content">+</span>
+                    </div>
+                    <Modal
+                        toggle={this.handleTaskFormToggle}
+                        active={this.addTaskOpen}
+                    >
+                        <div className="heading heading--h2">
+                            {"Add task to " + this.props.project.heading}
+                        </div>
+                        <CreateTaskForm
+                            onSubmit={(e) => this.handleCreateNewTask(e)}
+                            close={this.handleTaskFormToggle}
+                        />
                     </Modal>
-                )}
-                <Modal
-                    theme="dark"
-                    toggle={handleStatusModalToggle}
-                    active={changeStatusOpen}
-                >
-                    {updateForm}
-                </Modal>
-            </div>
-        </>
-    );
-};
+                    {this.state.updateForm && (
+                        <Modal
+                            toggle={this.handleUpdateModalToggle}
+                            active={this.state.updateTaskOpen}
+                        >
+                            <div className="heading">{"Edit task"}</div>
+                            {this.state.updateForm}
+                        </Modal>
+                    )}
+                    <Modal
+                        theme="dark"
+                        toggle={this.handleStatusModalToggle}
+                        active={this.state.changeStatusOpen}
+                    >
+                        {this.state.updateForm}
+                    </Modal>
+                </div>
+            </>
+        );
+    }
+}
 
 const mapStateToProps = (state, ownProps) => {
     return {
@@ -245,16 +259,16 @@ const mapStateToProps = (state, ownProps) => {
             return result;
         }, []),
         project: state.projects.projects[ownProps.projectId],
-        userId: state.auth.userId
+        userId: state.auth.userId,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createNewTask: (payload, locationId) =>
-            dispatch(actions.createNewTask(payload, locationId)),
-        updateTask: (taskId, userId, taskData) =>
-            dispatch(actions.updateTask(taskId, userId, taskData)),
+        createNewTask: (payload, projectId) =>
+            dispatch(actions.createNewTask(payload, projectId)),
+        updateTask: (taskId, projectId, taskData) =>
+            dispatch(actions.updateTask(taskId, projectId, taskData)),
     };
 };
 

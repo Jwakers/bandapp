@@ -24,13 +24,13 @@ export const tasksFail = (error) => {
     };
 };
 
-export const fetchTasks = (locationIds) => {
+export const fetchTasks = (projectIds) => {
     return (dispatch) => {
         dispatch(tasksStart());
-        locationIds.forEach(location => {
+        projectIds.forEach(projectId => {
         firebase
             .database()
-            .ref(`tasks/${location}`)
+            .ref(`tasks/${projectId}`)
             .on(
                 "value",
                 (snap) => {
@@ -44,14 +44,20 @@ export const fetchTasks = (locationIds) => {
     };
 };
 
-export const createNewTask = (taskData, locationId) => {
+export const createNewTask = (taskData, projectId) => {
     return () => {
-        firebase.database().ref(`tasks/${locationId}`).push(taskData);
+        firebase.database().ref(`tasks/${projectId}`).push(taskData);
     };
 };
 
-export function updateTask(locationId, taskId, taskData) {
+export function updateTask(projectId, taskId, taskData) {
     return () => {
-        firebase.database().ref(`tasks/${locationId}/${taskId}`).update(taskData).catch(error => console.log(error));
+        firebase.database().ref(`tasks/${projectId}/${taskId}`).update(taskData).catch(error => console.log(error));
     };
-}
+};
+
+export function deleteTask(projectId, taskId) {
+    return () => {
+        firebase.database().ref(`tasks/${projectId}/${taskId}`).remove().catch(err => console.log(err))
+    };
+};
