@@ -18,7 +18,7 @@ const projectPreview = props => {
     const totalTasks = Object.values(props.tasks).filter(value => value.status !== objectStatus.archived)
     return (
         <>
-            <div className="project card">
+            <div className="project card" onClick={props.onClick}>
                 <div className="card__wrap">
                     <div className="project__head">
                         <div className="project__head__title heading">

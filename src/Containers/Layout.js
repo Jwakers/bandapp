@@ -7,6 +7,7 @@ import SideMenu from "../Components/Navigation/SideMenu";
 import Thumbnav from "../Components/Navigation/Thumbnav";
 import Project from "./Project";
 import ProjectList from "./ProjectList";
+import ProjectArchive from "../Components/Project/ProjectArchive";
 import CreateProjectForm from "../Components/Form/CreateProjectForm";
 import Band from "./Band";
 import CreateBand from "../Components/Band/CreateBand";
@@ -120,14 +121,7 @@ class Layout extends Component {
                                     path={urls.createBand}
                                     component={CreateBand}
                                 />
-                                <Route path={urls.projectArchive} exact>
-                                    <ProjectList
-                                        heading="Project archive"
-                                        filterType="status"
-                                        filterValue={objectStatus.archived}
-                                        canFilter={false}
-                                    />
-                                </Route>
+                                <Route path={urls.projectArchive} exact component={ProjectArchive} />
                                 <Route path={urls.projects} exact>
                                     <ProjectList
                                         heading="All projects"

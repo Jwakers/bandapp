@@ -79,7 +79,7 @@ class ProjectList extends PureComponent {
             <>
                 <div className="projects">
                     <div className="projects__head">
-                        <h1 className="projects__head__title heading heading--h1">
+                        <h1 className="projects__head__title heading heading--h1" onClick={this.toggleFilterMenu}>
                             {this.state.heading}
                         </h1>
                         <span className="projects__head__index">

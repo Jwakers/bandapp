@@ -33,16 +33,29 @@ function taskFail(state, action) {
     };
 }
 
+function taskDelete(state, action) {
+    const updatedTasks = {
+        ...state.tasks
+    }
+    delete updatedTasks[action.key]
+    console.log(updatedTasks)
+    return {
+        tasks: {
+            ...updatedTasks
+        }
+    }
+}
+
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case actionTypes.TASKS_START:
             return taskStart(state, action);
         case actionTypes.TASKS_SUCCESS:
             return taskSuccess(state, action);
+        case actionTypes.TASKS_DELETE:
+            return taskDelete(state, action)
         case actionTypes.TASKS_FAIL:
             return taskFail(state, action);
-        // case actionTypes.UPDATE_PROJECT:
-        //     return updateProject(state, action)
         default:
             return state;
     }
