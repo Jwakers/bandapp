@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import Progress from "../Project/Progress";
 import {objectStatus} from "../../shared/strings"
+import {objectsToArray} from "../../shared/utility"
 
 const parseDescription = desc => {
     // Add ellipsis to the string if greater than 100 characters
@@ -13,9 +14,9 @@ const parseDescription = desc => {
     return desc;
 };
 
-const projectPreview = props => {
-    const completeTasks = Object.values(props.tasks).filter(value => value.status === objectStatus.completed)
-    const totalTasks = Object.values(props.tasks).filter(value => value.status !== objectStatus.archived)
+export const ProjectPreview = props => {
+    const completeTasks = props.tasks.filter(t => t.status === objectStatus.completed)
+    const totalTasks = props.tasks.filter(t => t.status !== objectStatus.archived)
     return (
         <>
             <div className="project card" onClick={props.onClick}>
@@ -48,20 +49,10 @@ const projectPreview = props => {
     );
 };
 
-const getProjectTasks = (tasks, projectId) => {
-    let sortedTasks = {};
-    for (const [key, value] of Object.entries(tasks)) {
-        if (value.projectId === projectId) {
-            sortedTasks[key] = value;
-        }
-    }
-    return sortedTasks;
-};
-
 const mapStateToProps = (state, ownProps) => {
     return {
-        tasks: getProjectTasks(state.tasks.tasks, ownProps.id)
+        tasks: objectsToArray(state.tasks.tasks).filter(t => t.projectId === ownProps.id)
     };
 };
 
-export default connect(mapStateToProps)(projectPreview);
+export default connect(mapStateToProps)(ProjectPreview);

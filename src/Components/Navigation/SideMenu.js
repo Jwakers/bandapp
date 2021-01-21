@@ -4,8 +4,9 @@ import { NavLink } from "react-router-dom";
 import * as actions from "../../store/actions/index";
 import Backdrop from "../Modal/Backdrop";
 import urls from "../../shared/urls";
+import { objectsToArray } from "../../shared/utility";
 
-const sideMenu = (props) => {
+export const SideMenu = (props) => {
     const classes = ["side-menu"];
     props.active && classes.push("side-menu--active");
 
@@ -124,6 +125,7 @@ const mapStateToProps = (state) => {
     return {
         username: state.user.user.username,
         profileImage: state.user.user.profileImage,
+        bands: objectsToArray(state.bands.bands, true)
     };
 };
 
@@ -133,4 +135,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(sideMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(SideMenu);

@@ -18,7 +18,6 @@ import Modal from "../Components/Modal/Modal";
 import * as actions from "../store/actions/index";
 import urls from "../shared/urls";
 import { objectStatus } from "../shared/strings";
-import { objectCollectionToArray } from "../shared/utility";
 
 class Layout extends Component {
     state = {
@@ -94,7 +93,6 @@ class Layout extends Component {
                             (p) => p.status === objectStatus.pending
                         ).length
                     }
-                    bands={objectCollectionToArray(this.props.bands)}
                 />
                 {this.props.loading ? (
                     <div className="spinner"></div>
