@@ -32,7 +32,8 @@ export default (state = INITIAL_STATE, action) => {
         case actionTypes.AUTH_LOGOUT:
             return {
                 ...state,
-                userId: null
+                userId: null,
+                email: null,
             }
         default:
             return state;

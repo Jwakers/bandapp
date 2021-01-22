@@ -20,7 +20,7 @@ function taskSuccess(state, action) {
         error: null,
         tasks: {
             ...state.tasks,
-            ...action.payload,
+            ...action.task,
         }
     };
 }
@@ -37,9 +37,9 @@ function taskDelete(state, action) {
     const updatedTasks = {
         ...state.tasks
     }
-    delete updatedTasks[action.key]
-    console.log(updatedTasks)
+    delete updatedTasks[action.taskId]
     return {
+        ...state,
         tasks: {
             ...updatedTasks
         }

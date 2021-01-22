@@ -3,8 +3,8 @@ import React, { useState } from "react";
 const SignInForm = (props) => {
 
     const [formState, setFormState] = useState({
-        email: undefined,
-        password: undefined
+        email: '',
+        password: ''
     })
 
     const handleChange = event => {

@@ -47,8 +47,8 @@ $button-types: 'default',
 
 .floating-button {
     position: fixed;
-    right: 10px;
-    bottom: 90px;
+    right: 18px;
+    bottom: 100px;
     color: $green;
     z-index: 10;
     &__content {
@@ -56,5 +56,19 @@ $button-types: 'default',
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
+    }
+    &::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: rem(60);
+        height: rem(60);
+        background: rgba(#fff, 0.8);
+        border-radius: 50%;
+        border: 3px solid #FFF;
+        box-shadow: $shadow, inset 0px 0px 6px rgba(0, 0, 0, 0.05);
+        z-index: -1;
     }
 }

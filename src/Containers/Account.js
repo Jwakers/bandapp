@@ -23,7 +23,7 @@ class Account extends Component {
                     <UpdateProfileImage onSubmit={e => this.handleProfileImage(e)} />
                 </div>
 
-                <button className="button" onClick={this.props.handleSignOut}>
+                <button className="button" onClick={this.props.handleSignOut.bind(this, this.props.dbList)}>
                     Sign out
                 </button>
             </>
@@ -38,12 +38,13 @@ const mapStateToProps = (state) => {
         username: state.user.user.username,
         profileImage: state.user.user.profileImage,
         email: state.auth.email,
+        dbList: state.databaseListeners
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        handleSignOut: () => dispatch(actions.authSignOut()),
+        handleSignOut: (databaseListeners) => dispatch(actions.authSignOut(databaseListeners)),
         handleImageUpload: (userId, image) => dispatch(actions.uploadUserProfileImage(userId, image))
     };
 };

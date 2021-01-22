@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import "firebase/database";
 import "firebase/storage";
 
+import { addDatabaseListener, removeDatabaseListener } from "./utility"
 import * as actionTypes from "./actionTypes";
 
 export const bandStart = () => {
@@ -29,16 +30,19 @@ export const fetchBands = (bandIds) => {
         if (!bandIds.length) return;
         dispatch(bandStart());
         bandIds.forEach((key) => {
-            firebase
-                .database()
-                .ref(`bands/${key}`)
-                .on(
+            const ref = firebase.database().ref(`bands/${key}`);
+            ref.on(
                     "value",
                     (snap) => {
                         dispatch(bandSuccess({ [key]: snap.val() }));
+                        dispatch(addDatabaseListener(`bands/${key}`))
+
                     },
                     (error) => {
                         dispatch(bandFail(error.message));
+                        console.log('Bands listener removed', error.message)
+                        dispatch(removeDatabaseListener(`bands/${key}`))
+                        ref.off()
                     }
                 );
         });

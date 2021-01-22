@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import "firebase/database";
 import "firebase/storage";
 
+import { addDatabaseListener, removeDatabaseListener } from "./utility"
 import * as actionTypes from "./actionTypes";
 
 export const userStart = () => {
@@ -60,7 +61,7 @@ export const uploadUserProfileImage = (userId, image) => {
             .ref(pathRef)
             .put(image)
             .then((res) => {
-                dispatch(setUserProfileImage(userId, pathRef))
+                dispatch(setUserProfileImage(userId, pathRef));
             })
             .catch((err) => {
                 console.dir(err);
@@ -70,29 +71,38 @@ export const uploadUserProfileImage = (userId, image) => {
 
 export const setUserProfileImage = (userId, imagePath) => {
     return () => {
-        firebase.storage().ref(imagePath).getDownloadURL().then(url => {
-            firebase
-                .database()
-                .ref(`users/${userId}`).update({profileImage: url}).catch(err => console.log(err))
-        }).catch(err => console.log(err))
-    }
-}
+        firebase
+            .storage()
+            .ref(imagePath)
+            .getDownloadURL()
+            .then((url) => {
+                firebase
+                    .database()
+                    .ref(`users/${userId}`)
+                    .update({ profileImage: url })
+                    .catch((err) => console.log(err));
+            })
+            .catch((err) => console.log(err));
+    };
+};
 
 export const fetchUser = (userId) => {
     return (dispatch) => {
         dispatch(userStart());
-        firebase
-            .database()
-            .ref(`users/${userId}`)
-            .on(
-                "value",
-                (snap) => {
-                    dispatch(userSuccess(snap.val()));
-                },
-                (error) => {
-                    dispatch(userFail(error.message));
-                }
-            );
+        const ref = firebase.database().ref(`users/${userId}`);
+        ref.on(
+            "value",
+            (snap) => {
+                dispatch(userSuccess(snap.val()));
+                dispatch(addDatabaseListener(`users/${userId}`))
+            },
+            (error) => {
+                dispatch(userFail(error.message));
+                console.log("User listener removed", error.message);
+                dispatch(removeDatabaseListener(`users/${userId}`))
+                ref.off();
+            }
+        );
     };
 };
 

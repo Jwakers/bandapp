@@ -20,7 +20,7 @@ function projectsSuccess(state, action) {
         error: null,
         projects: {
             ...state.projects,
-            ...action.payload,
+            ...action.project,
         }
     };
 }

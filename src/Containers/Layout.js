@@ -26,19 +26,21 @@ class Layout extends Component {
     };
 
     componentDidUpdate(prevProps) {
-        // On auth state change
-        if (this.props.userId !== prevProps.userId) {
-            this.props.fetchProjects([this.props.userId]);
-            this.props.fetchTasks([this.props.userId]);
-        }
-        // On user object change
-        if (this.props.userBands !== prevProps.userBands) {
-            const bandKeys = this.props.userBands
-                ? Object.keys(this.props.userBands)
-                : [];
-            this.props.fetchBands(bandKeys);
-            this.props.fetchProjects(bandKeys);
-            this.props.fetchTasks(bandKeys);
+        if (this.props.userId) {
+            // On auth state change
+            if (this.props.userId !== prevProps.userId) {
+                this.props.fetchProjects([this.props.userId]);
+                this.props.fetchTasks([this.props.userId]);
+            }
+            // On user object change
+            if (this.props.userBands !== prevProps.userBands) {
+                const bandKeys = this.props.userBands
+                    ? Object.keys(this.props.userBands)
+                    : [];
+                this.props.fetchBands(bandKeys);
+                this.props.fetchProjects(bandKeys);
+                this.props.fetchTasks(bandKeys);
+            }
         }
     }
 
@@ -164,7 +166,7 @@ const mapStateToProps = (state) => {
         userId: state.auth.userId,
         username: state.user.user.username,
         userBands: state.user.user.bands,
-        bands: state.bands.bands
+        bands: state.bands.bands,
     };
 };
 

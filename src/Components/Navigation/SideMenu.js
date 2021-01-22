@@ -108,7 +108,7 @@ export const SideMenu = (props) => {
                         <button
                             className="button-subtle"
                             onClick={() => {
-                                props.handleSignOut();
+                                props.handleSignOut(props.dbList);
                                 props.toggle();
                             }}
                         >
@@ -125,13 +125,14 @@ const mapStateToProps = (state) => {
     return {
         username: state.user.user.username,
         profileImage: state.user.user.profileImage,
-        bands: objectsToArray(state.bands.bands, true)
+        bands: objectsToArray(state.bands.bands, true),
+        dbList: state.databaseListeners
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        handleSignOut: () => dispatch(actions.authSignOut()),
+        handleSignOut: (databaseListeners) => dispatch(actions.authSignOut(databaseListeners)),
     };
 };
 
