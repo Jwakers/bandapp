@@ -6,13 +6,11 @@ const progress = props => {
     return (
         <div
             className={classes.join(" ")}
-            value={props.complete}
-            max={props.total}
         >
             <div
                 className="progress__bar"
                 style={{
-                    width: `${(props.complete / props.total) * 100}%`
+                    width: `${Math.round((props.complete / props.total) * 100)}%`
                 }}
             ></div>
             <div className="progress__container">

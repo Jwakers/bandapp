@@ -6,6 +6,7 @@ import auth from "./auth";
 import tasks from "./tasks";
 import user from "./user";
 import bands from "./bands";
+import databaseListeners from "./databaseListeners"
 
 import { AUTH_LOGOUT } from '../actions/actionTypes'
 
@@ -16,10 +17,11 @@ const appReducer = combineReducers({
     tasks,
     auth,
     user,
-    bands
+    bands,
+    databaseListeners
 })
 
-const rootReducer = (state, action) => {
+export const rootReducer = (state, action) => {
     if (action.type === AUTH_LOGOUT) {
       state = undefined
     }

@@ -10,6 +10,7 @@ import CreateTaskForm from "../Components/Form/CreateTaskForm";
 
 import * as actions from "../store/actions";
 import { objectStatus } from "../shared/strings";
+import { objectsToArray } from "../shared/utility";
 
 class TaskList extends Component {
     state = {
@@ -18,11 +19,6 @@ class TaskList extends Component {
         changeStatusOpen: false,
         updateForm: null,
     };
-
-    componentDidUpdate(prevProps) {
-        console.log('Task list updated')
-        console.log(this.props, prevProps)
-    }
 
     handleUpdateModalToggle = () => {
         this.setState((prev) => ({
@@ -46,7 +42,6 @@ class TaskList extends Component {
     };
 
     getTaskData = (taskData) => {
-        console.log(taskData);
         switch (taskData.status) {
             case objectStatus.completed:
                 this.getAddToIncompleteForm(taskData);
@@ -97,7 +92,6 @@ class TaskList extends Component {
         this.handleStatusModalToggle();
     };
     getUpdateForm = (taskData) => {
-        console.log(taskData);
         this.setState(() => ({
             updateForm: (
                 <UpdateTaskForm
@@ -255,13 +249,7 @@ class TaskList extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        tasks: Object.entries(state.tasks.tasks).reduce((result, task) => {
-            const [key, value] = [...task];
-            if (value.projectId === ownProps.projectId)
-                result.push({ ...value, id: key });
-            return result;
-        }, []),
-        // tasks: state.tasks.tasks,
+        tasks: objectsToArray(state.tasks.tasks, true).filter(t => t.projectId === ownProps.projectId),
         project: state.projects.projects[ownProps.projectId],
         userId: state.auth.userId,
     };

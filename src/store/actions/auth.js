@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 
 import { fetchUser, setUserData, setUsername } from "./user";
-
+import { removeAllDatabaseListeners } from "./utility"
 export const authStart = () => {
     return {
         type: actionTypes.AUTH_START,
@@ -13,8 +13,8 @@ export const authStart = () => {
 export const authSuccess = (userId, email) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
-        userId: userId,
-        email: email
+        userId,
+        email
     };
 };
 
@@ -24,6 +24,13 @@ export const authFail = (error) => {
         error,
     };
 };
+
+
+export const authLogout = () => {
+    return {
+        type: actionTypes.AUTH_LOGOUT
+    }
+}
 
 export const authAutoSignIn = () => {
     return (dispatch) => {
@@ -36,19 +43,21 @@ export const authAutoSignIn = () => {
     };
 };
 
-export const authSignOut = () => {
-    firebase
-        .auth()
-        .signOut()
-        .then(() => {
-            console.log("Signed out");
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    return {
-        type: actionTypes.AUTH_LOGOUT,
-    };
+export const authSignOut = (databaseListeners) => {
+    return (dispatch) => {
+        firebase
+            .auth()
+            .signOut()
+            .then(() => {
+                console.log("Signed out");
+                dispatch(removeAllDatabaseListeners(databaseListeners))
+                dispatch(authLogout())
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        
+    }
 };
 
 export const authSignUp = (email, password, username) => {

@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import "firebase/database";
 import "firebase/auth";
 
+import { addDatabaseListener, removeDatabaseListener } from "./utility"
 import * as actionTypes from "./actionTypes";
 
 export const tasksStart = () => {
@@ -10,10 +11,10 @@ export const tasksStart = () => {
     };
 };
 
-export const tasksSuccess = (payload) => {
+export const tasksSuccess = (task) => {
     return {
         type: actionTypes.TASKS_SUCCESS,
-        payload,
+        task,
     };
 };
 
@@ -24,10 +25,10 @@ export const tasksFail = (error) => {
     };
 };
 
-export const taskDeleteByKey = (taskKey) => {
+export const taskDeleteByKey = (taskId) => {
     return {
         type: actionTypes.TASKS_DELETE,
-        key: taskKey,
+        taskId,
     };
 };
 
@@ -35,16 +36,18 @@ export const fetchTasks = (projectIds) => {
     return (dispatch) => {
         dispatch(tasksStart());
         projectIds.forEach((projectId) => {
-            firebase
-                .database()
-                .ref(`tasks/${projectId}`)
-                .on(
+            const ref = firebase.database().ref(`tasks/${projectId}`)
+            ref.on(
                     "value",
                     (snap) => {
                         dispatch(tasksSuccess(snap.val()));
+                        dispatch(addDatabaseListener(`tasks/${projectId}`))
                     },
                     (error) => {
                         dispatch(tasksFail(error.message));
+                        console.log('Tasks listener removed', error.message)
+                        dispatch(removeDatabaseListener(`tasks/${projectId}`))
+                        ref.off()
                     }
                 );
         });

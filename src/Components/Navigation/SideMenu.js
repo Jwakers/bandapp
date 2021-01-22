@@ -4,8 +4,9 @@ import { NavLink } from "react-router-dom";
 import * as actions from "../../store/actions/index";
 import Backdrop from "../Modal/Backdrop";
 import urls from "../../shared/urls";
+import { objectsToArray } from "../../shared/utility";
 
-const sideMenu = (props) => {
+export const SideMenu = (props) => {
     const classes = ["side-menu"];
     props.active && classes.push("side-menu--active");
 
@@ -107,7 +108,7 @@ const sideMenu = (props) => {
                         <button
                             className="button-subtle"
                             onClick={() => {
-                                props.handleSignOut();
+                                props.handleSignOut(props.dbList);
                                 props.toggle();
                             }}
                         >
@@ -124,13 +125,15 @@ const mapStateToProps = (state) => {
     return {
         username: state.user.user.username,
         profileImage: state.user.user.profileImage,
+        bands: objectsToArray(state.bands.bands, true),
+        dbList: state.databaseListeners
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        handleSignOut: () => dispatch(actions.authSignOut()),
+        handleSignOut: (databaseListeners) => dispatch(actions.authSignOut(databaseListeners)),
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(sideMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(SideMenu);
