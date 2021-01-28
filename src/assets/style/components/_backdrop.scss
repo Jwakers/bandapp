@@ -17,7 +17,8 @@
     &--purple {
         background-color: $lightPurple
     }
-    &--active {
+    &--enter-active,
+    &--enter-done {
         opacity: .4;
         pointer-events: all;
     }

@@ -12,7 +12,7 @@
     box-shadow: $shadow;
     z-index: 80;
     border-radius: $radius;
-    transition: .4s;
+    transition: 400ms;
     &__close {
         position: absolute;
         right: 0;
@@ -22,7 +22,8 @@
         padding: rem(10);
         cursor: pointer;
     }
-    &--active {
+    &--enter-active,
+    &--enter-done {
         visibility: visible;
         opacity: 1;
         transform: translate(-50%, -50%);

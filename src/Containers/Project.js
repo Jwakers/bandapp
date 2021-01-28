@@ -9,6 +9,7 @@ import TaskList from "./TaskList";
 
 import urls from "../shared/urls";
 import { objectStatus } from "../shared/strings";
+import { formatDate } from "../shared/utility";
 
 class Project extends PureComponent {
     state = {
@@ -68,26 +69,20 @@ class Project extends PureComponent {
                             {this.props.project.description}
                         </p>
                         <div className="project__info">
-                            <div className="project__labels">
-                                <div className="label">Label</div>
-                                <div className="label">info</div>
-                            </div>
-                        </div>
-                        <div className="project__info-bar">
                             {this.props.project.bpm && (
-                                <div className="project__info-bar__item">
+                                <div className="project__info__item">
                                     BPM:{" "}
                                     <strong>{this.props.project.bpm}</strong>
                                 </div>
                             )}
 
                             {this.props.project.key && (
-                                <div className="project__info-bar__item">
+                                <div className="project__info__item">
                                     Key:{" "}
                                     <strong>{this.props.project.key}</strong>
                                 </div>
                             )}
-                            <div className="project__info-bar__item">
+                            <div className="project__info__item">
                                 Comments:{" "}
                                 <strong>
                                     {this.props.project.comments
@@ -95,11 +90,8 @@ class Project extends PureComponent {
                                         : 0}
                                 </strong>
                             </div>
-                            <div className="project__info-bar__item project__info-bar__item--date">
-                                <span>Due:</span>{" "}
-                                {new Date(
-                                    this.props.project.dueDate
-                                ).toLocaleDateString()}
+                            <div className="project__info__item project__info__item--end">
+                                {formatDate(this.props.project.dueDate)}
                             </div>
                         </div>
                     </div>

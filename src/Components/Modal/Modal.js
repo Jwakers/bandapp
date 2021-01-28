@@ -1,13 +1,20 @@
 import React from "react";
 import Backdrop from "./Backdrop";
 
-const modal = props => {
-    const modalClasses = ["modal", 'card'];
-    props.active && modalClasses.push("modal--active");
+import { CSSTransition } from "react-transition-group";
+
+const modal = (props) => {
     return (
         <>
-            <Backdrop toggle={props.toggle} active={props.active} theme={props.theme} />
-            <div className={modalClasses.join(" ")}>
+        {/* <CSSTransition in={props.active} timeout={400} classNames="backdrop-" unmountOnExit> */}
+            <Backdrop
+                close={props.toggle}
+                theme={props.theme}
+                active={props.active}
+            />
+        {/* </CSSTransition> */}
+        <CSSTransition in={props.active} timeout={400} classNames="modal-" unmountOnExit>
+            <div className="modal">
                 <div className="card__wrap">
                     <div onClick={props.toggle} className="modal__close">
                         &times;
@@ -15,6 +22,7 @@ const modal = props => {
                     {props.children}
                 </div>
             </div>
+        </CSSTransition>
         </>
     );
 };

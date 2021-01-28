@@ -16,43 +16,16 @@
     }
     &__info {
         display: flex;
-        align-items: flex-end;
-    }
-    &__info-bar {
-        display: flex;
+        align-items: center;
         font-size: rem(12);
         color: $grey;
         padding-top: rem(10);
         &__item {
             flex-grow: 1;
-            text-align: center;
-            &--date {
+            // text-align: center;
+            &--end {
                 flex-grow: 0;
-                border-left: 1px solid $lightGrey;
-                padding-left: rem(10);
-                color: $green;
-                &__highlight {
-                    color: $red;
-                }
-                &__urgent {
-                    color: $red;
-                    font-weight: 600;
-                }
-                span {
-                    color: $darkGrey;
-                }
             }
-        }
-    }
-    &__labels {
-        display: flex;
-        padding-top: rem(6);
-        flex-grow: 1;
-        .label {
-            margin-right: rem(6);
-            background-color: pink;
-            padding: rem(2) rem(4);
-            border-radius: $radius-small;
         }
     }
     // Tasks

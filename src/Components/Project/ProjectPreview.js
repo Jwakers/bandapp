@@ -2,10 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 
 import Progress from "../Project/Progress";
-import {objectStatus} from "../../shared/strings"
-import {objectsToArray} from "../../shared/utility"
+import { objectStatus } from "../../shared/strings";
+import { objectsToArray, formatDate } from "../../shared/utility";
 
-const parseDescription = desc => {
+const parseDescription = (desc) => {
     // Add ellipsis to the string if greater than 100 characters
     if (!desc) return false;
     if (desc.length > 100) {
@@ -14,9 +14,13 @@ const parseDescription = desc => {
     return desc;
 };
 
-export const ProjectPreview = props => {
-    const completeTasks = props.tasks.filter(t => t.status === objectStatus.completed)
-    const totalTasks = props.tasks.filter(t => t.status !== objectStatus.archived)
+export const ProjectPreview = (props) => {
+    const completeTasks = props.tasks.filter(
+        (t) => t.status === objectStatus.completed
+    );
+    const totalTasks = props.tasks.filter(
+        (t) => t.status !== objectStatus.archived
+    );
     return (
         <>
             <div className="project card" onClick={props.onClick}>
@@ -31,11 +35,11 @@ export const ProjectPreview = props => {
                         {parseDescription(props.description)}
                     </p>
                     <div className="project__info">
-                        <div className="project__labels">
-                            <div className="label">Label</div>
-                            <div className="label">info</div>
-                        </div>
-                        <div className="project__date">{props.dueDate}</div>
+                        {props.dueDate && (
+                            <div className="project__info__item project__info__item--end">
+                                {formatDate(props.dueDate)}
+                            </div>
+                        )}
                     </div>
                 </div>
                 {totalTasks.length ? (
@@ -51,7 +55,9 @@ export const ProjectPreview = props => {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        tasks: objectsToArray(state.tasks.tasks).filter(t => t.projectId === ownProps.id)
+        tasks: objectsToArray(state.tasks.tasks).filter(
+            (t) => t.projectId === ownProps.id
+        ),
     };
 };
 

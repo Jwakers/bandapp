@@ -59,12 +59,12 @@ class Band extends PureComponent {
     getMemberListItem = (member) => {
         const [id, username] = [...member];
         const button = (
-            <button
+            <i
                 onClick={this.removeBandMember.bind(this, id)}
-                className="button button--warning"
+                className="material-icons cancel-button"
             >
-                remove
-            </button>
+                cancel
+            </i>
         );
 
         return (

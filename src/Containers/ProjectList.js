@@ -6,7 +6,7 @@ import Placeholder from "../Components/Message/Placeholder";
 
 import urls from "../shared/urls";
 
-class ProjectList extends PureComponent {
+export class ProjectList extends PureComponent {
     state = {
         projects: this.props.projects,
         defaultFilter: this.props.filterType ? this.props.filterType : null,

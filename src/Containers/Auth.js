@@ -2,14 +2,14 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
-import SignInForm from "../Components/User/SignInForm";
-import SignUpForm from "../Components/User/SignUpForm";
+import SignInForm from "../Components/Form/SignInForm";
+import SignUpForm from "../Components/Form/SignUpForm";
 
 import * as actions from "../store/actions/index";
 
 import urls from "../shared/urls"
 
-class Auth extends PureComponent {
+export class Auth extends PureComponent {
     state = {
         isSignUp: false,
     };
