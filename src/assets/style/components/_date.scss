@@ -1,0 +1,33 @@
+.date {
+    $this: &;
+    display: inline-block;
+    border-radius: $radius;
+    &__date {
+        color: $green;
+        font-weight: 600;
+    }
+    &--warn {
+        #{$this}__date {
+            color: red;
+        }
+    }
+    &--urgent {
+        background-color: $red;
+        padding: rem(4);
+        #{$this}__text {
+            color: #fff;
+        }
+        #{$this}__date {
+            color: #fff;
+        }
+    }
+    &--overdue {
+        color: $red;
+        padding: rem(4);
+        border-radius: $radius;
+        border: 1px solid $red;
+        #{$this}__date {
+            color: $red;
+        }
+    }
+}

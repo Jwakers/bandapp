@@ -1,0 +1,37 @@
+// Comments component
+.comments {
+    &__content {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+}
+
+// Individual comment component
+.comment {
+    max-width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: rem(10);
+    background-color: #fff;
+    margin-left: rem(10);
+    box-shadow: $shadow;
+    margin-top: rem(6);
+    margin-bottom: rem(6);
+    &--self {
+        margin-left: auto;
+        margin-right: rem(10);
+    }
+    &__by {
+        font-size: 10px;
+        color: $darkGrey;
+    }
+    &__when {
+        font-size: 10px;
+        color: $darkGrey;
+    }
+    &__body {
+        font-size: 14px;
+        width: 100%;
+    }
+}
