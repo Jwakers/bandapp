@@ -6,6 +6,7 @@ import auth from "./auth";
 import tasks from "./tasks";
 import user from "./user";
 import bands from "./bands";
+import comments from "./comments";
 import databaseListeners from "./databaseListeners"
 
 import { AUTH_LOGOUT } from '../actions/actionTypes'
@@ -18,6 +19,7 @@ const appReducer = combineReducers({
     auth,
     user,
     bands,
+    comments,
     databaseListeners
 })
 

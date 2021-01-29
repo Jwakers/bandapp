@@ -14,7 +14,6 @@ import CreateBand from "../Components/Band/CreateBand";
 import Auth from "./Auth";
 import Account from "./Account";
 import Modal from "../Components/Modal/Modal";
-import { CSSTransition } from "react-transition-group"
 
 import * as actions from "../store/actions/index";
 import urls from "../shared/urls";

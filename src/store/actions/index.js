@@ -1,7 +1,8 @@
 export {
     fetchProjects,
     updateProject,
-    createNewProject
+    createNewProject,
+    deleteProject
 } from "./projects"
 
 export {
@@ -31,3 +32,10 @@ export {
     updateBandInfo,
     uploadBandProfileImage
 } from "./bands"
+
+export {
+    submitNewComment,
+    editComment,
+    deleteComment,
+    fetchComments
+} from "./comments"

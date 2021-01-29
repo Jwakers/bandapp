@@ -1,6 +1,7 @@
 export const PROJECTS_START = "PROJECTS_START";
 export const PROJECTS_SUCCESS = "PROJECTS_SUCCESS";
 export const PROJECTS_FAIL = "PROJECTS_FAIL";
+export const PROJECTS_DELETE = "DELETE_PROJECT";
 export const UPDATE_PROJECT = "UPDATE_PROJECT";
 
 export const TASKS_START = "TASKS_START";
@@ -23,6 +24,12 @@ export const BAND_START = "BAND_START";
 export const BAND_SUCCESS = "BAND_SUCCESS";
 export const BAND_FAIL = "BAND_FAIL";
 export const BAND_CLEAR = "BAND_CLEAR";
+
+export const COMMENTS_START = "COMMENTS_START";
+export const COMMENTS_SUCCESS = "COMMENTS_SUCCESS";
+export const COMMENTS_FAIL = "COMMENTS_FAIL";
+export const COMMENTS_DELETE = "COMMENTS_DELETE";
+
 
 export const ADD_LISTENER = "ADD_LISTENER";
 export const REMOVE_LISTENER = "REMOVE_LISTENER";

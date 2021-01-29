@@ -35,6 +35,7 @@ export const ProjectPreview = (props) => {
                         {parseDescription(props.description)}
                     </p>
                     <div className="project__info">
+                        <div className="project__info__item"></div>
                         {props.dueDate && (
                             <div className="project__info__item project__info__item--end">
                                 {formatDate(props.dueDate)}

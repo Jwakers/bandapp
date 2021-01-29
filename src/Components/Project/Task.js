@@ -1,12 +1,17 @@
-import React, { createRef, useEffect } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import { connect } from "react-redux";
 
 import * as actions from "../../store/actions/index";
+import Modal from "../Modal/Modal";
+import UpdateTaskForm from "../Form/UpdateTaskForm";
 
 import { objectStatus } from "../../shared/strings";
+import { formatDate } from "../../shared/utility";
 
 const Task = (props) => {
     const taskRef = createRef();
+    const [updateForm, setUpdateForm] = useState(false);
+    const [addToIncomplete, setAddToIncomplete] = useState(false);
 
     const position = {
         down: null,
@@ -21,6 +26,37 @@ const Task = (props) => {
     useEffect(() => {
         taskRef.current.classList.add("task--set");
     });
+
+    const toggleUpdateForm = () => {
+        setUpdateForm((prev) => !prev);
+    };
+
+    const toggleAddToIncomplete = () => {
+        setAddToIncomplete((prev) => !prev);
+    };
+
+    const handleUpdateTask = (event) => {
+        event.preventDefault();
+        const form = {
+            title: event.target.elements["title"].value,
+            desc: event.target.elements["description"].value,
+            dueDate: event.target.elements["dueDate"].value,
+        };
+        const task = {
+            heading: form.title,
+            description: form.desc,
+            dueDate: form.dueDate,
+        };
+        props.updateTask(props.task.locationId, props.taskId, task);
+        setUpdateForm(false);
+    };
+
+    const handleAddTaskToIncomplete = () => {
+        props.updateTask(props.task.locationId, props.taskId, {
+            status: objectStatus.pending,
+        });
+        setAddToIncomplete(false);
+    };
 
     const down = (event) => {
         position.down = event.touches[0].clientX;
@@ -84,8 +120,8 @@ const Task = (props) => {
     };
 
     const deleteEl = (el) => {
-        if (window.confirm('Are you sure you want to delete this task?')) {
-            props.deleteTask(props.task.locationId, props.taskId)
+        if (window.confirm("Are you sure you want to delete this task?")) {
+            props.deleteTask(props.task.locationId, props.taskId);
         } else {
             el.style.transform = null;
         }
@@ -118,10 +154,11 @@ const Task = (props) => {
                             ? leave
                             : undefined
                     }
-                    onClick={props.onClick.bind(this, {
-                        ...props.task,
-                        id: props.taskId,
-                    })}
+                    onClick={
+                        props.task.status === objectStatus.pending
+                            ? toggleUpdateForm
+                            : toggleAddToIncomplete
+                    }
                     ref={taskRef}
                 >
                     <div className="task__wrap card__wrap">
@@ -133,12 +170,50 @@ const Task = (props) => {
                                 {props.task.description}
                             </div>
                         </div>
-                        <div className="task__assignee">[assignee]</div>
+                        <div className="task__date">
+                            {props.task.dueDate &&
+                                props.task.status !== objectStatus.completed &&
+                                formatDate(props.task.dueDate, false)}
+                        </div>
                     </div>
                 </div>
-                <i className="material-icons task__icon task__icon--complete">done</i>
-                <i className="material-icons task__icon task__icon--delete">delete</i>
+                <i className="material-icons task__icon task__icon--complete">
+                    done
+                </i>
+                <i className="material-icons task__icon task__icon--delete">
+                    delete
+                </i>
             </div>
+            <Modal toggle={toggleUpdateForm} active={updateForm}>
+                <div className="heading">{"Edit task"}</div>
+                <UpdateTaskForm
+                    onSubmit={handleUpdateTask}
+                    task={props.task}
+                    close={toggleUpdateForm}
+                />
+            </Modal>
+            <Modal toggle={toggleAddToIncomplete} active={addToIncomplete}>
+                <>
+                    <p>
+                        Add <strong>{props.task.heading}</strong> back to
+                        incomplete tasks?
+                    </p>
+                    <div className="form__control">
+                        <button
+                            className="button-subtle button-subtle--warning"
+                            onClick={toggleAddToIncomplete}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="button button--continue"
+                            onClick={handleAddTaskToIncomplete}
+                        >
+                            Confirm
+                        </button>
+                    </div>
+                </>
+            </Modal>
         </>
     );
 };
@@ -155,8 +230,8 @@ const mapDispatchToProps = (dispatch) => {
         updateTask: (projectId, taskId, taskData) =>
             dispatch(actions.updateTask(projectId, taskId, taskData)),
         deleteTask: (projectId, taskId) => {
-            dispatch(actions.deleteTask(projectId, taskId))
-        }
+            dispatch(actions.deleteTask(projectId, taskId));
+        },
     };
 };
 

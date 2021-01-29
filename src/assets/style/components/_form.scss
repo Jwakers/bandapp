@@ -1,4 +1,7 @@
 .form {
+    &--flex {
+        display: flex;
+    }
     &__label {
         display: block;
         margin-bottom: rem(6);
@@ -12,6 +15,12 @@
         margin-bottom: rem(10);
         &--textarea {
             width: 100%;
+        }
+        &--grow-1 {
+            flex-grow: 1;
+        }
+        &--grow-0 {
+            flex-grow: 0;
         }
     }
     &__select {

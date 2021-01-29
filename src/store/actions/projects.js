@@ -24,6 +24,13 @@ export const projectsFail = (error) => {
     };
 };
 
+export const projectDeleteByKey = (projectId) => {
+    return {
+        type: actionTypes.PROJECTS_DELETE,
+        projectId,
+    };
+};
+
 export const fetchProjects = (locationIds) => {
     return (dispatch) => {
         dispatch(projectsStart());
@@ -62,5 +69,16 @@ export function updateProject(locationId, projectId, projectData) {
             .database()
             .ref(`projects/${locationId}/${projectId}`)
             .update(projectData);
+    };
+}
+
+export function deleteProject(locationId, projectId) {
+    return (dispatch) => {
+        firebase
+            .database()
+            .ref(`projects/${locationId}/${projectId}`)
+            .remove()
+            .then(() => dispatch(projectDeleteByKey(projectId)))
+            .catch((err) => console.log(err));
     };
 }

@@ -20,6 +20,16 @@ $button-types: 'default',
             background-color: #{nth($style, 2)};
         }
     }
+    &--send {
+        width: 35px;
+        height: 35px;
+        background-color: $green;
+        border-radius: 50%;
+        padding: 0;
+        i {
+            font-size: 20px;
+        }
+    }
 }
 
 .button-wire {

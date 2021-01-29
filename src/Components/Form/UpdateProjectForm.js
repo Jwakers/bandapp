@@ -47,9 +47,6 @@ const UpdateProjectForm = (props) => {
 
     return (
         <>
-            <div className="heading heading--h2">
-                {"Edit " + props.project.heading}
-            </div>
             <form className="form" onSubmit={handleProjectUpdateSubmit}>
                 <label className="form__label" htmlFor="title">
                     Title
@@ -97,7 +94,7 @@ const UpdateProjectForm = (props) => {
                 />
 
                 <label className="form__label" htmlFor="key">
-                    BPM
+                    Key
                 </label>
                 <select
                     className="form__input"

@@ -9,7 +9,7 @@ export const objectsToArray = (object, setID = false) => {
     return transformedObject;
 };
 
-export const formatDate = (date) => {
+export const formatDate = (date, includePreText = true) => {
     const diff = new Date(date) - new Date();
     // To days calculation, rounded up
     const dayDiff = Math.ceil(diff / (1000 * 60 * 60 * 24));
@@ -31,7 +31,7 @@ export const formatDate = (date) => {
     modifier && classes.push(modifier)
     return (
         <div className={classes.join(' ')}>
-            <span className="date__text">{preText}</span>{" "}
+            {includePreText && <span className="date__text">{preText}</span>}
             <span className="date__date">{dateString}</span>
         </div>
     );

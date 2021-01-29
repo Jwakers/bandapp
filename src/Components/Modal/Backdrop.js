@@ -1,14 +1,27 @@
 import React from "react";
-import { CSSTransition } from 'react-transition-group';
+import { CSSTransition } from "react-transition-group";
 
-const backdrop = props => {
-    const classes = ["backdrop", `backdrop--${props.theme ? props.theme : 'dark' }`];
-    // props.active && classes.push("backdrop--active");
+const Backdrop = (props) => {
+    const nodeRef = React.useRef(null);
+    const classes = [
+        "backdrop",
+        `backdrop--${props.theme ? props.theme : "dark"}`,
+    ];
     return (
-        <CSSTransition in={props.active} timeout={400} classNames="backdrop-" unmountOnExit>
-            <div onClick={props.close} className={classes.join(" ")}></div>
+        <CSSTransition
+            in={props.active}
+            timeout={400}
+            classNames="backdrop-"
+            nodeRef={nodeRef}
+            unmountOnExit
+        >
+            <div
+                onClick={props.close}
+                className={classes.join(" ")}
+                ref={nodeRef}
+            ></div>
         </CSSTransition>
     );
 };
 
-export default backdrop;
+export default Backdrop;

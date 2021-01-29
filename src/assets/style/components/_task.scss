@@ -40,7 +40,9 @@
     &__description {
         color: $grey;
     }
-    &__assignee {}
+    &__date {
+        font-size: rem(12);
+    }
     &--complete {
         opacity: .6;
         border: solid 2px $green;

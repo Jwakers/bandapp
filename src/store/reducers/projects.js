@@ -33,6 +33,19 @@ function projectsFail(state, action) {
     };
 }
 
+function projectDelete(state, action) {
+    const updatedProjects = {
+        ...state.projects
+    }
+    delete updatedProjects[action.projectId]
+    return {
+        ...state,
+        projects: {
+            ...updatedProjects
+        }
+    }
+}
+
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case actionTypes.PROJECTS_START:
@@ -41,6 +54,8 @@ export default (state = INITIAL_STATE, action) => {
             return projectsSuccess(state, action);
         case actionTypes.PROJECTS_FAIL:
             return projectsFail(state, action);
+        case actionTypes.PROJECTS_DELETE:
+            return projectDelete(state, action)
         default:
             return state;
     }
