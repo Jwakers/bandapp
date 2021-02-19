@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 
 import { objectStatus } from "../../shared/strings";
+import { objectsToArray } from "../../shared/utility";
 
 const UpdateProjectForm = (props) => {
     const [formState, setFormState] = useState({
@@ -11,17 +12,18 @@ const UpdateProjectForm = (props) => {
         dueDate: props.project.dueDate,
         bpm: props.project.bpm,
         key: props.project.key,
+        location: props.project.locationId
     });
 
-    const handleChange = event => {
+    const handleChange = (event) => {
         const target = event.target;
         const value = target.value;
         const name = target.name;
-        setFormState(prev => ({
+        setFormState((prev) => ({
             ...prev,
-            [name]: value
-        }))
-    }
+            [name]: value,
+        }));
+    };
 
     const handleProjectUpdateSubmit = (event) => {
         event.preventDefault();
@@ -31,7 +33,9 @@ const UpdateProjectForm = (props) => {
             dueDate: event.target.elements["dueDate"].value,
             bpm: event.target.elements["bpm"].value,
             key: event.target.elements["key"].value,
+            // location: event.target.elements["location"].value,
         };
+        console.log(form)
         const project = {
             heading: form.title,
             description: form.desc,
@@ -39,6 +43,7 @@ const UpdateProjectForm = (props) => {
             bpm: form.bpm,
             key: form.key,
             status: objectStatus.pending,
+            // locationId: form.location
         };
         props.updateProject(props.project.locationId, props.projectId, project);
         event.target.reset();
@@ -96,26 +101,44 @@ const UpdateProjectForm = (props) => {
                 <label className="form__label" htmlFor="key">
                     Key
                 </label>
-                <select
+                {/* <select
                     className="form__input"
                     onChange={(e) => handleChange(e)}
                     type="text"
                     name="key"
                     value={formState.key}
                 >
-                            <option value=""></option>
-                            <option value="Key of C">Key of C</option>
-                            <option value="Key of Db / C#">Key of Db / C#</option>
-                            <option value="Key of D">Key of D</option>
-                            <option value="Key of Eb">Key of Eb</option>
-                            <option value="Key of E">Key of E</option>
-                            <option value="Key of F">Key of F</option>
-                            <option value="Key of Gb / F#">Key of Gb / F#</option>
-                            <option value="Key of G">Key of G</option>
-                            <option value="Key of Ab">Key of Ab</option>
-                            <option value="Key of A">Key of A</option>
-                            <option value="Key of Bb">Key of Bb</option>
-                            <option value="Key of B / Cb">Key of B / Cb</option>
+                    <option value=""></option>
+                    <option value="Key of C">Key of C</option>
+                    <option value="Key of Db / C#">Key of Db / C#</option>
+                    <option value="Key of D">Key of D</option>
+                    <option value="Key of Eb">Key of Eb</option>
+                    <option value="Key of E">Key of E</option>
+                    <option value="Key of F">Key of F</option>
+                    <option value="Key of Gb / F#">Key of Gb / F#</option>
+                    <option value="Key of G">Key of G</option>
+                    <option value="Key of Ab">Key of Ab</option>
+                    <option value="Key of A">Key of A</option>
+                    <option value="Key of Bb">Key of Bb</option>
+                    <option value="Key of B / Cb">Key of B / Cb</option>
+                </select>
+                <label className="form__label" htmlFor="location">
+                    Location
+                </label> */}
+
+                <select
+                    className="form__input"
+                    onChange={(e) => handleChange(e)}
+                    type="text"
+                    name="location"
+                    value={formState.location}
+                >
+                    <option value={props.userId}>My projects</option>
+                    {objectsToArray(props.bands, true).map((band) => (
+                        <option value={band.id} key={band.id}>
+                            {band.bandName}
+                        </option>
+                    ))}
                 </select>
                 <div className="form__control">
                     <button
@@ -140,6 +163,8 @@ const UpdateProjectForm = (props) => {
 const mapStateToProps = (state, ownProps) => {
     return {
         project: state.projects.projects[ownProps.projectId],
+        bands: state.bands.bands,
+        userId: state.auth.userId
     };
 };
 

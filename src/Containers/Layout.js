@@ -22,7 +22,7 @@ import { objectStatus } from "../shared/strings";
 class Layout extends Component {
     state = {
         sideMenuOpen: false,
-        newProjectOpen: false,
+        newProjectOpen: false
     };
 
     componentDidUpdate(prevProps) {
@@ -30,7 +30,11 @@ class Layout extends Component {
             // On auth state change
             if (this.props.userId !== prevProps.userId) {
                 this.props.fetchProjects([this.props.userId]);
-                this.props.fetchTasks([this.props.userId]);
+            }
+            if (this.props.projects !== prevProps.projects) {
+                console.log(this.props.projects)
+                // TODO: Check if project has tasks before fetch
+                Object.keys(this.props.projects).forEach(projectId => this.props.fetchTasks(projectId))
             }
             // On user object change
             if (this.props.userBands !== prevProps.userBands) {
@@ -104,46 +108,69 @@ class Layout extends Component {
                             {!this.props.userId ? (
                                 <>
                                     <Redirect to={urls.auth} />
-                                    <Route path={urls.auth} component={Auth} exact />
+                                    <Route
+                                        path={urls.auth}
+                                        component={Auth}
+                                        exact
+                                    />
                                 </>
                             ) : (
-                            <Switch>
-                                <Route path={urls.auth} component={Auth} exact />
-                                <Route
-                                    path={urls.account}
-                                    component={Account}
-                                />
-                                <Route
-                                    path={urls.band}
-                                    component={Band}
-                                />
-                                <Route
-                                    path={urls.createBand}
-                                    component={CreateBand}
-                                />
-                                <Route path={urls.projectArchive} exact component={ProjectArchive} />
-                                <Route path={urls.projects} exact>
-                                    <ProjectList
-                                        heading="All projects"
-                                        filterType="status"
-                                        filterValue={objectStatus.pending}
-                                        canFilter
-                                    />
-                                </Route>
-                                <Route
-                                    path={urls.project}
-                                    component={Project}
-                                />
-                            </Switch>
+                                <>
+                                    <Redirect to={urls.projects} />
+                                    <Switch>
+                                        <Route
+                                            path={urls.auth}
+                                            component={Auth}
+                                            exact
+                                        />
+                                        <Route
+                                            path={urls.account}
+                                            component={Account}
+                                        />
+                                        <Route
+                                            path={urls.band}
+                                            component={Band}
+                                        />
+                                        <Route
+                                            path={urls.createBand}
+                                            component={CreateBand}
+                                        />
+                                        <Route
+                                            path={urls.projectArchive}
+                                            exact
+                                            component={ProjectArchive}
+                                        />
+                                        <Route path={urls.projects} exact>
+                                            <ProjectList
+                                                heading="All projects"
+                                                filterType="status"
+                                                filterValue={
+                                                    objectStatus.pending
+                                                }
+                                                canFilter
+                                            />
+                                        </Route>
+                                        <Route
+                                            path={urls.project}
+                                            component={Project}
+                                        />
+                                    </Switch>
+                                </>
                             )}
                         </main>
                         <Modal
                             toggle={this.handleNewProjectToggle}
                             active={this.state.newProjectOpen}
                         >
-                            <h2 className="heading heading--h2">Create project</h2>
-                            <CreateProjectForm onSubmit={e => this.handleFormSubmit(e)} userId={this.props.userId} bands={bandSelectOptions} close={this.handleNewProjectToggle} />
-                            
+                            <h2 className="heading heading--form heading--h2">
+                                Create project
+                            </h2>
+                            <CreateProjectForm
+                                onSubmit={(e) => this.handleFormSubmit(e)}
+                                userId={this.props.userId}
+                                bands={bandSelectOptions}
+                                close={this.handleNewProjectToggle}
+                            />
                         </Modal>
                     </>
                 )}

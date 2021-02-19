@@ -3,9 +3,9 @@ import React, { useState } from "react";
 const SignUpForm = (props) => {
 
     const [formState, setFormState] = useState({
-        username: undefined,
-        email: undefined,
-        password: undefined
+        username: '',
+        email: '',
+        password: ''
     })
 
     const handleChange = event => {

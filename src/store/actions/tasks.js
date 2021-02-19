@@ -1,8 +1,8 @@
-import firebase from "firebase/app";
+import firebase from "../../firebase";
 import "firebase/database";
 import "firebase/auth";
 
-import { addDatabaseListener, removeDatabaseListener } from "./utility"
+import { addDatabaseListener, removeDatabaseListener } from "./utility";
 import * as actionTypes from "./actionTypes";
 
 export const tasksStart = () => {
@@ -32,29 +32,34 @@ export const taskDeleteByKey = (taskId) => {
     };
 };
 
-export const fetchTasks = (projectIds) => {
-    return (dispatch) => {
-        dispatch(tasksStart());
-        projectIds.forEach((projectId) => {
-            const ref = firebase.database().ref(`tasks/${projectId}`)
-            ref.on(
-                    "value",
-                    (snap) => {
-                        dispatch(tasksSuccess(snap.val()));
-                        dispatch(addDatabaseListener(`tasks/${projectId}`))
-                    },
-                    (error) => {
-                        dispatch(tasksFail(error.message));
-                        console.log('Tasks listener removed', error.message)
-                        dispatch(removeDatabaseListener(`tasks/${projectId}`))
-                        ref.off()
-                    }
-                );
-        });
+export const tasksDeleteByProjectKey = (projectId) => {
+    return {
+        type: actionTypes.TASKS_DELETE_BY_PROJECT,
+        projectId,
     };
 };
 
-export const createNewTask = (taskData, projectId) => {
+export const fetchTasks = (projectId) => {
+    return (dispatch) => {
+        dispatch(tasksStart());
+        const ref = firebase.database().ref(`tasks/${projectId}`);
+        ref.on(
+            "value",
+            (snap) => {
+                dispatch(tasksSuccess(snap.val()));
+                dispatch(addDatabaseListener(`tasks/${projectId}`));
+            },
+            (error) => {
+                dispatch(tasksFail(error.message));
+                console.log("Tasks listener removed", error.message);
+                dispatch(removeDatabaseListener(`tasks/${projectId}`));
+                ref.off();
+            }
+        );
+    };
+};
+
+export const createNewTask = (projectId, taskData) => {
     return () => {
         firebase.database().ref(`tasks/${projectId}`).push(taskData);
     };
@@ -77,6 +82,17 @@ export function deleteTask(projectId, taskId) {
             .ref(`tasks/${projectId}/${taskId}`)
             .remove()
             .then(() => dispatch(taskDeleteByKey(taskId)))
-            .catch((err) => console.log(err));
+            .catch((error) => console.log(error));
+    };
+}
+
+export function deleteTasksOfProject(projectId) {
+    return (dispatch) => {
+        firebase
+            .database()
+            .ref(`tasks/${projectId}`)
+            .remove()
+            .then(() => dispatch(tasksDeleteByProjectKey(projectId)))
+            .catch((error) => console.log(error));
     };
 }

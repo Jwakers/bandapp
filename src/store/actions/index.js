@@ -14,13 +14,15 @@ export {
 
 export {
     authAutoSignIn,
-    authSignIn,
-    authSignUp,
+    authSuccess,
+    // authSignIn,
+    // authSignUp,
     authSignOut
 } from "./auth"
 
 export {
     fetchUser,
+    setUserData,
     uploadUserProfileImage
 } from "./user"
 

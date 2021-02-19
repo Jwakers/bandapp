@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const UpdateBandForm = (props) => {
     const [formState, setFormState] = useState({
-        username: ''
+        email: ''
     });
 
     const handleChange = (event) => {
@@ -20,10 +20,10 @@ const UpdateBandForm = (props) => {
             <input
                 className="form__input"
                 type="text"
-                name="username"
-                placeholder="Members username"
+                name="email"
+                placeholder="Member's email address"
                 onChange={e => handleChange(e)}
-                value={formState.username}
+                value={formState.email}
             />
             <button className="button" type="submit">
                 Submit

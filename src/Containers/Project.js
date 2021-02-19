@@ -120,7 +120,7 @@ class Project extends PureComponent {
                                 </strong>
                             </div>
                             <div className="project__info__item project__info__item--end">
-                                {formatDate(this.props.project.dueDate)}
+                                {this.props.project.dueDate && formatDate(this.props.project.dueDate)}
                             </div>
                         </div>
                     </div>
@@ -130,7 +130,8 @@ class Project extends PureComponent {
                         projectId={this.props.match.params.projectid}
                     />
                 ) : null}
-                <TaskList projectId={this.props.match.params.projectid} />
+                <div>Current Demo:</div>
+                <TaskList projectId={this.props.match.params.projectid} projectArchive={this.handleProjectArchive} />
                 <Modal
                     toggle={this.handleProjectUpdateFormToggle}
                     active={this.state.updateProject}

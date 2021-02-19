@@ -6,11 +6,7 @@ const placeholder = (props) => {
         additionalMessage = (
             <div>
                 Click{" "}
-                <img
-                    className="placeholder-message__icon"
-                    src={props.icon}
-                    alt="Addition icon"
-                />{" "}
+                {props.icon}
                 to get started!
             </div>
         );

@@ -37,11 +37,11 @@ class Band extends PureComponent {
 
     handleAddBandMemberSubmit = (event) => {
         event.preventDefault();
-        const input = event.target.elements["username"];
-        const username = input.value;
+        const input = event.target.elements["email"];
+        const userEmail = input.value;
         this.props.addBandMember(
             this.props.match.params.bandid,
-            username.toLowerCase()
+            userEmail
         );
         input.value = "";
     };
@@ -130,16 +130,17 @@ const mapStateToProps = (state, ownProps) => {
     return {
         band: state.bands.bands[ownProps.match.params.bandid],
         error: state.bands.error,
-        userId: state.user.user.userId,
+        userId: state.auth.userId,
+        email: state.auth.email
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        addBandMember: (bandId, username) =>
-            dispatch(actions.addBandMember(bandId, username)),
-        removeBandMember: (bandId, username) =>
-            dispatch(actions.removeBandMember(bandId, username)),
+        addBandMember: (bandId, email) =>
+            dispatch(actions.addBandMember(bandId, email)),
+        removeBandMember: (bandId, email) =>
+            dispatch(actions.removeBandMember(bandId, email)),
         updateBandInfo: (bandId, bandData) =>
             dispatch(actions.updateBandInfo(bandId, bandData)),
         uploadBandProfileImage: (bandId, image) => {

@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import firebase from "../../firebase";
 import "firebase/database";
 import "firebase/storage";
 
@@ -25,14 +25,14 @@ export const userFail = (error) => {
     };
 };
 
-export const setUserData = (userData) => {
+export const setUserData = (userId, userData) => {
     return (dispatch) => {
         firebase
             .database()
-            .ref(`users/${userData.userId}`)
+            .ref(`users/${userId}`)
             .set(userData)
             .then(() => {
-                dispatch(fetchUser(userData.userId));
+                dispatch(fetchUser(userId));
             })
             .catch((error) => {
                 return console.log(error.message);
@@ -40,18 +40,18 @@ export const setUserData = (userData) => {
     };
 };
 
-export const setUsername = (username, userId) => {
-    return () => {
-        firebase
-            .database()
-            .ref(`usernames`)
-            .set({ [username]: userId })
-            .then(() => {})
-            .catch((error) => {
-                console.log(error);
-            });
-    };
-};
+// export const setUsername = (username, userId) => {
+//     return () => {
+//         firebase
+//             .database()
+//             .ref(`usernames`)
+//             .set({ [username]: userId })
+//             .then(() => {})
+//             .catch((error) => {
+//                 console.log(error);
+//             });
+//     };
+// };
 
 export const uploadUserProfileImage = (userId, image) => {
     return (dispatch) => {

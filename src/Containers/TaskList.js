@@ -13,7 +13,7 @@ import { objectsToArray } from "../shared/utility";
 
 class TaskList extends Component {
     state = {
-        addTaskOpen: false
+        addTaskOpen: false,
     };
 
     handleTaskFormToggle = () => {
@@ -37,9 +37,8 @@ class TaskList extends Component {
             status: objectStatus.pending,
             createdOn: new Date().toString(),
             createdBy: this.props.userId,
-            locationId: this.props.project.locationId,
         };
-        this.props.createNewTask(task, this.props.project.locationId);
+        this.props.createNewTask(this.props.projectId, task);
         this.handleTaskFormToggle();
     };
 
@@ -61,7 +60,26 @@ class TaskList extends Component {
                             <i className="material-icons">sort</i>
                         </div>
                     </div>
-                    {this.props.tasks ? (
+                    {completeTasks.length && incompleteTasks.length === 0 ? (
+                        <div className="card" style={{padding: "10", marginBottom: "10"}}>
+                            <div>All tasks complete!</div>
+                            <div>
+                                <button
+                                    class="button"
+                                    onClick={this.handleTaskFormToggle}
+                                >
+                                    Add new task
+                                </button>
+                                <button
+                                    class="button"
+                                    onClick={this.props.projectArchive}
+                                >
+                                    Archive Project
+                                </button>
+                            </div>
+                        </div>
+                    ) : null}
+                    {this.props.tasks.length ? (
                         <Progress
                             complete={completeTasks.length}
                             total={
@@ -70,19 +88,13 @@ class TaskList extends Component {
                             seperate
                         />
                     ) : (
-                        <div>Add tasks</div>
-                    )}
-                    {!this.props.tasks.length ? (
                         <Placeholder
                             heading="No tasks"
                             altMessage="Click + to add a new tasks to this project."
                         />
-                    ) : null}
+                    )}
                     {incompleteTasks.map((task) => (
-                        <Task
-                            key={task.id}
-                            taskId={task.id}
-                        />
+                        <Task key={task.id} taskId={task.id} />
                     ))}
                     {completeTasks.length ? (
                         <div className="project__tasks__topbar">
@@ -92,11 +104,7 @@ class TaskList extends Component {
                         </div>
                     ) : null}
                     {completeTasks.map((task) => (
-                        <Task
-                            complete
-                            key={task.id}
-                            taskId={task.id}
-                        />
+                        <Task complete key={task.id} taskId={task.id} />
                     ))}
 
                     <i
@@ -109,8 +117,8 @@ class TaskList extends Component {
                         toggle={this.handleTaskFormToggle}
                         active={this.state.addTaskOpen}
                     >
-                        <div className="heading heading--h2">
-                            {`Add task to ${this.props.project.heading}`}
+                        <div className="heading heading--form heading--h2">
+                            Add new task
                         </div>
                         <CreateTaskForm
                             onSubmit={(e) => this.handleCreateNewTask(e)}
@@ -135,8 +143,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createNewTask: (payload, projectId) =>
-            dispatch(actions.createNewTask(payload, projectId))
+        createNewTask: (projectId, payload) =>
+            dispatch(actions.createNewTask(projectId, payload)),
     };
 };
 

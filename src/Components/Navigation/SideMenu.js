@@ -82,14 +82,6 @@ export const SideMenu = (props) => {
                         Create Band
                     </NavLink>
                     <NavLink
-                        to={urls.home}
-                        className="side-menu__item"
-                        activeClassName="side-menu__item--active"
-                        onClick={props.toggle}
-                    >
-                        Songs
-                    </NavLink>
-                    <NavLink
                         to={urls.projectArchive}
                         className="side-menu__item"
                         activeClassName="side-menu__item--active"

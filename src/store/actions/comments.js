@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import firebase from "../../firebase";
 import "firebase/database";
 
 import { addDatabaseListener, removeDatabaseListener } from "./utility"
@@ -26,10 +26,17 @@ export const commentsFail = (error) => {
 
 export const commentDeleteByKey = (commentId) => {
     return {
-        type: actionTypes.TASKS_DELETE,
+        type: actionTypes.COMMENTS_DELETE,
         commentId,
     };
 };
+
+// export const commentsDeleteByProjectKey = (projectId) => {
+//     return {
+//         type: actionTypes.COMMENTS_DELETE_BY_PROJECT,
+//         projectId,
+//     };
+// };
 
 export function editComment(projectId, commentId, comment) {
     return () => {
@@ -49,6 +56,16 @@ export function deleteComment(projectId, commentId) {
             .remove()
             .then(() => dispatch(commentDeleteByKey(commentId)))
             .catch((err) => console.log(err));
+    };
+}
+
+export function deleteCommentsOfProject(projectId) {
+    return (dispatch) => {
+        firebase
+            .database()
+            .ref(`comments/${projectId}`)
+            .remove()
+            .catch((error) => console.log(error));
     };
 }
 
@@ -77,3 +94,4 @@ export const submitNewComment = (projectId, commentData) => {
         firebase.database().ref(`comments/${projectId}`).push(commentData);
     };
 };
+

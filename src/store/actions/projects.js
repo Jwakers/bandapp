@@ -1,6 +1,8 @@
-import firebase from "firebase/app";
+import firebase from "../../firebase";
 import "firebase/database";
 
+import { deleteTasksOfProject } from './tasks'
+import { deleteCommentsOfProject } from "./comments"
 import { addDatabaseListener, removeDatabaseListener } from "./utility"
 import * as actionTypes from "./actionTypes";
 
@@ -78,7 +80,11 @@ export function deleteProject(locationId, projectId) {
             .database()
             .ref(`projects/${locationId}/${projectId}`)
             .remove()
-            .then(() => dispatch(projectDeleteByKey(projectId)))
+            .then(() => {
+                dispatch(projectDeleteByKey(projectId))
+                dispatch(deleteTasksOfProject(projectId))
+                dispatch(deleteCommentsOfProject(projectId))
+            })
             .catch((err) => console.log(err));
     };
 }
